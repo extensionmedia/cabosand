@@ -5,8 +5,8 @@ date_default_timezone_set('Africa/Casablanca');
 class Config{
 	private $config = array(
 				"dev"		=>	array(
-									"host"		=>	"extensionmedia",
-									"dbname"	=>	"manager_cabosand.ma",
+									"host"		=>	"localhost",
+									"dbname"	=>	"cabosand",
 									"username"	=>	"root",
 									"password"	=>	""
 							),

@@ -20,7 +20,6 @@
 			</ul>
 		</div>
 	</nav>	
-	
 	<div class="navigation-menu" style="padding-bottom: 80px">
 		<?php
 			require_once(CORE."Menu.php");
@@ -32,3 +31,4 @@
 	<div id="app" class="content">
 		Loading content ...
 	</div
+

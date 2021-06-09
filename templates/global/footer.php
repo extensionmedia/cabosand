@@ -19,5 +19,33 @@
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 -->
 
+<script>
+    $(document).ready(function(){
+        var timer = setInterval(() => {
+            var controler = "Helpers.Session";
+            var data = {
+                'controler'		:	controler,
+                'function'		:	'expired'
+            };
+            
+            $.ajax({
+                type		: 	"POST",
+                url			: 	"pages/default/ajax/ajax.php",
+                data		:	data,
+                dataType	: 	"json",
+            }).done(function(response){
+                if(response.msg == 'Error'){
+                    location.reload();
+                }
+            }).fail(function(xhr) {
+                alert("Error");
+                console.log(xhr.responseText);
+                $("#preloader").remove();
+            });           
+        }, 1000);
+
+    });
+</script>
+
 </body>
 </html>

@@ -2,7 +2,10 @@
 
 $response  = array("code"=>0, "msg"=>"Error");
 
-if(!isset($_SESSION['CORE'])){die(json_encode($response));}
+if(!isset($_SESSION['CORE'])){
+	unset( $_SESSION["CABOSAND-MANAGER"]["USER"] );
+	die(json_encode($response));
+}
 if(!isset($_POST['controler'])){die(json_encode($response));}
 if(!isset($_POST['function'])){die(json_encode($response));}
 
