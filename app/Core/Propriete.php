@@ -73,7 +73,7 @@ class Propriete extends Modal{
 		foreach($columns as $column){
 			$is_sort = ( in_array($column["column"], $remove_sort) )? "" : "sort_by";
 			$style = ""; 
-			$is_display = ( isset($column["display"]) )? ($column["display"])? "" : "hide" : "";
+			$is_display = ( isset($column["display"]) )? ($column["display"]? "" : "hide") : "";
 			
 			if($column['column'] === "actions"){
 				$ths .= "<th class='". $is_display . "'>";
@@ -221,7 +221,7 @@ class Propriete extends Modal{
 				$nbr_nuite += $vv["nbr_nuite"];
 			}
 
-			$hide = $nbr_nuite === 0? $year === ""? "": "hide": "";
+			$hide = $nbr_nuite === 0? ($year === ""? "": "hide"): "";
 
 			$trs .= '<tr class="'.$hide.'" style="background-color:'.$background.'" data-page="'.$use.'">';
 			foreach($columns as $key=>$value){
