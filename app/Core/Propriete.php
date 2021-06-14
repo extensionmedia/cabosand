@@ -766,12 +766,12 @@ class Propriete extends Modal{
 		}
 		
 		foreach( $prop as $k=>$v){
-			$active = isset($params['id_table'])? $params['id_table'] === $v["id"]? "active": "": "";
+			$active = isset($params['id_table'])? ($params['id_table'] === $v["id"]? "active": ""): "";
 			$items .= '
 					<div class="item d-flex space-between '.$active.'">
 						<div class="d-flex space-between" style="font-size: 10px">
 							<div class="pr-10 pt-10" style="font-weight:bold"> '.$v["code"].' </div>
-							<div class="pt-10"> '.$v["proprietaire"].' </div>
+							<div class="pt-10"> '.$v["proprietaire"].'</div>
 						 </div>
 						<div> <button class="transparent check_this_propriete disabled"><i class="fas fa-sync-alt"></i></button></div>
 					</div>

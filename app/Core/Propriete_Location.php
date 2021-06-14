@@ -213,7 +213,7 @@ class Propriete_Location extends Modal{
 
 	public function Add_Propriete_To_Periode($params = []){
 		
-		$client = $this->find('', ['conditions'=>['YEAR(created)='=>2020], 'order'=>'first_name'], 'v_contrat');
+		$client = $this->find('', ['conditions'=>['YEAR(created)='=>2021], 'order'=>'first_name'], 'v_contrat');
 		$push = [];
 		$push['id_propriete']  = $params["id_propriete"];
 		if(count($client)>0) $push['clients'] = $client;

@@ -303,7 +303,7 @@ class Contrat_Periode extends Modal{
 		
 		foreach($ppl as $k=>$v){
 			
-			$type = ($v["id_propriete_location_type"] === "1")? $type: ($v["id_propriete_location_type"] === "2")? "Par Mois": "Forfait";
+			$type = ($v["id_propriete_location_type"] === "1")? $type: ($v["id_propriete_location_type"] === "2"? "Par Mois": "Forfait");
 			$status = ($v["status"] === "1")? "<div class='label label-green'>Activé</div>": "<div class='label label-red'>Archivé</div>";
 			$trs .= '
 							<tr>
@@ -367,14 +367,25 @@ class Contrat_Periode extends Modal{
 	}
 	
 	public function Table_To_Select_Periode($params = []){
+		$id_client = isset($params['id_client'])? $params['id_client']:0;
+		$contrats = $this->find('', ['conditions AND' =>['status='=>1, 'id_client='=>$id_client] ], 'contrat');
+		$contrat_periodes = [];
+		foreach($contrats as $contrat){
+			$c_p = $this->find('', ['conditions AND'=>['status='=>1, 'UID='=>$contrat['UID']] ], 'contrat_periode');
+			foreach($c_p as $contrat_periode){
+				$contrat_periodes[] = $contrat_periode;
+			}
+		}
+
+
 		$propriete = new Propriete;
 		$id_propriete = isset($params['id_propriete'])? $params['id_propriete']:0;
-		$periodes = $this->find('', [ 'conditions' => ['UID=' => $params['UID'] ] ], 'contrat_periode');
+		//$periodes = $this->find('', [ 'conditions' => ['UID=' => $params['UID'] ] ], 'contrat_periode');
 
 		$trs = '';
 		
 		
-		foreach($periodes as $k=>$v){
+		foreach($contrat_periodes as $k=>$v){
 			$isDisponible = $propriete->IsHasProprietaireContrat(['id_propriete'=>$id_propriete, 'date_debut'=>$v["date_debut"], 'date_fin'=>$v["date_fin"]]);
 			
 			if($isDisponible){

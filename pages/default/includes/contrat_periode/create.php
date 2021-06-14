@@ -3,7 +3,7 @@
 		<div class="col_3-inline">
 			<label for="date_debut">Date Début</label>
 			<input type="hidden" id="UID" value="<?= $UID ?>" class="field required">
-			<input type="date" id="date_debut" value="<?= isset($periode)? $periode["date_debut"]: "2020-01-01" ?>">
+			<input type="date" id="date_debut" value="<?= isset($periode)? $periode["date_debut"]: "2021-01-01" ?>">
 			<?php
 				if(isset($periode))
 					echo '<input type="hidden" id="id" value="'.$periode["id"].'">'
@@ -11,7 +11,7 @@
 		</div>
 		<div class="col_3-inline">
 			<label for="date_fin">Date Fin </label>
-			<input type="date" id="date_fin" value="<?= isset($periode)? $periode["date_fin"]: "2020-12-31" ?>">
+			<input type="date" id="date_fin" value="<?= isset($periode)? $periode["date_fin"]: "2021-12-31" ?>">
 		</div>
 		<div class="col_3-inline">
 			<label for="nbr__nuite">Nuités </label>
@@ -21,7 +21,7 @@
 		<div class="col_3-inline d-flex pt-20">
 			<div class="">
 				<label class="switch" style="width: 40px">
-					<input class="field" id="status" type="checkbox" <?= isset($periode)? $periode["status"] === "1"? "checked": "": "" ?>>
+					<input class="field" id="status" type="checkbox" <?= isset($periode)? ($periode["status"] === "1"? "checked": ""): "" ?>>
 					<span class="slider round"></span>
 				</label>
 			</div>

@@ -1228,7 +1228,8 @@ $(document).ready(function(){
 			'function'		:	'Table_To_Select_Periode',
 			'params'		:	{
 				'UID'			:	$(this).val(),
-				'id_propriete'	:	$(this).attr('data-id_propriete')
+				'id_propriete'	:	$(this).attr('data-id_propriete'),
+				'id_client'		:	$(this).val(),
 			}
 		};
 
@@ -1725,7 +1726,6 @@ $(document).ready(function(){
 	});
 	
 	$(document).on('click', '.select_propriete', function(){
-		
 		if($(".show_this_periode").length > 0){
 			if($(".show_this_periode").hasClass('active')){
 				$("#periode").preloader();
