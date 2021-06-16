@@ -426,12 +426,39 @@ class Propriete extends Modal{
 		if($this->save($data)){
 			if(isset($data["id"])){
 				$msg = "Code: " . $data["code"];
-				$this->saveActivity("fr", $created_by, ['Propriete', 0], $data["id"], $msg);				
+				$this->saveActivity("fr", $created_by, ['Propriete', 0], $data["id"], $msg);
+
+				$status = $this->Get_Status_Of_Propriete(['year'=>date('Y'), 'id_propriete'=>$data['id']]);
+				if($status){
+					if( $status['id_propriete_status'] != $data['id_propriete_status'] ){
+						$data_ = [
+							'created'				=>	$created,
+							'created_by'			=>	$created_by,
+							'id_propriete_status'	=>	$data['id_propriete_status'],
+							'id_propriete'			=>	$data['id']
+						];	
+						$this->save($data_, 'status_of_propriete');						
+					}
+				}else{
+					$data_ = [
+						'created'				=>	$created,
+						'created_by'			=>	$created_by,
+						'id_propriete_status'	=>	$data['id_propriete_status'],
+						'id_propriete'			=>	$data['id']
+					];	
+					$this->save($data_, 'status_of_propriete');
+				}
 			}else{
 				$msg = "Code: " . $data["code"];
 				$this->saveActivity("fr", $created_by, ['Propriete', 1], $this->getLastID(), $msg);
+				$data_ = [
+					'created'				=>	$data['created'],
+					'created_by'			=>	$data['created_by'],
+					'id_propriete_status'	=>	$data['id_propriete_status'],
+					'id_propriete'			=>	$data['id']
+				];	
+				$this->save($data_, 'status_of_propriete');
 			}
-
 			return 1;
 			
 		}else{
@@ -889,7 +916,7 @@ class Propriete extends Modal{
 			FROM status_of_propriete 
 			LEFT JOIN v_propriete_status ON v_propriete_status.id=status_of_propriete.id_propriete_status 
 			WHERE status_of_propriete.id_propriete=".$params['id_propriete']." AND YEAR(status_of_propriete.created)=" . intval($params['year']) . " 
-			ORDER BY status_of_propriete.id ASC";
+			ORDER BY status_of_propriete.id DESC";
 			
 			//echo $request;
 			$data = $this->execute($request);
