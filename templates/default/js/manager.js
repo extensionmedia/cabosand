@@ -1229,7 +1229,7 @@ $(document).ready(function(){
 			'params'		:	{
 				'UID'			:	$(this).val(),
 				'id_propriete'	:	$(this).attr('data-id_propriete'),
-				'id_client'		:	$(this).val(),
+				'id_client'		:	$(this).attr('data-id'),
 			}
 		};
 

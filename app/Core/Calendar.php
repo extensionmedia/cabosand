@@ -633,12 +633,22 @@ class Calendar extends Modal{
 	public function Get_Client_By_Complexe($params){
 		$id_complexe = $params['id_complexe'];
 		$request = "
-select client.id, client.first_name, client.last_name, client.societe_name as client , v_propriete.name as complexe_name, v_propriete.id_complexe,contrat.UID as UID
-from client
-join contrat on contrat.id_client = client.id
-JOIN propriete_location on propriete_location.UID = contrat.UID AND propriete_location.source='contrat'
-JOIN v_propriete on propriete_location.id_propriete = v_propriete.id
-where v_propriete.id_complexe=".$id_complexe." and year(contrat.created)=2020 group by client.societe_name order by client.societe_name";
+					SELECT 
+						client.id, 
+						client.first_name, 
+						client.last_name, 
+						client.societe_name as client, 
+						v_propriete.name as complexe_name, 
+						v_propriete.id_complexe,
+						contrat.UID as UID
+					FROM client
+					JOIN contrat on contrat.id_client = client.id
+					JOIN propriete_location on propriete_location.UID = contrat.UID
+					JOIN v_propriete on propriete_location.id_propriete = v_propriete.id
+					WHERE v_propriete.id_complexe=".$id_complexe." and year(contrat.created)=2021 
+					GROUP BY client.societe_name 
+					ORDER BY client.societe_name
+		";
 		//echo $request;
 		$data = $this->execute($request);
 		
@@ -853,6 +863,7 @@ where v_propriete.id_complexe=".$id_complexe." and year(contrat.created)=2020 gr
 			$code = "";
 			$color = "";
 			$listOfDates = array();
+			//var_dump($data);
 			foreach($data as $k=>$v){
 				if( array_key_exists($v["code"]." (".$v["propriete_category"].") ".$sub, $listOfAppartements) ){
 					array_push($listOfDates,[ $v["date_debut"]=>$v["date_fin"] ]);

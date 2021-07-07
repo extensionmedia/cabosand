@@ -13,6 +13,21 @@ class Propriete extends Modal{
 		try{
 			parent::__construct();
 			$this->setTableName(strtolower($this->tableName));
+
+/*
+			$data = $this->find('', ['conditions'=>['YEAR(created)='=>2021]], 'propriete_location');
+
+			foreach($data as $d){
+				$contrat = $this->find('', ['conditions'=>['id='=>$d["UID"]]], 'contrat');
+				if(count($contrat)){
+					$this->save([
+						'id'	=>	$d['id'],
+						'UID'	=>	$contrat[0]['UID']
+					], 'propriete_location');
+				}
+			}
+*/
+
 		}catch(Exception $e){
 			die($e->getMessage());
 		}

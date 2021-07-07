@@ -101,7 +101,6 @@ require_once($core."Contrat.php");
 
 
 	$args = array("options"=>$options,"data"=>$data);
-	//var_dump($args);
 
 	echo $calendar->drawCalendar(($current_month),$current_year, $args);
 
@@ -113,6 +112,9 @@ require_once($core."Contrat.php");
 	</div>
 </div>
 
+<div class="border bg-gray-100 shadow">
+	somthing here
+</div>
 
 <div class="debug"></div>
 
