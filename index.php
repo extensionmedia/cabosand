@@ -14,7 +14,6 @@ $url =array();
 $lang = "";	// 	es | ar | fr | en
 $dir = "";	//	ltr | rtl | auto
 
-//var_dump($_SESSION[$envirenment]);
 //unset($_SESSION[$envirenment]["USER"]);
 
 require_once("app".$D_S."Core".$D_S."Helpers".$D_S."Config.php");
