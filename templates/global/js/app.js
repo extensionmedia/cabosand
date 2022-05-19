@@ -1,4 +1,4 @@
-var HOST = 'http://extensionmedia/CLIENTS/cabosand.ma/manager/';
+var HOST = 'http://localhost/apps/cabosand/';
 //var HOST = 'http://www.manager.kabilamarina.com/';
 var animationend = "webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend";
 

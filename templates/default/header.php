@@ -1,16 +1,24 @@
 <div class="wrapper d-flex">
 	<nav class="">
 		<div class="nav-container">
-			<div class="brand-name">
-				<div class="logo">
-					<img src="<?= HTTP.HOST."templates/default/images/manager-logo.png" ?>">
-					<span>1.2.8</span>
+			<div class="flex items-center">
+				<div class="">
+					<button class="bg-green-600 mr-4 show_hide_menu">
+						<i class="fas fa-bars"></i>
+					</button>
 				</div>
-				<div class="project-name">
-					<span class="separator"></span>
-					Cabosandffffff
-				</div>
+				<div class="brand-name">
+					<div class="logo">
+						<img src="<?= HTTP.HOST."templates/default/images/manager-logo.png" ?>">
+						<span>1.2.8</span>
+					</div>
+					<div class="project-name">
+						<span class="separator"></span>
+						Cabosand
+					</div>
+				</div>				
 			</div>
+
 
 			<ul class="">
 				<li><button class="show_fullscreen"><i class="fas fa-compress"></i></button></li>
@@ -20,7 +28,7 @@
 			</ul>
 		</div>
 	</nav>	
-	<div class="navigation-menu" style="padding-bottom: 80px">
+	<div class="navigation-menu hidden" style="padding-bottom: 80px">
 		<?php
 			require_once(CORE."Menu.php");
 			echo $menu->Drow();
