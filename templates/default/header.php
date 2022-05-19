@@ -8,7 +8,7 @@
 				</div>
 				<div class="project-name">
 					<span class="separator"></span>
-					Cabosandddd
+					Cabosand
 				</div>
 			</div>
 
