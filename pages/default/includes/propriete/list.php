@@ -157,9 +157,24 @@ $filters = [
 			?>
 		</div>
 	</div>
+	<div class="hidden right-container_2 fixed top-0 right-0 left-0 bottom-0 bg-gray-50 z-100 mt-12 ml-96 border-gray-500 border-l-2 shadow bg-opacity-90">
+		<div class="w-full relative">
+			<div class="absolute top-4 -left-12 hover:bg-red-500 hover:text-white rounded py-2 px-3 cursor-pointer close_right-container_2 ">
+				<i class="fas fa-times"></i>
+			</div>
+		</div>
+	</div>
 	<script>
 		$(document).ready(function(){
 			$('.page_search_button').trigger('click');
+			$('.close_right-container_2').on('click', function(){
+				$('.right-container_2').toggleClass('hidden')
+			})
+			$(document).on('click', '.show_right-container_2', function(){
+				$('.right-container_2').removeClass('hidden')
+			})
+			
+			
 		});
 	</script>
 </div>

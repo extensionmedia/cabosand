@@ -248,7 +248,8 @@ class Propriete extends Modal{
 					
 					if($columns[$key]["column"] == "propriete_status"){
 						$trs .=   "<td style='width:55px; text-align: center'>".$status."</td>";	
-					
+					}elseif($columns[$key]["column"] == "code"){
+						$trs .= "<td class='".$is_display." show_right-container_2 cursor-pointer' style='".$style."'>".$v[ $columns[$key]["column"] ]."</td>";
 					}elseif(isset($columns[$key]["format"])){
 						if($columns[$key]["format"] === "money"){
 							$trs .= "<td class='".$is_display."' style='".$style."'>" . $this->format($v[ $columns[$key]["column"] ]) . "</td>";
