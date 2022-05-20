@@ -238,7 +238,7 @@ class Propriete extends Modal{
 
 			$hide = $nbr_nuite === 0? ($year === ""? "": "hide"): "";
 
-			$trs .= '<tr class="'.$hide.'" style="background-color:'.$background.'" data-page="'.$use.'">';
+			$trs .= '<tr class="'.$hide.' tr-highlight" style="background-color:'.$background.'" data-page="'.$use.'">';
 			foreach($columns as $key=>$value){
 				
 				$style = (!$columns[$key]["display"])? "display:none": $columns[$key]["style"] ;
@@ -249,7 +249,7 @@ class Propriete extends Modal{
 					if($columns[$key]["column"] == "propriete_status"){
 						$trs .=   "<td style='width:55px; text-align: center'>".$status."</td>";	
 					}elseif($columns[$key]["column"] == "code"){
-						$trs .= "<td class='".$is_display." show_right-container_2 cursor-pointer' style='".$style."'>".$v[ $columns[$key]["column"] ]."</td>";
+						$trs .= "<td data-id=".$v["id"]." class='".$is_display." show_right-container_2 cursor-pointer' style='".$style."'>".$v[ $columns[$key]["column"] ]."</td>";
 					}elseif(isset($columns[$key]["format"])){
 						if($columns[$key]["format"] === "money"){
 							$trs .= "<td class='".$is_display."' style='".$style."'>" . $this->format($v[ $columns[$key]["column"] ]) . "</td>";
@@ -358,6 +358,32 @@ class Propriete extends Modal{
 		return $view->render($push);
 	}
 	
+	public function Edit($params){
+		
+		$push = [];
+		$push['complexe'] =	$this->find('', ['order' => 'name desc'], 'complexe');
+		$push['propriete_category'] =	$this->find('', ['order' => 'propriete_category desc'], 'propriete_category');
+		$push['propriete_type'] =	$this->find('', ['order' => 'propriete_type desc'], 'propriete_type');
+		$push['propriete_status'] =	$this->find('', ['order' => 'propriete_status desc'], 'propriete_status');
+		$push['depenses'] = $this->find('', [ 'conditions' => ['id_propriete=' => $params['id'] ] ], 'depense');
+		$push['notess'] = $this->find('', [ 'conditions AND' => ['module='=>'propriete', 'id_module=' => $params['id'] ], 'order'=>'created DESC' ], 'notes');
+		
+		$push['Obj']	=	new Propriete;
+		
+		$propriete = $this->find('', [ 'conditions'=>[ 'id='=>$params['id'] ] ], '');		
+		if( count($propriete) > 0 ){
+			$proprietaire = $this->find('', ['conditions' => ['id=' => $propriete[0]['id_proprietaire'] ] ], 'proprietaire');
+			$push['propriete'] = $propriete[0];
+			if(count($proprietaire) > 0)
+				$push['proprietaire'] = $proprietaire[0];
+		}
+		
+		
+		$view = new View("propriete.edit");
+		
+		return $view->render($push);
+	}
+
 	public function Store($params){
 				
 		$created = date('Y-m-d H:i:s');

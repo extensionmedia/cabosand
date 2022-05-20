@@ -157,24 +157,87 @@ $filters = [
 			?>
 		</div>
 	</div>
-	<div class="hidden right-container_2 fixed top-0 right-0 left-0 bottom-0 bg-gray-50 z-100 mt-12 ml-96 border-gray-500 border-l-2 shadow bg-opacity-90">
+	<div class="hidden right-container_2 fixed top-0 right-0 left-0 bottom-0 bg-white z-100 mt-12 ml-96 border-gray-500 border-l-2 shadow pb-12">
 		<div class="w-full relative">
-			<div class="absolute top-4 -left-12 hover:bg-red-500 hover:text-white rounded py-2 px-3 cursor-pointer close_right-container_2 ">
+			<div class="absolute top-4 -left-12 hover:bg-red-500 hover:text-white rounded py-2 px-3 cursor-pointer close_right-container_2 text-red-600">
 				<i class="fas fa-times"></i>
 			</div>
+
+			<!-- Container Title -->
+			<div class="text-xl font-bold px-4 border-b flex items-center justify-between">
+				<div class="h-12 flex items-center">
+					Appartement [Code Here]
+					<span class="right-container_2_ID"></span>
+				</div>
+				<div class="flex items-center h-12 text-sm pt-2">
+					<div data-tab="form" class="show-tab border h-full cursor-pointer bg-green-600 text-white flex mr-1 shadow items-center px-4 hover:bg-gray-300 rounded-t-lg">
+						Détails
+					</div>
+					<div data-tab="depense" class="show-tab border h-full cursor-pointer flex mr-1 shadow items-center px-4 hover:bg-gray-300 rounded-t-lg">
+						Dépense
+					</div>
+					<div data-tab="contrat" class="show-tab border h-full cursor-pointer flex mr-1 shadow items-center px-4 hover:bg-gray-300 rounded-t-lg">
+						Contrats
+					</div>
+					<div data-tab="location" class="show-tab border h-full cursor-pointer flex mr-1 shadow items-center px-4 hover:bg-gray-300 rounded-t-lg">
+						Locations
+					</div>
+				</div>
+
+				
+			</div>
+
+			<div class="tab-container h-full overflow-y-auto px-4 py-6"></div>
+
+			<!-- Container Tabs -->
 		</div>
 	</div>
 	<script>
 		$(document).ready(function(){
 			$('.page_search_button').trigger('click');
+
+			$(document).on('click', '.tr-highlight', function(){
+				$('tr').removeClass('border-l-8 border-red-500')
+				$(this).addClass('border-l-8 border-red-500')
+			})
+
 			$('.close_right-container_2').on('click', function(){
 				$('.right-container_2').toggleClass('hidden')
 			})
+
 			$(document).on('click', '.show_right-container_2', function(){
+				$('.right-container_2_ID').html($(this).data('id'))
 				$('.right-container_2').removeClass('hidden')
+				$('.show-tab:first').trigger('click')
 			})
 			
+			$('.show-tab').on('click', function(){
+				var tab = $(this).data('tab');
+
+				if(tab == 'form'){
+
+					var data = {
+						'controler'		:	'Propriete',
+						'function'		:	'Edit',
+						'params'		:	{
+							'id'	:	$('.right-container_2_ID').html()
+						}
+					};
+					
+					$.ajax({
+						type		: 	"POST",
+						url			: 	"pages/default/ajax/ajax.php",
+						data		:	data,
+						dataType	: 	"json",
+					}).done(function(response){
+						$('.tab-container').html(response.msg);
+					}).fail(function(xhr) {
+						console.log(xhr.responseText);
+					});
+				}
+			})
 			
 		});
 	</script>
 </div>
+
