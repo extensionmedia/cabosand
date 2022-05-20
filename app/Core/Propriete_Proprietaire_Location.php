@@ -394,6 +394,74 @@ class Propriete_Proprietaire_Location extends Modal{
 		}
 		return $trs;
 	}
+
+	public function ByPropriete($params = []){
+		
+		
+		$ppl = $this->find('', ['conditions'=>['id_propriete=' => $params['id_propriete'] ], 'order'=>'created DESC'], 'v_propriete_proprietaire_location');
+		$cl_location = $this->find('', ['conditions'=>['id_propriete=' => $params['id_propriete'] ], 'order'=>'date_debut DESC'], 'v_propriete_location_1');
+		$template = '
+			<div class="ppl_wrapper" style="overflow:auto; max-height:450px">
+				<div class="popup-content ppl" style="padding-bottom:0px">
+					<div class="header d-flex space-between mb-10">
+						<div class="title" style="font-weight:bold; padding-top:7px">Contrats envers Propriétaire</div>
+						<div class="">
+							<button class="add green" value="'.$params['id_propriete'].'"><i class="fas fa-plus"></i> Ajouter</button>
+							<button class="refresh hide" value="'.$params['id_propriete'].'"><i class="fas fa-plus"></i> ref</button>
+						</div>
+					</div>
+					<div class="ppl-add-container"></div>
+					<div class="body">
+						<table>
+							<thead>
+								<tr>
+									<th>PERIODE</th>
+									<th>TYPE</th>
+									<th>MONTANT</th>
+									<th>STATUS</th>
+									<th></th>
+								</tr>
+							</thead>
+
+							<tbody>
+								{{trs}}
+							</tbody>
+						</table>
+					</div>
+				</div>			
+			</div>
+		';
+		
+		$trs = '';
+		
+		
+		foreach($ppl as $k=>$v){
+			$type = 'Par Nuit';
+			$type = ($v["id_propriete_location_type"] === "1")? $type: ($v["id_propriete_location_type"] === "2"? "Par Mois": "Forfait");
+			$status = ($v["status"] === "1")? "<div class='label label-green'>Activé</div>": "<div class='label label-red'>Archivé</div>";
+			$trs .= '
+							<tr>
+								<td>
+									<div class="d-flex ppl-periode">
+										<div>'.$v["de"].'</div>
+										<div class="pl-5 pr-5 text-red" style="font-size:16px">[ '.$v["nbr_nuite"].' ]</div>
+										<div>'.$v["a"].'</div>
+									</div>
+								</td>
+								<td>'.$type.'</td>
+								<td style="text-align:right; font-weight:bold;">'. $this->format( $v["montant"] ).'</td>
+								<td class="text-center">'.$status.'</td>
+								<td style="width:50px; text-align:center">
+									<button class="ppl-update" value="' . $v["id"] . '">
+										<i class="fas fa-ellipsis-v"></i>
+									</button>
+								</td>
+							</tr>
+			';
+		}		
+		
+		return str_replace(["{{trs}}"], [$trs], $template);
+	}
 	
 }
 $propriete_proprietaire_location = new Propriete_Proprietaire_Location;

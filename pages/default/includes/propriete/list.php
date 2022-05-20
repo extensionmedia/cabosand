@@ -164,10 +164,10 @@ $filters = [
 			</div>
 
 			<!-- Container Title -->
-			<div class="text-xl font-bold px-4 border-b flex items-center justify-between">
+			<div class="text-lg px-4 border-b flex items-center justify-between">
 				<div class="h-12 flex items-center">
-					Appartement [Code Here]
-					<span class="right-container_2_ID"></span>
+					Appartement [<span class="code_here text-xl font-bold"></span>] 
+				<span class="right-container_2_ID hidden"></span>
 				</div>
 				<div class="flex items-center h-12 text-sm pt-2">
 					<div data-tab="form" class="show-tab border h-full cursor-pointer bg-green-600 text-white flex mr-1 shadow items-center px-4 hover:bg-gray-300 rounded-t-lg">
@@ -177,10 +177,10 @@ $filters = [
 						Dépense
 					</div>
 					<div data-tab="contrat" class="show-tab border h-full cursor-pointer flex mr-1 shadow items-center px-4 hover:bg-gray-300 rounded-t-lg">
-						Contrats
+						Propriétaire
 					</div>
 					<div data-tab="location" class="show-tab border h-full cursor-pointer flex mr-1 shadow items-center px-4 hover:bg-gray-300 rounded-t-lg">
-						Locations
+						Client
 					</div>
 				</div>
 
@@ -207,37 +207,106 @@ $filters = [
 
 			$(document).on('click', '.show_right-container_2', function(){
 				$('.right-container_2_ID').html($(this).data('id'))
+				$('.code_here').html($(this).html())
 				$('.right-container_2').removeClass('hidden')
-				$('.show-tab:first').trigger('click')
+				$('.show-tab.bg-green-600').trigger('click')
 			})
 			
 			$('.show-tab').on('click', function(){
+				$('.show-tab').removeClass('bg-green-600 text-white')
+				$(this).addClass('bg-green-600 text-white')
 				var tab = $(this).data('tab');
 
-				if(tab == 'form'){
+				var ID = $('.right-container_2_ID').html();
 
-					var data = {
-						'controler'		:	'Propriete',
-						'function'		:	'Edit',
-						'params'		:	{
-							'id'	:	$('.right-container_2_ID').html()
-						}
-					};
-					
-					$.ajax({
-						type		: 	"POST",
-						url			: 	"pages/default/ajax/ajax.php",
-						data		:	data,
-						dataType	: 	"json",
-					}).done(function(response){
-						$('.tab-container').html(response.msg);
-					}).fail(function(xhr) {
-						console.log(xhr.responseText);
-					});
+				$('.tab-container').html('Loading');
+				if(tab == 'form'){
+					$('.tab-container').html('Loading');
+					loadPropriete(ID)
+				}else if(tab == 'depense'){
+					$('.tab-container').html('Loading');
+					loadDepense(ID)
+				}else if(tab == 'contrat'){
+					$('.tab-container').html('Loading');
+					loadContrat(ID)
+				}else if(tab == 'location'){
+					$('.tab-container').html('');
+				}else{
+					$('.tab-container').html('');
 				}
 			})
 			
 		});
+
+		// Load Propriete Form
+
+		function loadPropriete(id){
+			var data = {
+				'controler'		:	'Propriete',
+				'function'		:	'Edit',
+				'params'		:	{
+					'id'	:	id
+				}
+			};
+			
+			$.ajax({
+				type		: 	"POST",
+				url			: 	"pages/default/ajax/ajax.php",
+				data		:	data,
+				dataType	: 	"json",
+			}).done(function(response){
+				$('.tab-container').html(response.msg);
+			}).fail(function(xhr) {
+				console.log(xhr.responseText);
+			});
+		}
+
+		// Load Depense
+		function loadDepense(id){
+			var data = {
+				'controler'		:	'Depense',
+				'function'		:	'ByPropriete',
+				'params'		:	{
+					'id'	:	id
+				}
+			};
+			
+			$.ajax({
+				type		: 	"POST",
+				url			: 	"pages/default/ajax/ajax.php",
+				data		:	data,
+				dataType	: 	"json",
+			}).done(function(response){
+				console.log(response)
+				$('.tab-container').html(response.msg);
+			}).fail(function(xhr) {
+				console.log(xhr.responseText);
+			});
+		}
+
+		// Load Contrats envers Proprtitaire
+		function loadContrat(id){
+			var data = {
+				'controler'		:	'Propriete_Proprietaire_Location',
+				'function'		:	'ByPropriete',
+				'params'		:	{
+				'id_propriete'		:	id
+			}
+			};
+			
+			$.ajax({
+				type		: 	"POST",
+				url			: 	"pages/default/ajax/ajax.php",
+				data		:	data,
+				dataType	: 	"json",
+			}).done(function(response){
+				console.log(response)
+				$('.tab-container').html(response.msg);
+			}).fail(function(xhr) {
+				console.log(xhr.responseText);
+			});
+		}
+
 	</script>
 </div>
 
