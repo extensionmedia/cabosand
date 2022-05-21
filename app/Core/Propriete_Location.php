@@ -213,7 +213,9 @@ class Propriete_Location extends Modal{
 
 	public function Add_Propriete_To_Periode($params = []){
 		
-		$client = $this->find('', ['conditions'=>['YEAR(created)='=>2021], 'order'=>'first_name'], 'v_contrat');
+		$year = date("Y");
+
+		$client = $this->find('', ['conditions'=>['YEAR(created)='=>$year], 'order'=>'first_name'], 'v_contrat');
 		$push = [];
 		$push['id_propriete']  = $params["id_propriete"];
 		if(count($client)>0) $push['clients'] = $client;
@@ -222,6 +224,63 @@ class Propriete_Location extends Modal{
 		return $view->render($push);	
 	}
 	
+
+	public function ByPropriete($params = []){
+		
+		
+		$cl_location = $this->find('', ['conditions'=>['id_propriete=' => $params['id_propriete'] ], 'order'=>'date_debut DESC'], 'v_propriete_location_1');
+		$template = '
+		<div class="popup-content ppc" style="padding-bottom:10px">
+			<div class="header d-flex space-between mb-10">
+				<div class="title" style="font-weight:bold; padding-top:7px">Contrats envers Client</div>
+				<div class="">
+					<button class="add green" value="'.$params['id_propriete'].'"><i class="fas fa-plus"></i> Ajouter</button>
+					<button class="ppc_abort hide"><i class="far fa-times-circle"></i> Annuler</button>
+				</div>
+			</div>
+			<div class="ppc-add-container"></div>
+			<div class="body">
+				<table>
+					<thead>
+						<tr>
+							<th>DEBUT</th>
+							<th>CLIENT</th>
+							<th>STATUS</th>
+						</tr>
+					</thead>
+
+					<tbody>
+						{{trs}}
+					</tbody>
+				</table>
+			</div>
+		</div>
+		';
+		
+		$trs_location = '';
+		
+		
+		foreach($cl_location as $k=>$v){
+
+			$status = ($v["status"] === "1")? "<div class='label label-green'>Activé</div>": "<div class='label label-red'>Archivé</div>";
+			$trs_location .= '
+							<tr>
+								<td>
+									<div class="d-flex ppl-periode">
+										<div>'.$v["date_debut"].'</div>
+										<div class="pl-5 pr-5 text-red" style="font-size:16px">[ '.$v["nbr_nuite"].' ]</div>
+										<div>'.$v["date_fin"].'</div>
+									</div>
+								</td>
+								<td>'.$v["client_first_name"]. " " . $v["client_last_name"].'</td>
+								<td class="text-center">'.$status.'</td>
+							</tr>
+			';
+		}		
+		
+		return str_replace(["{{trs}}"], [$trs_location], $template);
+	}
+
 	public function Get_Periodes_Of_Client($params = []){
 		
 	}

@@ -408,7 +408,7 @@ class Contrat_Periode extends Modal{
 			}
 			
 			
-			$status = ($v["status"] === "1")? "<div class='label label-green'>Activé</div>": "<div class='label label-red'>Archivé</div>";
+			$status = ($v["status"] == "1")? "<div class='label label-green'>Activé</div>": "<div class='label label-red'>Archivé</div>";
 			$trs .= '<div data-id="'.$v["id"].'" data-date_debut="'.$v["date_debut"].'" data-date_fin="'.$v["date_fin"].'" class="item d-flex space-between">
 						<div class="d-flex">
 							<div class="dates d-flex">

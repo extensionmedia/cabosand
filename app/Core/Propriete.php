@@ -179,7 +179,7 @@ class Propriete extends Modal{
 			}
 
 		}
-		
+
 		/***********
 			Body
 		***********/
@@ -200,14 +200,14 @@ class Propriete extends Modal{
 		$current = isset( $params['current'] ) ? $params['current']: 0;
 		
 		//$conditions['limit'] = [$current,$pp];
-		
+
 		$data = $this->find('', $conditions, $use);
 		
 		// Counter
-		$counter = count($data);
+		//$counter = count($data);
 		
 		$trs = '';
-
+		$counter = 0;
 		foreach($data as $k=>$v){
 			$contrat = [];
 			$status = "";
@@ -217,26 +217,29 @@ class Propriete extends Modal{
 			$req = "";
 			
 
-			if($year !== ""){
-				$req = "select distinct id_propriete from propriete_location where year(created) = " . $year . " and id_propriete group by id_propriete";
+			if($year != ""){
+				$req = "select distinct id_propriete from propriete_location where YEAR(created) = " . $year . " group by id_propriete";
 				$contrat = $this->find('', array("conditions AND"=>array("YEAR(created)="=>$year, "id_propriete="=>$v["id"], "status="=>1)), "v_propriete_proprietaire_location");
 
 				$status = $this->Get_Status_Of_Propriete(['year'=>$year, 'id_propriete'=>$v['id']]);
 				$background = $status? $status["hex_string"]: "";
-				$status = $status? $status["propriete_status"]: "";			
+				$status = $status? $status["propriete_status"]: "";		
+				
+				if(count($contrat)) $counter++;
 				
 			}else{
 				$contrat = $this->find('', array("conditions AND"=>array("id_propriete="=>$v["id"], "status="=>1)), "v_propriete_proprietaire_location");
 				$status = "";
 				$background = "";
+				$counter++;
 			}
 
 			foreach($contrat as $kk=>$vv){
-				$total +=  ($vv["id_propriete_location_type"] === "1")? ($vv["nbr_nuite"] * $vv["montant"]): $vv["montant"];
+				$total +=  ($vv["id_propriete_location_type"] == "1")? ($vv["nbr_nuite"] * $vv["montant"]): $vv["montant"];
 				$nbr_nuite += $vv["nbr_nuite"];
 			}
 
-			$hide = $nbr_nuite === 0? ($year === ""? "": "hide"): "";
+			$hide = $nbr_nuite === 0? ($year == ""? "": "hide"): "";
 
 			$trs .= '<tr class="'.$hide.' tr-highlight" style="background-color:'.$background.'" data-page="'.$use.'">';
 			foreach($columns as $key=>$value){
@@ -280,15 +283,15 @@ class Propriete extends Modal{
 						$trs .= "<td class='".$is_display."' style='".$style."'>" . $this->format($total) . "</td>";
 					}else{
 						
-						if($columns[$key]["format"] === "money"){
+						if($columns[$key]["format"] == "money"){
 							$trs .= "<td class='".$is_display."' style='".$style."'>" . $this->format($v[ $columns[$key]["column"] ]) . "</td>";
 						}elseif($columns[$key]["column"] == "nbr_nuite"){
 							$trs .= "<td style='".$style."'><button class='show_propriete_proprietaire' data-id='".$v['id']."'>" . $nbr_nuite . "</button></td>";
-						}else if($columns[$key]["format"] === "on_off"){
+						}else if($columns[$key]["format"] == "on_off"){
 							$trs .= "<td class='".$is_display."' style='".$style."'><div class='label label-red'>Désactive</div></td>";
-						}else if($columns[$key]["format"] === "color"){
+						}else if($columns[$key]["format"] == "color"){
 							$trs .= "<td class='".$is_display."' style='".$style."'> <span style='padding:10px 15px; background-color:".$v[ $columns[$key]["column"] ]."'>".$v[ $columns[$key]["column"] ] . "</span></td>";
-						}else if($columns[$key]["format"] === "date"){
+						}else if($columns[$key]["format"] == "date"){
 							$date = explode(" ", $v[ $columns[$key]["column"] ]);
 							if(count($date)>1){
 								$_date = "<div style='min-width:105px'><i class='fas fa-calendar-alt'></i> ".$date[0]."</div><div style='min-width:105px'><i class='far fa-clock'></i> ".$date[1]."</div>";
@@ -311,11 +314,11 @@ class Propriete extends Modal{
 			
 		}
 		
-		if(count($data) === 0)
+		if(count($data) == 0)
 			$trs = '<tr><td colspan="'.$trs_counter.'">No Data to Display!</td></tr>';
 		
 		$counter = $counter . " Operations";
-		return str_replace(["{{ths}}", "{{trs}}", "{{sql}}", "{{counter}}"], [$ths, $trs, $sql, $counter], $table);
+		return str_replace(["{{ths}}", "{{trs}}", "{{sql}}", "{{counter}}", "{{total}}"], [$ths, $trs, $sql, $counter, ""], $table);
 		
 	}
 	

@@ -173,7 +173,7 @@ class Caisse_Alimentation extends Modal{
 	public function Remove($params){
 		if(isset($params["id"])){
 			$data = $this->find('', ['conditions' => [ 'id=' => $params['id'] ] ], '');
-			if(count($data) === 1){
+			if(count($data) == 1){
 				$data = $data[0];
 				$created_by	=	$_SESSION[ $this->config->get()['GENERAL']['ENVIRENMENT'] ]['USER']['id'];
 				$msg = "Montant: " . $data["montant"];

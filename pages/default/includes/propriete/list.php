@@ -94,13 +94,13 @@ $filters = [
 							if($key === "Location")
 								$string .= '<option value="'.$v["id"].'">'. strtoupper( $v["label"] ) ."</option>";
 							if($key === "Mois"){
-								if( $k === intval(date("m")) ) 
+								if( $k == intval(date("m")) ) 
 									$string .= '<option selected value="'.$k.'">'.$v."</option>";
 								else
 									$string .= '<option value="'.$k.'">'.$v."</option>";
 							}
 							if($key === "Années"){
-								if( $k === intval(date("Y")) ) 
+								if( $k == intval(date("Y")) ) 
 									$string .= '<option selected value="'.$k.'">'.$v."</option>";
 								else
 									$string .= '<option value="'.$k.'">'.$v."</option>";
@@ -230,7 +230,8 @@ $filters = [
 					$('.tab-container').html('Loading');
 					loadContrat(ID)
 				}else if(tab == 'location'){
-					$('.tab-container').html('');
+					$('.tab-container').html('Loading');
+					loadLocation(ID)
 				}else{
 					$('.tab-container').html('');
 				}
@@ -277,7 +278,6 @@ $filters = [
 				data		:	data,
 				dataType	: 	"json",
 			}).done(function(response){
-				console.log(response)
 				$('.tab-container').html(response.msg);
 			}).fail(function(xhr) {
 				console.log(xhr.responseText);
@@ -300,7 +300,28 @@ $filters = [
 				data		:	data,
 				dataType	: 	"json",
 			}).done(function(response){
-				console.log(response)
+				$('.tab-container').html(response.msg);
+			}).fail(function(xhr) {
+				console.log(xhr.responseText);
+			});
+		}
+
+		// Load Contrats envers Proprtitaire
+		function loadLocation(id){
+			var data = {
+				'controler'		:	'Propriete_Location',
+				'function'		:	'ByPropriete',
+				'params'		:	{
+				'id_propriete'		:	id
+			}
+			};
+			
+			$.ajax({
+				type		: 	"POST",
+				url			: 	"pages/default/ajax/ajax.php",
+				data		:	data,
+				dataType	: 	"json",
+			}).done(function(response){
 				$('.tab-container').html(response.msg);
 			}).fail(function(xhr) {
 				console.log(xhr.responseText);

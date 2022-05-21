@@ -399,7 +399,6 @@ class Propriete_Proprietaire_Location extends Modal{
 		
 		
 		$ppl = $this->find('', ['conditions'=>['id_propriete=' => $params['id_propriete'] ], 'order'=>'created DESC'], 'v_propriete_proprietaire_location');
-		$cl_location = $this->find('', ['conditions'=>['id_propriete=' => $params['id_propriete'] ], 'order'=>'date_debut DESC'], 'v_propriete_location_1');
 		$template = '
 			<div class="ppl_wrapper" style="overflow:auto; max-height:450px">
 				<div class="popup-content ppl" style="padding-bottom:0px">
