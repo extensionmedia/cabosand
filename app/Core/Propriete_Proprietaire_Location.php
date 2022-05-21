@@ -397,11 +397,11 @@ class Propriete_Proprietaire_Location extends Modal{
 
 	public function ByPropriete($params = []){
 		
-		
-		$ppl = $this->find('', ['conditions'=>['id_propriete=' => $params['id_propriete'] ], 'order'=>'created DESC'], 'v_propriete_proprietaire_location');
+		$year = isset($params['year'])? $params['year']: date('Y');
+		$ppl = $this->find('', ['conditions AND'=>['id_propriete=' => $params['id_propriete'], 'YEAR(created)=' => $year ], 'order'=>'created DESC'], 'v_propriete_proprietaire_location');
 		$template = '
-			<div class="ppl_wrapper" style="overflow:auto; max-height:450px">
-				<div class="popup-content ppl" style="padding-bottom:0px">
+			<div class="ppl_wrapper shadow-lg">
+				<div class="popup-content ppl">
 					<div class="header d-flex space-between mb-10">
 						<div class="title" style="font-weight:bold; padding-top:7px">Contrats envers Propriétaire</div>
 						<div class="">
@@ -409,16 +409,25 @@ class Propriete_Proprietaire_Location extends Modal{
 							<button class="refresh hide" value="'.$params['id_propriete'].'"><i class="fas fa-plus"></i> ref</button>
 						</div>
 					</div>
+					<div class="py-4 justify-end">
+						<select class="bg-yellow-100">
+							<option value="-1">-- Tous les années </option>
+							<option value="2019">2019</option>
+							<option value="2020">2020</option>
+							<option value="2021">2021</option>
+							<option value="2022" selected>2022</option>
+						</select>
+					</div>
 					<div class="ppl-add-container"></div>
-					<div class="body">
+					<div class="body border border-red">
 						<table>
 							<thead>
 								<tr>
-									<th>PERIODE</th>
-									<th>TYPE</th>
-									<th>MONTANT</th>
-									<th>STATUS</th>
-									<th></th>
+									<th class="bg-red text-white">PERIODE</th>
+									<th class="bg-red text-white">TYPE</th>
+									<th class="bg-red text-white">MONTANT</th>
+									<th class="bg-red text-white">STATUS</th>
+									<th class="bg-red text-white"></th>
 								</tr>
 							</thead>
 
@@ -459,6 +468,18 @@ class Propriete_Proprietaire_Location extends Modal{
 			';
 		}		
 		
+		$empty = '
+						<tr>
+							<td colspan="3">
+								<div class="flex justify-center text-red text-lg py-4">
+									Pas de périodes enregistré envers le propriétaire
+								</div>
+							</td>
+						</tr>
+		';
+
+		$trs =  $trs == ''? $empty: $trs ;
+
 		return str_replace(["{{trs}}"], [$trs], $template);
 	}
 	

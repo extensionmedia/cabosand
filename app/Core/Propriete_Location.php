@@ -229,8 +229,11 @@ class Propriete_Location extends Modal{
 		
 		
 		$cl_location = $this->find('', ['conditions'=>['id_propriete=' => $params['id_propriete'] ], 'order'=>'date_debut DESC'], 'v_propriete_location_1');
+
+		//return count($cl_location) . " - " . $params['id_propriete'];
+
 		$template = '
-		<div class="popup-content ppc" style="padding-bottom:10px">
+		<div class="popup-content ppc  shadow-lg">
 			<div class="header d-flex space-between mb-10">
 				<div class="title" style="font-weight:bold; padding-top:7px">Contrats envers Client</div>
 				<div class="">
@@ -238,14 +241,24 @@ class Propriete_Location extends Modal{
 					<button class="ppc_abort hide"><i class="far fa-times-circle"></i> Annuler</button>
 				</div>
 			</div>
+			<div class="py-4 justify-end">
+			<select class="bg-yellow-100">
+					<option value="-1">-- Tous les années </option>
+					<option value="2019">2019</option>
+					<option value="2020">2020</option>
+					<option value="2021">2021</option>
+					<option value="2022" selected>2022</option>
+				</select>
+			</div>
 			<div class="ppc-add-container"></div>
-			<div class="body">
+			<div class="body border border-blue">
 				<table>
 					<thead>
 						<tr>
-							<th>DEBUT</th>
-							<th>CLIENT</th>
-							<th>STATUS</th>
+							<th class="bg-blue text-white">DEBUT</th>
+							<th class="bg-blue text-white">CLIENT</th>
+							<th class="bg-blue text-white text-center">STATUS</th>
+							<th class="bg-blue text-white"></th>
 						</tr>
 					</thead>
 
@@ -274,11 +287,25 @@ class Propriete_Location extends Modal{
 								</td>
 								<td>'.$v["client_first_name"]. " " . $v["client_last_name"].'</td>
 								<td class="text-center">'.$status.'</td>
+								<td class="text-center w-24"><div class="justify-center rounded-lg bg-red text-white py-2 px-3 border border-red-600 cursor-pointer">Supprimer</div></td>
 							</tr>
 			';
-		}		
-		
+		}
+
+		$empty = '
+						<tr>
+							<td colspan="3">
+								<div class="flex justify-center text-blue text-lg py-4">
+									Appartement n\'est pas encore assignée !
+								</div>
+							</td>
+						</tr>
+		';
+
+		$trs_location =  $trs_location == ''? $empty: $trs_location ;
+
 		return str_replace(["{{trs}}"], [$trs_location], $template);
+
 	}
 
 	public function Get_Periodes_Of_Client($params = []){
