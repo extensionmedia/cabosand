@@ -8,7 +8,7 @@
 					<option selected value="-1">-- Clients </option>
 					<?php
 						foreach($clients as $k=>$v){
-							echo '<option data-id="'.$v["id_client"].'" value="' . $v["UID"].'">' . $v["first_name"] . ' ' . $v["last_name"] . '</option>';
+							echo '<option data-id="'.$v["id_client"].'" value="' . $v["UID"].'">' . $v["societe_name"] . '</option>';
 						}
 					?>
 				</select>

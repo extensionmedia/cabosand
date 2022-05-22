@@ -2,7 +2,7 @@
 	<div class="row pb-5">
 		<div class="col_4">
 			<label for="periode_de">Date Début</label>
-			<input type="date" id="periode_de" value="<?= isset($ppl)? $ppl["de"]: "2021-01-01" ?>">
+			<input type="date" id="periode_de" value="<?= isset($ppl)? $ppl["de"]: $year."-01-01" ?>">
 			<?php
 				if(isset($ppl))
 					echo '<input type="hidden" id="id" value="'.$ppl["id"].'">'
@@ -10,7 +10,7 @@
 		</div>
 		<div class="col_4">
 			<label for="periode_a">Date Fin </label>
-			<input type="date" id="periode_a" value="<?= isset($ppl)? $ppl["a"]: "2021-12-31" ?>">
+			<input type="date" id="periode_a" value="<?= isset($ppl)? $ppl["a"]: $year."-12-31" ?>">
 		</div>
 		<div class="col_4">
 			<label for="periode_nuite">Nuités </label>

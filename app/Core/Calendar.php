@@ -570,9 +570,9 @@ class Calendar extends Modal{
 		$replace_this = ['{{type}}', '{{date}}', '{{body}}', '{{counter}}', '{{complexe}}'];
 		$complexe = '';
 		
-		if($style === 1){
+		if($style == 1){
 			$template = str_replace($replace_this, ['Par Mois', $this->months[intval($month)-1] . " - " . $year, $this->By_Month(['month'=>$month, 'year'=>$year]), $counter, "" ], $template);
-		}elseif($style === 2){
+		}elseif($style == 2){
 			
 			$complexe = '
 				<div class="d-flex">
@@ -588,11 +588,11 @@ class Calendar extends Modal{
 				</div>
 			';
 			$options = '';
-			$complexes = $this->find('', ['order'=>'name DESC'], 'complexe');
+			$complexes = $this->find('', ['conditions'=>[],'order'=>'name asc'], 'complexe');
 			foreach($complexes as $k=>$v){
 				
 				if(isset($params["id_complexe"])){
-					if($params["id_complexe"] === $v["id"]){
+					if($params["id_complexe"] == $v["id"]){
 						$options .= '<option selected value="'.$v["id"].'">'. strtoupper($v["name"]).'</option>';
 					}else{
 						$options .= '<option value="'.$v["id"].'">'. strtoupper($v["name"]).'</option>';
@@ -604,11 +604,12 @@ class Calendar extends Modal{
 			}
 			
 			if(isset($params["id_complexe"])){
-				if(isset($params["UID"])){
-					$complexe = str_replace(['{{options}}','{{clients}}'], [$options, $this->Get_Client_By_Complexe(['id_complexe'=>$params["id_complexe"], 'UID'=>$params["UID"]])] , $complexe);
-				}else{
-					$complexe = str_replace(['{{options}}','{{clients}}'], [$options, $this->Get_Client_By_Complexe(['id_complexe'=>$params["id_complexe"]])] , $complexe);
-				}
+				$complexe = str_replace(['{{options}}','{{clients}}'], [$options, $this->Get_Client_By_Complexe(['id_complexe'=>$params["id_complexe"]])] , $complexe);
+				// if(isset($params["UID"])){
+				// 	$complexe = str_replace(['{{options}}','{{clients}}'], [$options, $this->Get_Client_By_Complexe(['id_complexe'=>$params["id_complexe"], 'UID'=>$params["UID"]])] , $complexe);
+				// }else{
+				// 	$complexe = str_replace(['{{options}}','{{clients}}'], [$options, $this->Get_Client_By_Complexe(['id_complexe'=>$params["id_complexe"]])] , $complexe);
+				// }
 				
 			}else{
 				$complexe = str_replace(['{{options}}','{{clients}}'], [$options, ""] , $complexe);
@@ -620,7 +621,7 @@ class Calendar extends Modal{
 			
 			$template = str_replace($replace_this, ['Par Société', $this->months[intval($month)-1] . " - " . $year, $this->By_Societe(['month'=>$month, 'year'=>$year, 'id_complexe'=>$id_complexe]), $counter, $complexe ], $template);
 			
-		}elseif($style === 3){
+		}elseif($style == 3){
 			$template = str_replace($replace_this, ['Par Mois', $this->months[intval($month)-1] . " - " . $year, "body", $counter, "" ], $template);
 		}
 		
@@ -632,6 +633,7 @@ class Calendar extends Modal{
 	
 	public function Get_Client_By_Complexe($params){
 		$id_complexe = $params['id_complexe'];
+		$year = isset($param['year'])? $param['year']: date('Y');
 		$request = "
 					SELECT 
 						client.id, 
@@ -645,7 +647,7 @@ class Calendar extends Modal{
 					JOIN contrat on contrat.id_client = client.id
 					JOIN propriete_location on propriete_location.UID = contrat.UID
 					JOIN v_propriete on propriete_location.id_propriete = v_propriete.id
-					WHERE v_propriete.id_complexe=".$id_complexe." and year(contrat.created)=2021 
+					WHERE v_propriete.id_complexe=".$id_complexe." and year(contrat.created)=".$year."
 					GROUP BY client.societe_name 
 					ORDER BY client.societe_name
 		";
@@ -655,10 +657,10 @@ class Calendar extends Modal{
 		$reaturned = '<option selected value="-1">Client --</option>';
 		foreach($data as $k=>$v){
 			if(isset($params["UID"]))
-				if($params["UID"] === $v["UID"])
-					$reaturned .= '<option selected value="'.$v["id"].'">'.$v["client"].'</option>';
+				if($params["UID"] == $v["UID"])
+					$reaturned .= '<option selected value="'.$v["id"].'">'.$v["UID"]." - ".$params["UID"].'</option>';
 				else
-					$reaturned .= '<option value="'.$v["id"].'">'.$v["client"].'</option>';
+					$reaturned .= '<option value="'.$v["id"].'">'.$v["UID"]." - ".$params["UID"].'</option>';
 			else
 				$reaturned .= '<option value="'.$v["id"].'">'.$v["client"].'</option>';
 		}

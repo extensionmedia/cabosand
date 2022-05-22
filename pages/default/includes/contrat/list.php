@@ -137,7 +137,7 @@ $filters = [
 				$params = [
 					'column_style'	=>	'v_contrat',
 					'use'			=>	'v_contrat',
-					'filters'		=>	[  ],
+					'filters'		=>	[ ['id'=>'Années', 'value'=>date("Y")]  ],
 					'pp'			=>	20,
 					'current'		=>	0
 

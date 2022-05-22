@@ -173,7 +173,7 @@ class Contrat_Periode extends Modal{
 	public function Create($params){
 		$UID = $params["UID"];
 		$view = new View("contrat_periode.create");
-		return $view->render(['UID'=>$UID]);
+		return $view->render(['UID'=>$UID, 'year'=>date('Y')]);
 	}
 	
 	public function Store($params){

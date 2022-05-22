@@ -36,12 +36,10 @@ $tags = [
 ];
 
 $filters = [
-	'Categorie'				=>	$ob->find('', ['order'=>'propriete_category'], 'propriete_category'),
+	'Client'				=>	$ob->find('', ['conditions'=>['id_status='=>11], 'order'=>'societe_name'], 'client'),
 	'Type'					=>	$ob->find('', ['order'=>'propriete_type'], 'propriete_type'),
 	'Complexe'				=>	$ob->find('', ['order'=>'name'], 'complexe'),
 	'Status'				=>	$ob->find('', ['order'=>'propriete_status' ], 'propriete_status'),
-	'Vente'					=>	[0=>['id'=>0, 'label'=>'Non Vente'], 1=>['id'=>1, 'label'=>'A Vendre']],
-	'Location'				=>	[0=>['id'=>0, 'label'=>'Non Location'], 1=>['id'=>1, 'label'=>'A Louer']],
 	'Années'				=>	$years
 ];
 	
@@ -81,24 +79,14 @@ $filters = [
 						$string .= '<select id="'.$key.'">';
 						$string .= '	<option value="-1"> -- '.$key." -- </option>";
 						foreach($value as $k=>$v){
-							if($key === "Categorie")
-								$string .= '<option value="'.$v["id"].'">'. strtoupper( $v["propriete_category"] ) ."</option>";
 							if($key === "Type")
 								$string .= '<option value="'.$v["id"].'">'. strtoupper( $v["propriete_type"] ) ."</option>";
 							if($key === "Complexe")
 								$string .= '<option value="'.$v["id"].'">'. strtoupper( $v["name"] ) ."</option>";
 							if($key === "Status")
 								$string .= '<option value="'.$v["id"].'">'. strtoupper( $v["propriete_status"] ) ."</option>";
-							if($key === "Vente")
-								$string .= '<option value="'.$v["id"].'">'. strtoupper( $v["label"] ) ."</option>";
-							if($key === "Location")
-								$string .= '<option value="'.$v["id"].'">'. strtoupper( $v["label"] ) ."</option>";
-							if($key === "Mois"){
-								if( $k == intval(date("m")) ) 
-									$string .= '<option selected value="'.$k.'">'.$v."</option>";
-								else
-									$string .= '<option value="'.$k.'">'.$v."</option>";
-							}
+							if($key === "Client")
+								$string .= '<option value="'.$v["id"].'">'. ucfirst( $v["societe_name"] ) ."</option>";
 							if($key === "Années"){
 								if( $k == intval(date("Y")) ) 
 									$string .= '<option selected value="'.$k.'">'.$v."</option>";
@@ -235,6 +223,34 @@ $filters = [
 				}else{
 					$('.tab-container').html('');
 				}
+			})
+
+			/** Supprimer periode from location */
+			$(document).on('click', '.supprimer_location', function(){
+				var id_location = $(this).data('id_location');
+
+				var _next = confirm('Etes vous sure de vouloir supprimer?');
+				if(_next){
+					var data = {
+						'controler'		:	'Propriete_Location',
+						'function'		:	'Remove',
+						'params'		:	{
+							'id'	:	id_location
+						}
+					};
+					
+					$.ajax({
+						type		: 	"POST",
+						url			: 	"pages/default/ajax/ajax.php",
+						data		:	data,
+						dataType	: 	"json",
+					}).done(function(response){
+						$('.show-tab.bg-green-600').trigger('click')
+					}).fail(function(xhr) {
+						console.log(xhr.responseText);
+					});					
+				}
+
 			})
 			
 		});

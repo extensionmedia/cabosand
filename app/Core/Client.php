@@ -308,21 +308,21 @@ class Client extends Modal{
 		}
 		
 		if( count($filters) > 0 ){
-			foreach($filters as $k=>$v){
-				if($v["value"] !== "-1"){
+			foreach($filters as $filter){
+				if($filter["value"] !== "-1"){
 
 					
-					if( $v["id"] === "Client_Status" ){
-						$request['id_status = '] = $v["value"];
-						$item = 'id_status = ' . $v["value"];						
+					if( $filter["id"] == "Client_Status" ){
+						$request['id_status = '] = $filter["value"];
+						$item = 'id_status = ' . $filter["value"];						
 					}
-					if( $v["id"] === "Category" ){
-						$request['id_category = '] = $v["value"];
-						$item = 'id_category = ' . $v["value"];						
+					if( $filter["id"] == "Category" ){
+						$request['id_category = '] = $filter["value"];
+						$item = 'id_category = ' . $filter["value"];						
 					}
-					if( $v["id"] === "Type" ){
-						$request['id_type = '] = $v["value"];
-						$item = 'id_type = ' . $v["value"];						
+					if( $filter["id"] == "Type" ){
+						$request['id_type = '] = $filter["value"];
+						$item = 'id_type = ' . $filter["value"];						
 					}
 
 					$sql .= $sql===''? $item.'<br>': ' AND '.$item.'<br>';					
@@ -337,7 +337,8 @@ class Client extends Modal{
 		***********/
 		$use = (isset($params['use']))? strtolower($params['use']): strtolower($this->tableName);
 
-		
+		//var_dump($request);
+		//return $sql;
 		$conditions = [];
 		
 		if( count($request) === 1 ){
@@ -367,15 +368,17 @@ class Client extends Modal{
 		
 		foreach($data as $k=>$v){
 						
-			$background = isset($v["all_ligne"])? $v["all_ligne"]? $v["hex_string"]: "": "";
-			$trs .= '<tr style="background-color:'.$background.'" data-page="'.$use.'">';
+			//$background = isset($v["all_ligne"])? $v["all_ligne"]? $v["hex_string"]: "": "";
+			//$background = isset($v["bg-color"])? $v["bg-color"] : "";
+			$trs .= '<tr class="bg-gray-50" data-page="'.$use.'">';
 			foreach($columns as $key=>$value){
 				
 				$style = (!$columns[$key]["display"])? "display:none": $columns[$key]["style"] ;
 								
 				if(isset($v[ $columns[$key]["column"] ])){
-					
-					if(isset($columns[$key]["format"])){
+					if($columns[$key]["column"] == "client_status"){
+						$trs .= "<td class='w-32'><span class='".$v[ 'bg-color' ]." py-1 px-3 border rounded-lg'>" . ucfirst($v[ 'client_status' ]) . "</span></td>";
+					}elseif(isset($columns[$key]["format"])){
 						if($columns[$key]["format"] === "money"){
 							$trs .= "<td class='".$is_display."' style='".$style."'>" . $this->format($v[ $columns[$key]["column"] ]) . "</td>";
 						}else if($columns[$key]["format"] === "on_off"){

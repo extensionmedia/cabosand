@@ -4,7 +4,7 @@ if(isset($contrat)){
 	//var_dump($propriete);
 	$token = $contrat["UID"];
 }else{
-	$token = substr(md5( uniqid('auth', true) ),0,8);
+	$token = md5( uniqid('auth', true) );
 }
 
 ?>

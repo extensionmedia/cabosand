@@ -146,7 +146,7 @@ class Propriete_Proprietaire_Location extends Modal{
 	public function Create($params){
 		$id_propriete = $params["id_propriete"];
 		$view = new View("propriete_proprietaire_location.create");
-		return $view->render(['id_propriete'=>$id_propriete]);
+		return $view->render(['id_propriete'=>$id_propriete, 'year'=>date('Y')]);
 	}
 	
 	public function Store($params){

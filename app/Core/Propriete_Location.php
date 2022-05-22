@@ -215,7 +215,7 @@ class Propriete_Location extends Modal{
 		
 		$year = date("Y");
 
-		$client = $this->find('', ['conditions'=>['YEAR(created)='=>$year], 'order'=>'first_name'], 'v_contrat');
+		$client = $this->find('', ['conditions'=>['id_status='=>11], 'order'=>'first_name'], 'v_contrat');
 		$push = [];
 		$push['id_propriete']  = $params["id_propriete"];
 		if(count($client)>0) $push['clients'] = $client;
@@ -287,7 +287,11 @@ class Propriete_Location extends Modal{
 								</td>
 								<td>'.$v["client_first_name"]. " " . $v["client_last_name"].'</td>
 								<td class="text-center">'.$status.'</td>
-								<td class="text-center w-24"><div class="justify-center rounded-lg bg-red text-white py-2 px-3 border border-red-600 cursor-pointer">Supprimer</div></td>
+								<td class="text-center w-24">
+									<div data-id_location="'.$v['id'].'" class="supprimer_location justify-center rounded-lg bg-red text-white py-2 px-3 border border-red-600 cursor-pointer">	
+										Supprimer
+									</div>
+								</td>
 							</tr>
 			';
 		}
