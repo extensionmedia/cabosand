@@ -215,7 +215,23 @@ class Propriete_Location extends Modal{
 		
 		$year = date("Y");
 
-		$client = $this->find('', ['conditions'=>['id_status='=>11], 'order'=>'first_name'], 'v_contrat');
+		$request = "
+			SELECT contrat.UID as UID,
+				client.first_name as first_name,
+				client.last_name as last_name,
+				client.id_status as id_status,
+				client.id as id_client,
+				client.societe_name as societe_name
+			FROM contrat
+			LEFT JOIN contrat_periode on contrat.UID = contrat_periode.UID
+			LEFT JOIN client on client.id = contrat.id_client
+			WHERE YEAR(contrat_periode.created) = ".intval($year)."
+			GROUP BY id_client
+		";
+
+
+		$client = $this->execute($request);
+
 		$push = [];
 		$push['id_propriete']  = $params["id_propriete"];
 		if(count($client)>0) $push['clients'] = $client;
@@ -241,15 +257,7 @@ class Propriete_Location extends Modal{
 					<button class="ppc_abort hide"><i class="far fa-times-circle"></i> Annuler</button>
 				</div>
 			</div>
-			<div class="py-4 justify-end">
-			<select class="bg-yellow-100">
-					<option value="-1">-- Tous les années </option>
-					<option value="2019">2019</option>
-					<option value="2020">2020</option>
-					<option value="2021">2021</option>
-					<option value="2022" selected>2022</option>
-				</select>
-			</div>
+
 			<div class="ppc-add-container"></div>
 			<div class="body border border-blue">
 				<table>

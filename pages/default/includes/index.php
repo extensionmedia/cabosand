@@ -141,7 +141,7 @@ require_once($core."Contrat.php");
 
 
 
-<div class="row mb-20 activities hide">
+<div class="row mb-20 activities">
 	<div class="panel">
 		<div class="panel-header">
 			Activités récentes

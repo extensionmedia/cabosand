@@ -409,15 +409,7 @@ class Propriete_Proprietaire_Location extends Modal{
 							<button class="refresh hide" value="'.$params['id_propriete'].'"><i class="fas fa-plus"></i> ref</button>
 						</div>
 					</div>
-					<div class="py-4 justify-end">
-						<select class="bg-yellow-100">
-							<option value="-1">-- Tous les années </option>
-							<option value="2019">2019</option>
-							<option value="2020">2020</option>
-							<option value="2021">2021</option>
-							<option value="2022" selected>2022</option>
-						</select>
-					</div>
+
 					<div class="ppl-add-container"></div>
 					<div class="body border border-red">
 						<table>

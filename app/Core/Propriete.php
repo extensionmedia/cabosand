@@ -59,7 +59,6 @@ class Propriete extends Modal{
 		$columns = $this->getColumns($column_style);
 		
 		$table = '
-			<div class="table-container">
 				<div class="d-flex space-between" style="padding:0 10px 10px 10px">
 					<div style="font-size:16px; font-weight:bold">{{counter}}</div>
 					<div class="text-green" style="font-size:16px; font-weight:bold">{{total}}</div>
@@ -75,7 +74,6 @@ class Propriete extends Modal{
 						{{trs}}
 					</tbody>
 				</table>
-			</div>
 		
 		';
 		
@@ -95,6 +93,13 @@ class Propriete extends Modal{
 				$ths .= "	<button data-default='".$defaultStyleName."' value='".$column_style."' class='show_list_options'>";
 				$ths .= "		<i class='fas fa-ellipsis-h'></i></button>";
 				$ths .= "	</button>";
+				$ths .=	"</th>";
+			}else if($column['column'] === "nbr_nuite"){
+				$ths .= "<th class='text-center'";
+				$ths .=  "	<div class='d-flex'>";
+				$ths .=  		$column['label'];
+				$ths .= "		<i class='pl-5 fas fa-sort'></i> ";
+				$ths .=  "	</div>";
 				$ths .=	"</th>";
 			}else{
 				$trs_counter += $is_display === "hide"? 0:1;
@@ -238,8 +243,10 @@ class Propriete extends Modal{
 				$status = "";
 				$background = "";
 				$nbr_nuite = 0;
+				$nbr_nuite_location = 0;
 				$total = 0;
-				
+				$locations = [];
+
 				if($year != ""){
 
 					$contrat = $this->find('', array("conditions AND"=>array("YEAR(created)="=>$year, "id_propriete="=>$v["id"])), "v_propriete_proprietaire_location");
@@ -249,6 +256,23 @@ class Propriete extends Modal{
 					$status = $status? $status["propriete_status"]: "";		
 					
 					if(count($contrat)) $counter++;
+
+
+					$request = "
+						SELECT SUM(TO_DAYS(propriete_location.date_fin) - TO_DAYS(propriete_location.date_debut)) AS nbr_nuite
+						FROM contrat
+						LEFT JOIN propriete_location on contrat.UID = propriete_location.UID
+						WHERE YEAR(propriete_location.created) = ".intval($year)."
+							AND propriete_location.id_propriete = ".$v['id']."
+						GROUP BY id_client
+					";
+			
+			
+					$locations = $this->execute($request);
+					foreach($locations as $loc){
+						$nbr_nuite_location += $loc['nbr_nuite'];
+					}
+
 					
 				}else{
 					$contrat = $this->find('', array("conditions AND"=>array("id_propriete="=>$v["id"], "status="=>1)), "v_propriete_proprietaire_location");
@@ -309,7 +333,7 @@ class Propriete extends Modal{
 							if($columns[$key]["format"] == "money"){
 								$trs .= "<td class='".$is_display."' style='".$style."'>" . $this->format($v[ $columns[$key]["column"] ]) . "</td>";
 							}elseif($columns[$key]["column"] == "nbr_nuite"){
-								$trs .= "<td style='".$style."'><button class='' data-id='".$v['id']."'>" . $nbr_nuite . "</button></td>";
+								$trs .= "<td style='".$style."'><button class='' data-id='".$v['id']."'>" . $nbr_nuite . "</button> / ".$nbr_nuite_location."</td>";
 							}else if($columns[$key]["format"] == "on_off"){
 								$trs .= "<td class='".$is_display."' style='".$style."'><div class='label label-red'>Désactive</div></td>";
 							}else if($columns[$key]["format"] == "color"){
