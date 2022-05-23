@@ -231,6 +231,7 @@ class Propriete extends Modal{
 		/** Select only appartments that already have proprietaire location */
 		$proprietaire_appartements_to_show = [];
 		if($year != ""){
+			//$propriete_proprietaire_location = $this->find('', ['conditions AND'=>['status='=>1, 'YEAR(de)='=>$year]], 'propriete_proprietaire_location');
 			$propriete_proprietaire_location = $this->find('', ['conditions'=>['YEAR(de)='=>$year]], 'propriete_proprietaire_location');
 
 				foreach($propriete_proprietaire_location as $pl){

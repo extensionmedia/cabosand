@@ -210,6 +210,10 @@ $filters = [
 				}
 			})
 
+			$(document).on('click', '.show_alert', function(){
+				alert('show')
+			})
+
 			/** Supprimer periode from location */
 			$(document).on('click', '.supprimer_location', function(){
 				var id_location = $(this).data('id_location');
@@ -287,15 +291,16 @@ $filters = [
 
 		// Load Contrats envers Proprtitaire
 		function loadContrat(id){
+			var year = $("#Années").val();
 			var data = {
 				'controler'		:	'Propriete_Proprietaire_Location',
 				'function'		:	'ByPropriete',
 				'params'		:	{
 					'id_propriete'		:	id,
-					'year'				:	$("#Années").val()
+					'year'				:	 year
 				}
 			};
-			
+			console.log(data);
 			$.ajax({
 				type		: 	"POST",
 				url			: 	"pages/default/ajax/ajax.php",

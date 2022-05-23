@@ -397,9 +397,15 @@ class Propriete_Proprietaire_Location extends Modal{
 
 	public function ByPropriete($params = []){
 		
-		$year = isset($params['year'])? $params['year']: date('Y');
-		$ppl = $this->find('', ['conditions AND'=>['id_propriete=' => $params['id_propriete'], 'YEAR(created)=' => $year ], 'order'=>'created DESC'], 'v_propriete_proprietaire_location');
-		$template = '
+		$year = $params['year'] != "-1"? $params['year']: "";
+
+
+		if($year != "")
+			$ppl = $this->find('', ['conditions AND'=>['id_propriete=' => $params['id_propriete'], 'YEAR(created)=' => $year ], 'order'=>'created DESC'], 'v_propriete_proprietaire_location');
+		else
+			$ppl = $this->find('', ['conditions'=>['id_propriete=' => $params['id_propriete'] ], 'order'=>'created DESC'], 'v_propriete_proprietaire_location');
+		
+			$template = '
 			<div class="ppl_wrapper shadow-lg">
 				<div class="popup-content ppl">
 					<div class="header d-flex space-between mb-10">
@@ -409,7 +415,6 @@ class Propriete_Proprietaire_Location extends Modal{
 							<button class="refresh hide" value="'.$params['id_propriete'].'"><i class="fas fa-plus"></i> ref</button>
 						</div>
 					</div>
-
 					<div class="ppl-add-container"></div>
 					<div class="body border border-red">
 						<table>
@@ -463,7 +468,7 @@ class Propriete_Proprietaire_Location extends Modal{
 		$empty = '
 						<tr>
 							<td colspan="3">
-								<div class="flex justify-center text-red text-lg py-4">
+								<div class="flex justify-center text-red text-lg py-4 show_alert">
 									Pas de périodes enregistré envers le propriétaire
 								</div>
 							</td>

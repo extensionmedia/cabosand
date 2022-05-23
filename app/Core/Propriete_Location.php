@@ -243,9 +243,14 @@ class Propriete_Location extends Modal{
 
 	public function ByPropriete($params = []){
 		
+		$year = $params['year'] != "-1"? $params['year']: "";
 		
-		$cl_location = $this->find('', ['conditions'=>['id_propriete=' => $params['id_propriete'] ], 'order'=>'date_debut DESC'], 'v_propriete_location_1');
-
+		
+		if($year != "")
+			$cl_location = $this->find('', ['conditions AND'=>['id_propriete=' => $params['id_propriete'], 'YEAR(created)=' => $year ], 'order'=>'date_debut DESC'], 'v_propriete_location_1');
+		else
+			$cl_location = $this->find('', ['conditions'=>['id_propriete=' => $params['id_propriete'] ], 'order'=>'date_debut DESC'], 'v_propriete_location_1');
+		
 		//return count($cl_location) . " - " . $params['id_propriete'];
 
 		$template = '
