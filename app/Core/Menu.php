@@ -78,19 +78,20 @@ class Menu extends Modal{
 		$id_user = $_SESSION[$env]["USER"]["id"];
 		
 		$links = [
-			'Index'					=>	'<li class="open show_hide_menu" data-page="index.index"><i class="fas fa-chart-line"></i> Dashboard </li>',
+			'Index'					=>	'<li class="open show_hide_menu" data-page="index.index"><i class="fas fa-chart-line"></i> Dashboard</li>',
 			'Dépense'				=>	'<li class="open show_hide_menu" data-page="depense.list"><i class="fas fa-hand-holding-usd"></i> Dépense </li>',
 			'Caisse'				=>	'<li class="open show_hide_menu" data-page="caisse.list"><i class="fas fa-cash-register"></i> Caisses </li>',
-			'Propriété'				=>	'<li class="open show_hide_menu" data-page="propriete.list"><i class="fas fa-home"></i> Propriété </li>',
+			'Propriété'				=>	'<li class="has_sub" data-sub-target="propriete"><i class="fas fa-home"></i> Propriété <div class="down"><i class="fas fa-caret-down"></i></div></li>',
+				'Appartements'			=>	'<li class="open show_hide_menu sub propriete hide" data-page="propriete.list"><i class="fas fa-home"></i> Liste Apparts. </li>',
 			'Contrat'				=>	'<li class="open show_hide_menu" data-page="contrat.list"><i class="fas fa-file-contract"></i> Contrat </li>',
 			'Client'				=>	'<li class="open show_hide_menu" data-page="client.list"><i class="fas fa-user-tie"></i> Client </li>',
 			'Propriétaire'			=>	'<li class="open show_hide_menu" data-page="proprietaire.list"><i class="fas fa-user"></i> Propriétaire </li>',
 			'Complexe'				=>	'<li class="open show_hide_menu" data-page="complexe.list"><i class="fas fa-city"></i> Complexe </li>',
-			'Options'				=>	'<li class="has_sub" data-sub-target="options"><i class="fas fa-cog"></i> Options <div class="down"><i class="fas fa-caret-down"></i></div></li>',
-			'Général'				=>	'<li class="open show_hide_menu sub options hide" data-page="parametres.index"><i class="fas fa-tools"></i> Général </li>',
-			'Listes'				=>	'<li class="open show_hide_menu sub options hide" data-page="listview.list"><i class="far fa-list-alt"></i> Listes </li>',
-			'Log'					=>	'<li class="open show_hide_menu sub options hide" data-page="log.list"><i class="fas fa-clipboard-list"></i> Log</li>',
-			'Propriété Categorie'	=>	'<li class="open show_hide_menu sub options hide" data-page="propriete_category.list"><i class="fas fa-clipboard-list"></i> App Catégorie</li>'
+			'Options'				=>	'<li class="has_sub" data-sub-target="optionss"><i class="fas fa-cog"></i> Options <div class="down"><i class="fas fa-caret-down"></i></div></li>',
+				'Général'				=>	'<li class="open show_hide_menu sub optionss hide" data-page="parametres.index"><i class="fas fa-tools"></i> Général </li>',
+				'Listes'				=>	'<li class="open show_hide_menu sub optionss hide" data-page="listview.list"><i class="far fa-list-alt"></i> Listes </li>',
+				'Log'					=>	'<li class="open show_hide_menu sub optionss hide" data-page="log.list"><i class="fas fa-clipboard-list"></i> Log</li>',
+				'Propriété Categorie'	=>	'<li class="open show_hide_menu sub optionss hide" data-page="propriete_category.list"><i class="fas fa-clipboard-list"></i> App Catégorie</li>'
 			
 		];
 			
