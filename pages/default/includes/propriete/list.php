@@ -306,8 +306,9 @@ $filters = [
 				'controler'		:	'Propriete_Proprietaire_Location',
 				'function'		:	'ByPropriete',
 				'params'		:	{
-				'id_propriete'		:	id
-			}
+					'id_propriete'		:	id,
+					'year'				:	$("#Années").val()
+				}
 			};
 			
 			$.ajax({
@@ -328,8 +329,9 @@ $filters = [
 				'controler'		:	'Propriete_Location',
 				'function'		:	'ByPropriete',
 				'params'		:	{
-				'id_propriete'		:	id
-			}
+					'id_propriete'		:	id,
+					'year'				:	$("#Années").val()
+				}
 			};
 			
 			$.ajax({
