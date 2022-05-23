@@ -202,6 +202,7 @@ class Propriete extends Modal{
 		$trs = '';
 		$counter = 0;
 
+		/** If the request is based on a specific client */
 		$client_appartements_to_show = [];
 		if($id_client != 0){
 			$client_contrats = $this->find('', ['conditions'=>['id_client='=>$id_client]], 'contrat');
@@ -218,6 +219,19 @@ class Propriete extends Modal{
 				
 		}
 
+
+		/** Select only appartments that already have proprietaire location */
+		$proprietaire_appartements_to_show = [];
+		if($year != 0){
+			$propriete_proprietaire_location = $this->find('', ['conditions'=>['YEAR(de)='=>$year]], 'propriete_proprietaire_location');
+
+				foreach($propriete_proprietaire_location as $pl){
+					if (!in_array($pl['id_propriete'], $proprietaire_appartements_to_show)) 
+						array_push($proprietaire_appartements_to_show, $pl['id_propriete']);
+				}
+
+		}
+
 		$show = true;
 		foreach($data as $k=>$v){
 
@@ -230,7 +244,13 @@ class Propriete extends Modal{
 				else
 					$show = false;			
 			}else{
-				$show = true;
+				if($proprietaire_appartements_to_show)
+					if (!in_array($v['id'], $proprietaire_appartements_to_show))
+						$show = false;					
+					else
+						$show = true;
+				else
+					$show = false;
 			}
 
 
