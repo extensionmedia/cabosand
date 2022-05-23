@@ -21,6 +21,7 @@
 
 <script>
     $(document).ready(function(){
+        /*
         var timer = setInterval(() => {
             var controler = "Helpers.Session";
             var data = {
@@ -43,7 +44,7 @@
                 $("#preloader").remove();
             });           
         }, 1000);
-
+        */
     });
 </script>
 
