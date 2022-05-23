@@ -362,6 +362,10 @@ $(document).ready(function(){
 
 	});
 	
+	$(document).on('click', '.show_alert', function(){
+		alert('show')
+	})
+
 	$(document).on('click', '.open', function(){
 		var page = $(this).attr('data-page');
 		var data = {
@@ -384,7 +388,7 @@ $(document).ready(function(){
 			dataType	: 	"json",
 		}).done(function(response){
 			
-			if(response.msg === 1){
+			if(response.msg == 1){
 
 				var data = {};
 
@@ -523,7 +527,7 @@ $(document).ready(function(){
 	
 	/*** Search */
 	$(document).on('click', '.page_search_button', function(){
-		
+		console.log('search clicked')
 		$('body').preloader();
 		
 		var tags = [];

@@ -43,7 +43,6 @@ class Caisse extends Modal{
 		
 		
 		$table = '
-			<div class="table-container">
 				<div class="d-flex space-between" style="padding:0 10px 10px 10px">
 					<div style="font-size:16px; font-weight:bold">{{counter}}</div>
 					<div class="d-flex" style="font-size:16px; font-weight:bold">
@@ -62,7 +61,6 @@ class Caisse extends Modal{
 						{{trs}}
 					</tbody>
 				</table>
-			</div>		
 		';
 		
 		/***********

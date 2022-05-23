@@ -312,7 +312,7 @@ class Propriete_Location extends Modal{
 		$empty = '
 						<tr>
 							<td colspan="3">
-								<div class="flex justify-center text-blue text-lg py-4">
+								<div class="flex justify-center text-blue text-lg py-4 show_alert">
 									Appartement n\'est pas encore assignée !
 								</div>
 							</td>
