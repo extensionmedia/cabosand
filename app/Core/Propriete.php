@@ -249,7 +249,7 @@ class Propriete extends Modal{
 
 				if($year != ""){
 
-					$contrat = $this->find('', array("conditions AND"=>array("YEAR(created)="=>$year, "id_propriete="=>$v["id"])), "v_propriete_proprietaire_location");
+					$contrat = $this->find('', array("conditions AND"=>array("YEAR(de)="=>$year, "id_propriete="=>$v["id"])), "v_propriete_proprietaire_location");
 
 					$status = $this->Get_Status_Of_Propriete(['year'=>$year, 'id_propriete'=>$v['id']]);
 					$background = $status? $status["hex_string"]: "";
