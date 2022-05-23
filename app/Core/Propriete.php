@@ -192,7 +192,8 @@ class Propriete extends Modal{
 		
 		$current = isset( $params['current'] ) ? $params['current']: 0;
 		
-		//$conditions['limit'] = [$current,$pp];
+		if($year == "")
+			$conditions['limit'] = [$current,$pp];
 
 		$data = $this->find('', $conditions, $use);
 		
@@ -205,9 +206,16 @@ class Propriete extends Modal{
 		/** If the request is based on a specific client */
 		$client_appartements_to_show = [];
 		if($id_client != 0){
-			$client_contrats = $this->find('', ['conditions'=>['id_client='=>$id_client]], 'contrat');
-			if($client_contrats){
-				$UID = $client_contrats[0]['UID'];
+
+			//* Check the list of contrats by client id and by year selected **/
+			if($year != "")
+				$client_contrats = $this->find('', ['conditions AND'=>['YEAR(created)='=>$year, 'id_client='=>$id_client]], 'contrat');
+			else
+				$client_contrats = $this->find('', ['conditions'=>['id_client='=>$id_client]], 'contrat');
+
+
+			foreach($client_contrats as $c_c){
+				$UID = $c_c['UID'];
 				$propriete_location = $this->find('', ['conditions'=>['UID='=>$UID]], 'propriete_location');
 
 				foreach($propriete_location as $pl){
@@ -222,7 +230,7 @@ class Propriete extends Modal{
 
 		/** Select only appartments that already have proprietaire location */
 		$proprietaire_appartements_to_show = [];
-		if($year != 0){
+		if($year != ""){
 			$propriete_proprietaire_location = $this->find('', ['conditions'=>['YEAR(de)='=>$year]], 'propriete_proprietaire_location');
 
 				foreach($propriete_proprietaire_location as $pl){
@@ -250,7 +258,10 @@ class Propriete extends Modal{
 					else
 						$show = true;
 				else
-					$show = false;
+					if($year != "")
+						$show = false;
+					else
+						$show = true;
 			}
 
 
@@ -295,7 +306,7 @@ class Propriete extends Modal{
 
 					
 				}else{
-					$contrat = $this->find('', array("conditions AND"=>array("id_propriete="=>$v["id"], "status="=>1)), "v_propriete_proprietaire_location");
+					$contrat = []; //$this->find('', array("conditions AND"=>array("id_propriete="=>$v["id"], "status="=>1)), "v_propriete_proprietaire_location");
 					$status = "";
 					$background = "";
 					$counter++;
