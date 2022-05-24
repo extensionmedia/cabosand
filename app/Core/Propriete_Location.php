@@ -259,7 +259,7 @@ class Propriete_Location extends Modal{
 				<div class="title" style="font-weight:bold; padding-top:7px">Contrats envers Client</div>
 				<div class="">
 					<button class="add green" value="'.$params['id_propriete'].'"><i class="fas fa-plus"></i> Ajouter</button>
-					<button class="ppc_abort hide"><i class="far fa-times-circle"></i> Annuler</button>
+					<button class="ppc_abort hide py-2" style="background-color:#f00; color:white"><i class="far fa-times-circle"></i> Annuler</button>
 				</div>
 			</div>
 
@@ -288,7 +288,7 @@ class Propriete_Location extends Modal{
 		
 		foreach($cl_location as $k=>$v){
 
-			$status = ($v["status"] === "1")? "<div class='label label-green'>Activé</div>": "<div class='label label-red'>Archivé</div>";
+			$status = ($v["status"] == "1")? "<div class='label label-green'>Activé</div>": "<div class='label label-red'>Archivé</div>";
 			$trs_location .= '
 							<tr>
 								<td>

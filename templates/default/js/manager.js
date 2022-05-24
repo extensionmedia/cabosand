@@ -1087,7 +1087,8 @@ $(document).ready(function(){
 		}
 		
 		if(continu){
-			
+			$(this).prop('disabled', true).html('<i class="fas fa-sync fa-spin"></i>');
+			console.log('clicked.....')
 			var columns = {
 				'de'							:	$("#periode_de").val(),
 				'a'								:	$("#periode_a").val(),
@@ -1254,7 +1255,8 @@ $(document).ready(function(){
 	});
 	
 	$(document).on('click', '.add_this_propriete_to_this_contrat', function(){
-		
+		$(this).prop('disabled', true).html('<i class="fas fa-sync fa-spin"></i>');
+		console.log('clicked.....')
 		var data = {
 			'controler'		:	'Propriete_Location',
 			'function'		:	'Store',

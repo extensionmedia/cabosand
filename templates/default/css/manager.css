@@ -490,11 +490,13 @@ input[type="text"]:disabled {
 	background-color: rgba(213,213,213,1.00)
 }
 
+/*
 #propriete_to_periode .periodes_container.items .item button{
 	padding: 5px 7px!important;
 	height: auto!important;
 	background-color: transparent;
 }
+*/
 
 #propriete_to_periode .periodes_container.items .item:last-child{
 	border-bottom: none

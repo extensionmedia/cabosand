@@ -26,9 +26,9 @@
 			<label for="date_fin">Date Fin </label>
 			<select id="ppl_type">
 				<option selected value="-1"></option>
-				<option <?= isset($ppl)? ($ppl["id_propriete_location_type"] === "1"? "selected": ""): "" ?> value="1">Par Nuit</option>
-				<option <?= isset($ppl)? ($ppl["id_propriete_location_type"] === "2"? "selected": ""): "" ?> value="2">Par Mois</option>
-				<option <?= isset($ppl)? ($ppl["id_propriete_location_type"] === "3"? "selected": ""): "" ?> value="3">Forfait</option>
+				<option <?= isset($ppl)? ($ppl["id_propriete_location_type"] == "1"? "selected": ""): "" ?> value="1">Par Nuit</option>
+				<option <?= isset($ppl)? ($ppl["id_propriete_location_type"] == "2"? "selected": ""): "" ?> value="2">Par Mois</option>
+				<option <?= isset($ppl)? ($ppl["id_propriete_location_type"] == "3"? "selected": ""): "" ?> value="3">Forfait</option>
 			</select>
 		</div>
 	</div>
@@ -36,7 +36,7 @@
 		<div class="col_12 d-flex">
 			<div>
 				<label class="switch" style="width: 40px">
-					<input class="field" id="status" type="checkbox" <?= isset($ppl)? ($ppl["status"] === "1"? "checked": ""): "" ?>>
+					<input class="field" id="status" type="checkbox" <?= isset($ppl)? ($ppl["status"] == "1"? "checked": ""): "" ?>>
 					<span class="slider round"></span>
 				</label>
 			</div>

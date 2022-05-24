@@ -312,7 +312,7 @@ class Propriete_Proprietaire_Location extends Modal{
 		foreach($ppl as $k=>$v){
 			$type = 'Par Nuit';
 			$type = ($v["id_propriete_location_type"] === "1")? $type: ($v["id_propriete_location_type"] === "2"? "Par Mois": "Forfait");
-			$status = ($v["status"] === "1")? "<div class='label label-green'>Activé</div>": "<div class='label label-red'>Archivé</div>";
+			$status = ($v["status"] == "1")? "<div class='label label-green'>Activé</div>": "<div class='label label-red'>Archivé</div>";
 			$trs .= '
 							<tr>
 								<td>
