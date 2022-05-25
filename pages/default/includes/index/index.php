@@ -43,32 +43,41 @@ require_once($core."Contrat.php");
 		<div class="shadow rounded border mx-2 blabla">
 			container
 		</div>
+
+
+		<div class="shadow rounded border mx-2">
+			scrapping : 
+			<?php 
+				var_dump($calendar->Scrapp(2019));
+			?>
+		</div>
+
 	</div>
 </div>
 
 <script>
-	$(document).ready(function(){
-		var data = {
-			'controler'		:	'Calendar',
-			'function'		:	'Data_Of_By_Societe',
-			'params'		:	{
-				'month'			:	07,
-				'year'			:	2021,
-				'id_complexe'	:	17
-			}
-		};
-		$.ajax({
-			type		: 	"POST",
-			url			: 	"pages/default/ajax/ajax.php",
-			data		:	data,
-			dataType	: 	"json",
-		}).done(function(response){
-			console.log(response);
-			$(".blabla").html(response.msg);
+	// $(document).ready(function(){
+
+	// 	$('.blabla').html('loading...')
+
+	// 	var data = {
+	// 		'controler'		:	'Calendar',
+	// 		'function'		:	'Draw_Table',
+	// 		'params'		:	{
+	// 			'month'			:	07,
+	// 			'year'			:	2022
+	// 		}
+	// 	};
+	// 	$.ajax({
+	// 		type		: 	"POST",
+	// 		url			: 	"pages/default/ajax/ajax.php",
+	// 		data		:	data,
+	// 		dataType	: 	"json",
+	// 	}).done(function(response){
+	// 		$(".blabla").html(response.msg);
 			
-		}).fail(function(xhr) {
-			alert("Error");
-			console.log(xhr.responseText);
-		});
-	});
+	// 	}).fail(function(xhr) {
+	// 		console.log(xhr.responseText);
+	// 	});
+	// });
 </script>

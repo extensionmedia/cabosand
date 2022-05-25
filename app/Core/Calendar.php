@@ -956,6 +956,124 @@ class Calendar extends Modal{
 	}
 	
 	
+	public function Scrapp($year){
+		$listOfRows = ['array'];
+		$row = [];
+		for($_month = 1; $_month<=12; $_month++){
+
+			$days_in_month = $this->days_in_month(['year'=>$year, 'month'=>$_month]);
+
+			$row = [];
+			for($j=1; $j<=$days_in_month; $j++){
+				$row[$j] = "td";
+			}
+
+			$day = "01";
+			$month = $_month > 9? $_month: "0". $_month;
+			$start =  new DateTime($year . "-" . $month . "-" . $day);
+			$last = new DateTime($year . "-" . $month . "-" . $days_in_month);
+
+			echo $start->format('Y-m-d') . ' * ' . $last->format('Y-m-d') . '<br>';
+
+			$propriete_location = $this->find('', ['conditions AND'=>['YEAR(date_debut)='=>$year, 'MONTH(date_debut)='=>$_month]], 'propriete_location');
+			foreach($propriete_location as $location){
+
+				$date_debut = new DateTime($location['date_debut']);
+				$date_fin = new DateTime($location['date_fin']);
+
+				echo 'checking...';
+
+				if($date_debut <= $start){
+					$diff = $start->diff($date_fin)->days;
+					$days = $date_debut->diff($last)->days;
+
+					array_push($listOfRows, $diff . ' - ' . $days);
+					echo $diff . ' - ' . $days;
+
+					if($diff>$days_in_month){
+						for($i=1; $i<=$days_in_month; $i++){
+							$row[$i] = $date_debut."|".$date_fin;
+						}
+					}else{
+						for($i=1; $i<=$diff;$i++){
+							$row[$i] = $date_debut."|".$date_fin;
+						}
+					}
+
+				}elseif($date_fin >= $last){
+					//echo "fin >= endofday";
+					$diff = $start->diff($date_debut)->days;
+					$diff +=1;
+					$days = $date_debut->diff($last)->days;
+					array_push($listOfRows, $diff . ' - ' . $days);
+
+					for($i=$diff; $i<($diff+$days);$i++){
+						$row[$i] = $date_debut."|".$date_fin;
+					}
+
+				}else{
+					$diff = $date_debut->diff($start)->days; // calculat day past from the first day in month
+					$days = $date_debut->diff($date_fin)->days; // number of days reserved
+					$diff +=1;
+					array_push($listOfRows, $diff . ' - ' . $days);
+					for($i=$diff; $i<($diff+$days);$i++){
+						$row[$i] = $date_debut."|".$date_fin;
+					}
+				}
+
+
+				// $contrat = $this->find('', ['conditions'=>['UID='=>$location['UID']]], 'contrat');
+				// $propriete = $this->find('', ['conditions'=>['id='=>$location['id_propriete']]], 'propriete');
+				// if($contrat){
+				// 	if($propriete){
+						
+
+
+
+				// 		$data = [
+				// 			'id_propriete'	=>	$location['id_propriete'],
+				// 			'id_complexe'	=>	$propriete[0]['id_complexe'],
+				// 			'id_contrat'	=>	$contrat[0]['id'],
+				// 			'id_client '	=>	$contrat[0]['id_client'],
+				// 			'year'			=>	$year,
+				// 			'month'			=>	$_month,
+				// 			'row'			=>	'<tr>'.$days_in_month.'</tr>',
+				// 		];
+						
+				// 		$this->save($data, 'calendar');
+
+				// 	}
+
+				// }
+			}	
+			
+			//array_push($listOfRows, $row);		
+		}
+
+		return $listOfRows; 
+	}
+
+	public function Draw_Table(){
+		$template = '
+			<table class="w-full" border="1">
+				<thead>
+					<tr class="border py-4 bg-red-200">
+						<th>YEAR</th>
+						<th>MONTH</th>
+						<th>PROPRIETE</th>
+						<th>COMPLEXE</th>
+						<th>ROW</th>
+					</tr>
+				</thead>
+			</table>
+
+		';
+
+		$this->Scrapp(2020);
+
+		return $template;
+	}
+
 }
 
 $calendar = new Calendar;
