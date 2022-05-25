@@ -957,71 +957,100 @@ class Calendar extends Modal{
 	
 	
 	public function Scrapp($year){
-		$listOfRows = ['array'];
-		$row = [];
+
+		$table = "empty";
+
 		for($_month = 1; $_month<=12; $_month++){
 
-			$days_in_month = $this->days_in_month(['year'=>$year, 'month'=>$_month]);
+			if($_month == 1) $table = "<table class='w-full'>";
 
-			$row = [];
-			for($j=1; $j<=$days_in_month; $j++){
-				$row[$j] = "td";
-			}
+			$days_in_month = $this->days_in_month(['year'=>$year, 'month'=>$_month]);
 
 			$day = "01";
 			$month = $_month > 9? $_month: "0". $_month;
 			$start =  new DateTime($year . "-" . $month . "-" . $day);
 			$last = new DateTime($year . "-" . $month . "-" . $days_in_month);
 
-			echo $start->format('Y-m-d') . ' * ' . $last->format('Y-m-d') . '<br>';
-
 			$propriete_location = $this->find('', ['conditions AND'=>['YEAR(date_debut)='=>$year, 'MONTH(date_debut)='=>$_month]], 'propriete_location');
-			foreach($propriete_location as $location){
+
+			foreach($propriete_location as $key=>$location){
 
 				$date_debut = new DateTime($location['date_debut']);
 				$date_fin = new DateTime($location['date_fin']);
 
-				echo 'checking...';
+				$trs = "<tr><td>".$location['date_debut']."*".$location['date_fin']."</td>";
 
-				if($date_debut <= $start){
+				if($date_debut <= $start){ // ex : first_date_of_the_month: 01/02/2022 date_debut: 30/01/2022
 					$diff = $start->diff($date_fin)->days;
 					$days = $date_debut->diff($last)->days;
 
-					array_push($listOfRows, $diff . ' - ' . $days);
-					echo $diff . ' - ' . $days;
-
 					if($diff>$days_in_month){
+						
 						for($i=1; $i<=$days_in_month; $i++){
-							$row[$i] = $date_debut."|".$date_fin;
+							$trs .= "<td>".$i."</td>";
+							//$row[$i] = $date_debut."|".$date_fin;
 						}
+						
 					}else{
-						for($i=1; $i<=$diff;$i++){
-							$row[$i] = $date_debut."|".$date_fin;
+						for($i=1; $i<=$days_in_month; $i++){
+							if($i <= $diff){
+								$trs .= "<td>".$i."</td>";
+							}else{
+								$trs .= "<td>0</td>";
+							}
 						}
+/*
+						for($i=1; $i<=$diff;$i++){
+							$trs .= "<td>".$i."</td>";
+							//$row[$i] = $date_debut."|".$date_fin;
+						}
+*/
 					}
 
-				}elseif($date_fin >= $last){
-					//echo "fin >= endofday";
+				}elseif($date_fin >= $last){ // ex : last_date_of_the_month: 31/01/2022 date_fin: 02/02/2022
 					$diff = $start->diff($date_debut)->days;
 					$diff +=1;
 					$days = $date_debut->diff($last)->days;
-					array_push($listOfRows, $diff . ' - ' . $days);
 
-					for($i=$diff; $i<($diff+$days);$i++){
-						$row[$i] = $date_debut."|".$date_fin;
+					for($i=1; $i<=$days_in_month; $i++){
+						if($i > $diff)
+							if($i < ($diff+$days))
+								$trs .= "<td>".$i."</td>";
+							else
+								$trs .= "<td>0</td>";
+						else
+							$trs .= "<td>0</td>";
 					}
-
-				}else{
+/*
+					for($i=$diff; $i<($diff+$days);$i++){
+						$trs .= "<td>".$i."</td>";
+						//$row[$i] = $date_debut."|".$date_fin;
+					}
+*/
+				}else{ // ex : 
 					$diff = $date_debut->diff($start)->days; // calculat day past from the first day in month
 					$days = $date_debut->diff($date_fin)->days; // number of days reserved
 					$diff +=1;
-					array_push($listOfRows, $diff . ' - ' . $days);
-					for($i=$diff; $i<($diff+$days);$i++){
-						$row[$i] = $date_debut."|".$date_fin;
+
+					for($i=1; $i<=$days_in_month; $i++){
+						if($i > $diff)
+							if($i < ($diff+$days))
+								$trs .= "<td>".$i."</td>";
+							else
+								$trs .= "<td>0</td>";
+						else
+							$trs .= "<td>0</td>";
 					}
+/*
+					for($i=$diff; $i<($diff+$days);$i++){
+						$trs .= "<td>".$i."</td>";
+						//$row[$i] = $date_debut."|".$date_fin;
+					}
+*/
 				}
-
-
+				$trs .= "</tr>";
+				$table .= $trs;
+				
 				// $contrat = $this->find('', ['conditions'=>['UID='=>$location['UID']]], 'contrat');
 				// $propriete = $this->find('', ['conditions'=>['id='=>$location['id_propriete']]], 'propriete');
 				// if($contrat){
@@ -1046,11 +1075,11 @@ class Calendar extends Modal{
 
 				// }
 			}	
-			
+			if($_month == 12) $table .= "</table>";
 			//array_push($listOfRows, $row);		
 		}
 
-		return $listOfRows; 
+		return $table; 
 	}
 
 	public function Draw_Table(){

@@ -46,9 +46,9 @@ require_once($core."Contrat.php");
 
 
 		<div class="shadow rounded border mx-2">
-			scrapping : 
-			<?php 
-				var_dump($calendar->Scrapp(2019));
+			scrapping :
+			<?= 
+				$calendar->Scrapp(2021);
 			?>
 		</div>
 
