@@ -1650,7 +1650,7 @@ $(document).ready(function(){
 		};
 		
 		var _this = $(this);
-		
+		$(this).prop('disabled', true).html('<i class="fas fa-sync fa-spin"></i>');
 		$.ajax({
 			type		: 	"POST",
 			url			: 	"pages/default/ajax/ajax.php",

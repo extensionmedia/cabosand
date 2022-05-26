@@ -147,13 +147,13 @@ $filters = [
 						Détails
 					</div>
 					<div data-tab="depense" class="show-tab border h-full cursor-pointer flex mr-1 shadow items-center px-4 hover:bg-gray-300 rounded-t-lg">
-						Dépense
+						Dépenses
 					</div>
 					<div data-tab="contrat" class="show-tab border h-full cursor-pointer flex mr-1 shadow items-center px-4 hover:bg-gray-300 rounded-t-lg">
-						Propriétaire
+						Périodes
 					</div>
 					<div data-tab="location" class="show-tab border h-full cursor-pointer flex mr-1 shadow items-center px-4 hover:bg-gray-300 rounded-t-lg">
-						Client
+						Contrats
 					</div>
 				</div>
 
