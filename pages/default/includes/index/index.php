@@ -45,11 +45,8 @@ require_once($core."Contrat.php");
 		</div>
 
 
-		<div class="shadow rounded border mx-2">
-			scrapping :
-			<?= 
-				$calendar->Scrapp(2021);
-			?>
+		<div class="shadow rounded border mx-2 mt-8">
+			<?= $calendar->Table(); ?>
 		</div>
 
 	</div>

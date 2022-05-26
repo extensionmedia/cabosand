@@ -956,6 +956,95 @@ class Calendar extends Modal{
 	}
 	
 	
+	public function Table($params = []){
+		$month = isset($params['month'])? $params['month']: date('m');
+		$year = isset($params['year'])? $params['year']: date('y');
+
+		// Get total of days in the given Month and Yaer
+		$days_in_month = $this->days_in_month(['year'=>$year, 'month'=>$month]);
+
+		$table = '
+		<div class="relative w-full pt-14">
+			{{table_1}}
+
+			{{table_2}}
+			
+		</div>
+		';
+
+		/** First start by drowing the header of the calendar */
+		$table_1 = '
+			<table class="absolute top-0 right-0 left-0 w-full" style="table-layout: fixed;">
+		';
+
+		$tr = '	<tr>';
+		for($i=1; $i<=$days_in_month; $i++){
+		
+			if( $i % 2 == 0 )
+				$style = 'bg-red-50 py-4 text-center text-gray-500 text-sm';
+			else
+				$style = 'bg-red-50 py-4 text-center text-gray-500 text-sm';
+
+			$tr .= '
+					<td class="border-r border-l '.$style.'">'.$i.'</td>
+			';
+		}
+		$tr .= '	</tr>';	
+		$tr .= '</table>';	
+		$table_1 .= $tr;
+
+
+
+		/** Drow the body of the calendar */
+		$table_2 = '
+			<table class="w-full" style="table-layout: fixed;">
+		';
+		$tr = '';
+
+		for($row=0; $row <15; $row++){
+			$tr .= '<tr>';
+			for($i=1; $i<=$days_in_month; $i++){
+				if( $i % 2 == 0 )
+					$style = 'bg-gray-50 py-4 text-center';
+				else
+					$style = 'bg-gray-100 py-4 text-center';
+
+				if($row == 4){
+					if($i==12){
+							$tr .= '
+								<td colspan="4" class="border-r border-l '.$style.'">
+									<div class="rounded-full w-full bg-blue-400 text-white text-center border hover:shadow-lg hover:border-red-600 cursor-pointer"> App TST-6 </div>
+								</td>
+							';
+					}else{
+
+						if($i<12){
+							$tr .= '
+								<td class="border-r border-l '.$style.'"></td>
+							';
+						}
+						if($i>15){
+							$tr .= '
+								<td class="border-r border-l '.$style.'"></td>
+							';
+						}
+					}
+				}else{
+					$tr .= '
+							<td class="border-r border-l '.$style.'"></td>
+					';
+				}
+			}
+			$tr .= '</tr>';			
+		}
+		$tr .= '</table>';	
+		$table_2 .= $tr;
+
+
+		$table = str_replace(['{{table_1}}', '{{table_2}}'], [$table_1, $table_2], $table);
+		return $table;
+	}
+
 	public function Scrapp($year){
 
 		$table = "empty";
