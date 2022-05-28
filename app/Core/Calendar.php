@@ -964,7 +964,7 @@ class Calendar extends Modal{
 
 
 		$request = "
-						SELECT *, p.code as code, colors.hex_string as color, client.id as id_client, p.id_complexe as id_complexe 
+						SELECT *, p.code as code, colors.hex_string as color, client.id as id_client, p.id_complexe as id_complexe, client.first_name, client.last_name, client.societe_name 
 						FROM propriete_location 
 						LEFT JOIN propriete p ON p.id=propriete_location.id_propriete
 						LEFT JOIN contrat ON contrat.UID=propriete_location.UID
@@ -1113,8 +1113,8 @@ class Calendar extends Modal{
 						$color = 'background-color:'.$propriete_locations[$row]['color'];
 						$tr .= '
 							<td colspan="'.$nbrOfDays.'" class="truncate overflow-hidden px-1 border-b">
-								<div class="relative rounded-lg w-full bg-blue-400 bg-opacity-60 text-xs text-white text-center border hover:shadow-lg hover:border-red-600 cursor-pointer" style="'.$color.'"> 
-									'.$propriete_locations[$row]['code'].'
+								<div class="relative overflow-hidden rounded-lg w-full bg-blue-400 bg-opacity-60 text-xs text-white text-center border hover:shadow-lg hover:border-red-600 cursor-pointer" style="'.$color.'"> 
+									'.$propriete_locations[$row]['code'].' <span style="font-size:8px">('.$propriete_locations[$row]['societe_name'].')</span>
 									<span class="absolute top-0 left-0  text-white ml-1">'.$date_debut->format('d').'</span>
 									<span class="absolute top-0 right-0  text-white mr-1">'.$date_fin->format('d').'</span>
 								</div>
