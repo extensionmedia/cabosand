@@ -982,7 +982,7 @@ class Calendar extends Modal{
 								AND 
 									month(date_fin)=".intval($month)."
 								) 
-						ORDER BY id_propriete, date_debut, date_fin
+						ORDER BY id_complexe, id_propriete, date_debut, date_fin
 		";
 
 		$propriete_locations = $this->execute($request);
@@ -1141,130 +1141,100 @@ class Calendar extends Modal{
 		return $table;
 	}
 
-	public function Scrapp($year){
-
-		$table = "empty";
-
-		for($_month = 1; $_month<=12; $_month++){
-
-			if($_month == 1) $table = "<table class='w-full'>";
-
-			$days_in_month = $this->days_in_month(['year'=>$year, 'month'=>$_month]);
-
-			$day = "01";
-			$month = $_month > 9? $_month: "0". $_month;
-			$start =  new DateTime($year . "-" . $month . "-" . $day);
-			$last = new DateTime($year . "-" . $month . "-" . $days_in_month);
-
-			$propriete_location = $this->find('', ['conditions AND'=>['YEAR(date_debut)='=>$year, 'MONTH(date_debut)='=>$_month]], 'propriete_location');
-
-			foreach($propriete_location as $key=>$location){
-
-				$date_debut = new DateTime($location['date_debut']);
-				$date_fin = new DateTime($location['date_fin']);
-
-				$trs = "<tr><td>".$location['date_debut']."*".$location['date_fin']."</td>";
-
-				if($date_debut <= $start){ // ex : first_date_of_the_month: 01/02/2022 date_debut: 30/01/2022
-					$diff = $start->diff($date_fin)->days;
-					$days = $date_debut->diff($last)->days;
-
-					if($diff>$days_in_month){
-						
-						for($i=1; $i<=$days_in_month; $i++){
-							$trs .= "<td>".$i."</td>";
-							//$row[$i] = $date_debut."|".$date_fin;
-						}
-						
-					}else{
-						for($i=1; $i<=$days_in_month; $i++){
-							if($i <= $diff){
-								$trs .= "<td>".$i."</td>";
-							}else{
-								$trs .= "<td>0</td>";
-							}
-						}
-/*
-						for($i=1; $i<=$diff;$i++){
-							$trs .= "<td>".$i."</td>";
-							//$row[$i] = $date_debut."|".$date_fin;
-						}
-*/
-					}
-
-				}elseif($date_fin >= $last){ // ex : last_date_of_the_month: 31/01/2022 date_fin: 02/02/2022
-					$diff = $start->diff($date_debut)->days;
-					$diff +=1;
-					$days = $date_debut->diff($last)->days;
-
-					for($i=1; $i<=$days_in_month; $i++){
-						if($i > $diff)
-							if($i < ($diff+$days))
-								$trs .= "<td>".$i."</td>";
-							else
-								$trs .= "<td>0</td>";
-						else
-							$trs .= "<td>0</td>";
-					}
-/*
-					for($i=$diff; $i<($diff+$days);$i++){
-						$trs .= "<td>".$i."</td>";
-						//$row[$i] = $date_debut."|".$date_fin;
-					}
-*/
-				}else{ // ex : 
-					$diff = $date_debut->diff($start)->days; // calculat day past from the first day in month
-					$days = $date_debut->diff($date_fin)->days; // number of days reserved
-					$diff +=1;
-
-					for($i=1; $i<=$days_in_month; $i++){
-						if($i > $diff)
-							if($i < ($diff+$days))
-								$trs .= "<td>".$i."</td>";
-							else
-								$trs .= "<td>0</td>";
-						else
-							$trs .= "<td>0</td>";
-					}
-/*
-					for($i=$diff; $i<($diff+$days);$i++){
-						$trs .= "<td>".$i."</td>";
-						//$row[$i] = $date_debut."|".$date_fin;
-					}
-*/
-				}
-				$trs .= "</tr>";
-				$table .= $trs;
-				
-				// $contrat = $this->find('', ['conditions'=>['UID='=>$location['UID']]], 'contrat');
-				// $propriete = $this->find('', ['conditions'=>['id='=>$location['id_propriete']]], 'propriete');
-				// if($contrat){
-				// 	if($propriete){
-						
+	public function Table_Complexe($params=[]){
+		$month = isset($params['month'])? $params['month']: date('m');
+		$year = isset($params['year'])? $params['year']: date('y');
+		$id_complexe = !isset($params['complexe'])? 0: ($params['complexe'] != "-1"? $params['complexe']: 0);
 
 
+		$request = "
+						SELECT p.id_complexe as id_complexe, complexe.name as name
+						FROM propriete_location 
+						LEFT JOIN propriete p ON p.id=propriete_location.id_propriete
+						LEFT JOIN complexe ON complexe.id=p.id_complexe
+						WHERE 
+								(	
+									year(date_debut)=".$year." 
+								AND 
+									month(date_debut)=".intval($month)."
+								) 
+								OR 
+								(
+									year(date_fin)=".$year." 
+								AND 
+									month(date_fin)=".intval($month)."
+								) 
+						GROUP BY p.id_complexe
+		";
 
-				// 		$data = [
-				// 			'id_propriete'	=>	$location['id_propriete'],
-				// 			'id_complexe'	=>	$propriete[0]['id_complexe'],
-				// 			'id_contrat'	=>	$contrat[0]['id'],
-				// 			'id_client '	=>	$contrat[0]['id_client'],
-				// 			'year'			=>	$year,
-				// 			'month'			=>	$_month,
-				// 			'row'			=>	'<tr>'.$days_in_month.'</tr>',
-				// 		];
-						
-				// 		$this->save($data, 'calendar');
+		$select = '
+		<select class="rounded-lg px-2" id="complexe">
+			<option value="-1">-- Complexe </option>
+			{{options}}						
+		</select>
+		';
 
-				// 	}
-
-				// }
-			}	
-			if($_month == 12) $table .= "</table>";
-			//array_push($listOfRows, $row);		
+		$complexes = $this->execute($request);
+		$option = '';
+		foreach($complexes as $complexe){
+			if($id_complexe)
+				if($id_complexe == $complexe['id_complexe'])
+					$option .= '<option selected value="'.$complexe['id_complexe'].'">'.$complexe['name'].'</option>';
+				else
+					$option .= '<option value="'.$complexe['id_complexe'].'">'.$complexe['name'].'</option>';
+			else	
+				$option .= '<option value="'.$complexe['id_complexe'].'">'.$complexe['name'].'</option>';
 		}
+		$select = str_replace("{{options}}", $option, $select);
+		return $select;
+	}
 
-		return $table; 
+	public function Table_Client($params=[]){
+		$month = isset($params['month'])? $params['month']: date('m');
+		$year = isset($params['year'])? $params['year']: date('y');
+		$id_complexe = !isset($params['complexe'])? 0: ($params['complexe'] != "-1"? $params['complexe']: 0);
+
+		$request = "
+						SELECT complexe.id as id_complexe, client.id as id_client, client.first_name as first_name, client.last_name as last_name, client.societe_name as societe_name
+						FROM propriete_location 
+						LEFT JOIN propriete p ON p.id=propriete_location.id_propriete
+						LEFT JOIN complexe ON complexe.id=p.id_complexe
+						LEFT JOIN contrat ON contrat.UID=propriete_location.UID
+						LEFT JOIN client on client.id=contrat.id_client
+						WHERE 
+								(	
+									year(date_debut)=".$year." 
+								AND 
+									month(date_debut)=".intval($month)."
+								) 
+								OR 
+								(
+									year(date_fin)=".$year." 
+								AND 
+									month(date_fin)=".intval($month)."
+								) 
+		";
+
+		$select = '
+		<select class="rounded-lg px-2" id="client">
+			<option value="-1">-- Client </option>
+			{{options}}						
+		</select>
+		';
+
+		$complexes = $this->execute($request);
+		$option = '';
+		foreach($complexes as $complexe){
+			if($id_complexe)
+				if($id_complexe == $complexe['id_complexe'])
+					$option .= '<option selected value="'.$complexe['id_client'].'">'.$complexe['societe_name'].'</option>';
+				else
+					$option .= '<option value="'.$complexe['id_client'].'">'.$complexe['societe_name'].'</option>';
+			else	
+				$option .= '<option value="'.$complexe['id_client'].'">'.$complexe['nsociete_nameame'].'</option>';
+		}
+		$select = str_replace("{{options}}", $option, $select);
+		return $select;
 	}
 
 	public function Draw_Table(){

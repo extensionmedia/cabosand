@@ -49,14 +49,12 @@ for($year=$first_year; $year<=$this_year; $year++){
 							<div class="tabs">
 								<ul>
 									<li><a class="active" data-style="1" href="#tab1">Mois</a></li>
-									<li><a class="" data-style="2">Société</a></li>
-									<li><a href="" data-style="3">Appartement</a></li>
 								</ul>
 							</div>
 						</div>
 						
 						<div class="mycalendar-body pb-20">
-								<?= $calendar->Get(["style"=>1,"counter"=>0, "id_complexe"=>"21", "UID"=>"fc8267c6"]) ?>							
+								<?= $calendar->Get(["style"=>1,"counter"=>0, "id_complexe"=>"", "UID"=>""]) ?>							
 						</div>
 						
 					</div>
@@ -64,15 +62,9 @@ for($year=$first_year; $year<=$this_year; $year++){
 			</div>
 		</div>
 
-
-		<div class="shadow rounded border mx-2 blabla">
-			container
-		</div>
-
-
 		<div class="shadow rounded border mx-2 mt-8">
 			<div class="py-2 bg-white px-2 flex items-center gap-4 justify-between">
-				<div class="flex items-center gap-4">
+				<div class="flex items-center gap-4 filters">
 					<select class="rounded-lg px-2" id="complexe">
 						<option value="-1">-- Complexe </option>
 						<?php foreach($complexe->find('', ['order'=>'name asc'], 'complexe') as $c){ ?>
@@ -114,8 +106,72 @@ for($year=$first_year; $year<=$this_year; $year++){
 <script>
 	$(document).ready(function(){
 
+		$('#month').on('change', function(){
+			$('#year').trigger('change')
+		});
+
+		$('#year').on('change', function(){
+
+			var year = $(this).val();
+			var month = $('#month').val();
+			var complexe = $('#complexe').val();
+
+			var data = {
+				'controler'		:	'Calendar',
+				'function'		:	'Table_Complexe',
+				'params'		:	{
+					'month'			:	month,
+					'year'			:	year,
+					'complexe'		:	complexe
+				}
+			};
+			console.log(data)
+			$.ajax({
+				type		: 	"POST",
+				url			: 	"pages/default/ajax/ajax.php",
+				data		:	data,
+				dataType	: 	"json",
+			}).done(function(response){
+				$(".filters").find('#complexe').remove()
+				$(".filters").prepend(response.msg);
+				
+			}).fail(function(xhr) {
+				console.log(xhr.responseText);
+			});	
+		})
+
+
+		// $(document).on('change', '#complexe', function(){
+
+		// 	var year = $(this).val();
+		// 	var month = $('#month').val();
+		// 	var complexe = $('#complexe').val();
+
+		// 	var data = {
+		// 		'controler'		:	'Calendar',
+		// 		'function'		:	'Table_Client',
+		// 		'params'		:	{
+		// 			'month'			:	month,
+		// 			'year'			:	year,
+		// 			'complexe'		:	complexe
+		// 		}
+		// 	};
+		// 	console.log(data)
+		// 	$.ajax({
+		// 		type		: 	"POST",
+		// 		url			: 	"pages/default/ajax/ajax.php",
+		// 		data		:	data,
+		// 		dataType	: 	"json",
+		// 	}).done(function(response){
+		// 		$(".filters").find('#client').remove()
+		// 		$(".filters").prepend(response.msg);
+				
+		// 	}).fail(function(xhr) {
+		// 		console.log(xhr.responseText);
+		// 	});	
+		// })
+
 		$('.run_search').on('click', function(){
-			console.log('clicked search');
 
 			var year = $('#year').val();
 			var month = $('#month').val();
@@ -133,7 +189,6 @@ for($year=$first_year; $year<=$this_year; $year++){
 					'client'		:	client	
 				}
 			};
-			console.log(data);
 			$(".calendar_by_societe").html("Loading.....");
 			$.ajax({
 				type		: 	"POST",
