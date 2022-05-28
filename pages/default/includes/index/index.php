@@ -3,9 +3,34 @@ session_start();
 $core = $_SESSION["CORE"];
 require_once($core."Calendar.php");
 require_once($core."Complexe.php");
+require_once($core."Client.php");
 $complexes = $complexe->find("",array("conditions"=>array("status="=>1),"order"=>"name"),"v_complexe");
 
 require_once($core."Contrat.php");
+
+$months = [
+	1	=>	'Janvier',
+	2	=>	'Février',
+	3	=>	'Mars',
+	4	=>	'Avril',
+	5	=>	'Mai',
+	6	=>	'Juin',
+	7	=>	'Juillet',
+	8	=>	'Août',
+	9	=>	'Septembre',
+	10	=>	'Octobre',
+	11	=>	'Novembre',
+	12	=>	'Décembre'
+];
+
+$first_year = 2019;
+$this_year = date('Y');
+$years = [];
+for($year=$first_year; $year<=$this_year; $year++){
+	array_push($years, $year);
+}
+
+
 ?>
 <div id="page" class="dashbord">
 	<div class="head">
@@ -46,35 +71,104 @@ require_once($core."Contrat.php");
 
 
 		<div class="shadow rounded border mx-2 mt-8">
-			<?= $calendar->Table(['year'=>2021, 'month'=>9]); ?>
+			<div class="py-2 bg-white px-2 flex items-center gap-4 justify-between">
+				<div class="flex items-center gap-4">
+					<select class="rounded-lg px-2" id="complexe">
+						<option value="-1">-- Complexe </option>
+						<?php foreach($complexe->find('', ['order'=>'name asc'], 'complexe') as $c){ ?>
+							<option value="<?= $c['id'] ?>"><?= $c['name'] ?></option>
+						<?php } ?>
+					</select>
+					<select class="rounded-lg px-2" id="client">
+						<option value="-1">-- Client </option>
+						<?php foreach($client->find('', ['conditions'=>['id_status='=>11], 'order'=>'first_name asc'], 'client') as $c){ ?>
+							<option value="<?= $c['id'] ?>"><?= $c['societe_name']==''? $c['first_name'].' '.$c['last_name']: $c['societe_name']  ?></option>
+						<?php } ?>
+					</select>
+					<button class='run_search rounded-lg'>
+						<i class="fa fa-search"></i>
+					</button>
+				</div>
+				<div class="flex items-center gap-4">
+					<select class="rounded-lg px-2" id="year">
+						<?php foreach($years as $year){ ?>
+							<option <?= $year == date('Y')? 'selected': '' ?> value="<?= $year ?>"><?= $year ?></option>
+						<?php } ?>
+					</select>
+					<select class="rounded-lg px-2" id="month">
+						<?php foreach($months as $key=>$month){ ?>
+							<option <?= $key == date('m')? 'selected': '' ?> value="<?= $key ?>"><?= $month ?></option>
+						<?php } ?>
+					</select>
+				</div>
+			</div>
+			<div class="calendar_by_societe">
+
+			</div>
+
 		</div>
 
 	</div>
 </div>
 
 <script>
-	// $(document).ready(function(){
+	$(document).ready(function(){
 
-	// 	$('.blabla').html('loading...')
+		$('.run_search').on('click', function(){
+			console.log('clicked search');
 
-	// 	var data = {
-	// 		'controler'		:	'Calendar',
-	// 		'function'		:	'Draw_Table',
-	// 		'params'		:	{
-	// 			'month'			:	07,
-	// 			'year'			:	2022
-	// 		}
-	// 	};
-	// 	$.ajax({
-	// 		type		: 	"POST",
-	// 		url			: 	"pages/default/ajax/ajax.php",
-	// 		data		:	data,
-	// 		dataType	: 	"json",
-	// 	}).done(function(response){
-	// 		$(".blabla").html(response.msg);
+			var year = $('#year').val();
+			var month = $('#month').val();
+			var complexe = $('#complexe').val();
+			var client = $('#client').val();
+
+
+			var data = {
+				'controler'		:	'Calendar',
+				'function'		:	'Table',
+				'params'		:	{
+					'month'			:	month,
+					'year'			:	year,
+					'complexe'		:	complexe,
+					'client'		:	client	
+				}
+			};
+			console.log(data);
+			$(".calendar_by_societe").html("Loading.....");
+			$.ajax({
+				type		: 	"POST",
+				url			: 	"pages/default/ajax/ajax.php",
+				data		:	data,
+				dataType	: 	"json",
+			}).done(function(response){
+				$(".calendar_by_societe").html(response.msg);
+				
+			}).fail(function(xhr) {
+				console.log(xhr.responseText);
+			});			
+		})
+
+
+		// $('.blabla').html('loading...')
+
+		// var data = {
+		// 	'controler'		:	'Calendar',
+		// 	'function'		:	'Draw_Table',
+		// 	'params'		:	{
+		// 		'month'			:	07,
+		// 		'year'			:	2022
+		// 	}
+		// };
+		// $.ajax({
+		// 	type		: 	"POST",
+		// 	url			: 	"pages/default/ajax/ajax.php",
+		// 	data		:	data,
+		// 	dataType	: 	"json",
+		// }).done(function(response){
+		// 	$(".blabla").html(response.msg);
 			
-	// 	}).fail(function(xhr) {
-	// 		console.log(xhr.responseText);
-	// 	});
-	// });
+		// }).fail(function(xhr) {
+		// 	console.log(xhr.responseText);
+		// });
+	});
 </script>

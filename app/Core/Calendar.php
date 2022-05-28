@@ -959,22 +959,29 @@ class Calendar extends Modal{
 	public function Table($params = []){
 		$month = isset($params['month'])? $params['month']: date('m');
 		$year = isset($params['year'])? $params['year']: date('y');
+		$id_complexe = $params['complexe'] != "-1"? $params['complexe']: 0;
+		$id_client = $params['client'] != "-1"? $params['client']: 0;
+
 
 		$request = "
-						SELECT *, p.code as code, colors.hex_string as color 
+						SELECT *, p.code as code, colors.hex_string as color, client.id as id_client, p.id_complexe as id_complexe 
 						FROM propriete_location 
 						LEFT JOIN propriete p ON p.id=propriete_location.id_propriete
 						LEFT JOIN contrat ON contrat.UID=propriete_location.UID
 						LEFT JOIN client on client.id=contrat.id_client
 						LEFT JOIN colors on colors.color_id=client.id_color
 						WHERE 
-							(year(date_debut)=".$year." 
-						AND 
-							month(date_debut)=".intval($month).") 
-						OR 
-							(year(date_fin)=".$year." 
-						AND 
-							month(date_fin)=".intval($month).") 
+								(	
+									year(date_debut)=".$year." 
+								AND 
+									month(date_debut)=".intval($month)."
+								) 
+								OR 
+								(
+									year(date_fin)=".$year." 
+								AND 
+									month(date_fin)=".intval($month)."
+								) 
 						ORDER BY id_propriete, date_debut, date_fin
 		";
 
@@ -1021,20 +1028,31 @@ class Calendar extends Modal{
 
 		$td_style = 'border-r border-gray-200 border-l';
 
-		for($j=1; $j<=$totalOfContrats+1; $j++){
-
-			$tr .= '<tr height="35px">';
-			for($i=1; $i<=($days_in_month*2); $i++){
-			
-				if( ($i/2) % 2 == 0 )
-					if( $i % 2 == 0 )
-						$tr .= '<td colspan="2" class="'.$td_style.'"></td>';
-					else
-						$tr .= '<td colspan="2" class="bg-gray-50 '.$td_style.'"></td>';
-
+		for($j=0; $j<$totalOfContrats; $j++){
+			$continue = true;
+			if($id_client){
+				if( $propriete_locations[$j]['id_client'] != $id_client )
+					$continue = false;
 			}
 
-			$tr .= '</tr>';			
+			if($id_complexe){
+				if( $propriete_locations[$j]['id_complexe'] != $id_complexe )
+					$continue = false;
+			}
+			if($continue){
+				$tr .= '<tr height="35px">';
+				for($i=1; $i<=($days_in_month*2); $i++){
+				
+					if( ($i/2) % 2 == 0 )
+						if( $i % 2 == 0 )
+							$tr .= '<td colspan="2" class="'.$td_style.'"></td>';
+						else
+							$tr .= '<td colspan="2" class="bg-gray-50 '.$td_style.'"></td>';
+
+				}
+
+				$tr .= '</tr>';		
+			}	
 		}
 
 		$tr .= '</table>';	
@@ -1047,57 +1065,73 @@ class Calendar extends Modal{
 		$tr = '';
 
 		for($row=0; $row < $totalOfContrats; $row++){
-			$tr .= '<tr height="35px">';
-			for($i=1; $i<=$days_in_month; $i++){
-
-				$date_debut = new DateTime($propriete_locations[$row]['date_debut']);
-				$date_fin = new DateTime($propriete_locations[$row]['date_fin']);
-
-				if($date_debut <= $start){
-					$startDay = 1;
-
-					if($date_fin>$last){
-						$nbrOfDays = $days_in_month;
-					}else{
-						$nbrOfDays = $start->diff($date_fin)->days+1;
-					}
-
-				}elseif($date_debut > $start){
-					if($date_fin <= $last){
-						$startDay = $start->diff($date_debut)->days+1;
-						$nbrOfDays = $date_fin->diff($date_debut)->days+1;
-					}else{
-						$startDay = $start->diff($date_debut)->days+1;
-						$nbrOfDays = $date_debut->diff($last)->days+1;
-
-					}
-
-
-				}elseif($date_debut > $start AND $date_fin>$last){
-					$startDay = $start->diff($date_debut)->days;
-					$nbrOfDays = $date_fin->diff($date_debut)->days+1;
-				}
-
-				if($i==$startDay){
-					//$color = isset($propriete_locations[$row]['color'])? 'background-color:#'.$propriete_locations[$row]['color']: "";
-					$color = 'background-color:'.$propriete_locations[$row]['color'];
-					$tr .= '
-						<td colspan="'.$nbrOfDays.'" class="truncate overflow-hidden px-1 border-b">
-							<div class="rounded-lg w-full bg-blue-400 bg-opacity-60 text-xs text-gray-600 text-center border hover:shadow-lg hover:border-red-600 cursor-pointer py-1" style="'.$color.'"> 
-								'.$propriete_locations[$row]['code'].'
-							</div>
-						</td>
-					';
-				}else{
-					if($i<$startDay){
-						$tr .= '<td class=" border-b"></td>';
-					}
-					if($i>($startDay+$nbrOfDays-1)){
-						$tr .= '<td class=" border-b"></td>';
-					}
-				}
+			$continue = true;
+			if($id_client){
+				if( $propriete_locations[$row]['id_client'] != $id_client )
+					$continue = false;
 			}
-			$tr .= '</tr>';			
+
+			if($id_complexe){
+				if( $propriete_locations[$row]['id_complexe'] != $id_complexe )
+					$continue = false;
+			}
+
+			if($continue){
+				$tr .= '<tr height="35px">';
+				for($i=1; $i<=$days_in_month; $i++){
+
+					$date_debut = new DateTime($propriete_locations[$row]['date_debut']);
+					$date_fin = new DateTime($propriete_locations[$row]['date_fin']);
+
+					if($date_debut <= $start){
+						$startDay = 1;
+
+						if($date_fin>$last){
+							$nbrOfDays = $days_in_month;
+						}else{
+							$nbrOfDays = $start->diff($date_fin)->days+1;
+						}
+
+					}elseif($date_debut > $start){
+						if($date_fin <= $last){
+							$startDay = $start->diff($date_debut)->days+1;
+							$nbrOfDays = $date_fin->diff($date_debut)->days+1;
+						}else{
+							$startDay = $start->diff($date_debut)->days+1;
+							$nbrOfDays = $date_debut->diff($last)->days+1;
+
+						}
+
+
+					}elseif($date_debut > $start AND $date_fin>$last){
+						$startDay = $start->diff($date_debut)->days;
+						$nbrOfDays = $date_fin->diff($date_debut)->days+1;
+					}
+
+					if($i==$startDay){
+						//$color = isset($propriete_locations[$row]['color'])? 'background-color:#'.$propriete_locations[$row]['color']: "";
+						$color = 'background-color:'.$propriete_locations[$row]['color'];
+						$tr .= '
+							<td colspan="'.$nbrOfDays.'" class="truncate overflow-hidden px-1 border-b">
+								<div class="relative rounded-lg w-full bg-blue-400 bg-opacity-60 text-xs text-white text-center border hover:shadow-lg hover:border-red-600 cursor-pointer" style="'.$color.'"> 
+									'.$propriete_locations[$row]['code'].'
+									<span class="absolute top-0 left-0  text-white ml-1">'.$date_debut->format('d').'</span>
+									<span class="absolute top-0 right-0  text-white mr-1">'.$date_fin->format('d').'</span>
+								</div>
+							</td>
+						';
+					}else{
+						if($i<$startDay){
+							$tr .= '<td class=" border-b"></td>';
+						}
+						if($i>($startDay+$nbrOfDays-1)){
+							$tr .= '<td class=" border-b"></td>';
+						}
+					}
+				}
+				$tr .= '</tr>';				
+			}
+			
 		}
 		$tr .= '</table>';	
 		$table_2 .= $tr;
