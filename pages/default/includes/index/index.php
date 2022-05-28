@@ -46,7 +46,7 @@ require_once($core."Contrat.php");
 
 
 		<div class="shadow rounded border mx-2 mt-8">
-			<?= $calendar->Table(); ?>
+			<?= $calendar->Table(['year'=>2021, 'month'=>9]); ?>
 		</div>
 
 	</div>
