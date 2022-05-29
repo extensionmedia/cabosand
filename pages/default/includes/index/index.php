@@ -62,7 +62,7 @@ for($year=$first_year; $year<=$this_year; $year++){
 			</div>
 		</div>
 
-		<div class="shadow rounded border mx-2 mt-8">
+		<div class="shadow rounded border mx-2 mt-8 mb-24">
 			<div class="py-2 bg-white px-2 flex items-center gap-4 justify-between">
 				<div class="flex items-center gap-4 filters">
 					<select class="rounded-lg px-2" id="complexe">

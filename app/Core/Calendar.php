@@ -1055,6 +1055,18 @@ class Calendar extends Modal{
 			}	
 		}
 
+		$emptyTr= '
+			<tr>
+				<td class="bg-white" colspan="'.($days_in_month*2).'"> 
+					<div class="w-64 mx-auto my-8 text-xs text-red-800 font-light text-center flex flex-col items-center">
+						<img class="h-24" src="https://us.v-cdn.net/6031209/uploads/W6CE78AAFKJ8/image.png">
+						Aucune Période pour cette recherche
+					</div>
+				</td>
+			</tr>
+		';
+
+		$tr .= !$totalOfContrats? $emptyTr: "";
 		$tr .= '</table>';	
 		$table_1 .= $tr;
 
