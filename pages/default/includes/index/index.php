@@ -39,7 +39,7 @@ for($year=$first_year; $year<=$this_year; $year++){
 		</div>
 	</div>
 
-	<div class="body">
+	<div class="body pb-8 border h-full">
 		<div class="row">
 			<div class="col_12">
 				<div id="mycalendar">
