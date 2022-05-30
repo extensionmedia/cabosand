@@ -2011,7 +2011,7 @@ $(document).ready(function(){
 		}
 		console.log($("#nbr__nuite").val());
 		if(continu){
-			
+			$(this).prop('disabled', true).html('<i class="fas fa-sync fa-spin"></i>');
 			var columns = {
 				'date_debut'					:	$("#date_debut").val(),
 				'date_fin'						:	$("#date_fin").val(),
