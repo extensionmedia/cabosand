@@ -71,6 +71,9 @@ for($year=$first_year; $year<=$this_year; $year++){
 							<option value="<?= $c['id'] ?>"><?= $c['name'] ?></option>
 						<?php } ?>
 					</select>
+					<select class="rounded-lg px-2" id="appartement">
+						<option value="-1">-- Appartement </option>
+					</select>
 					<select class="rounded-lg px-2" id="client">
 						<option value="-1">-- Client </option>
 						<?php foreach($client->find('', ['conditions'=>['id_status='=>11], 'order'=>'first_name asc'], 'client') as $c){ ?>
@@ -125,13 +128,19 @@ for($year=$first_year; $year<=$this_year; $year++){
 					'complexe'		:	complexe
 				}
 			};
-			console.log(data)
 			$.ajax({
 				type		: 	"POST",
 				url			: 	"pages/default/ajax/ajax.php",
 				data		:	data,
 				dataType	: 	"json",
 			}).done(function(response){
+
+				$("#appartement")    
+								.find('option')
+    							.remove()
+    							.end()
+    							.append('<option value="-1" selected>-- Appartements</option>')
+
 				$(".filters").find('#complexe').remove()
 				$(".filters").prepend(response.msg);
 				
@@ -141,35 +150,36 @@ for($year=$first_year; $year<=$this_year; $year++){
 		})
 
 
-		// $(document).on('change', '#complexe', function(){
+		$(document).on('change', '#complexe', function(){
 
-		// 	var year = $(this).val();
-		// 	var month = $('#month').val();
-		// 	var complexe = $('#complexe').val();
+			var year = $(this).val();
+			var month = $('#month').val();
+			var complexe = $('#complexe').val();
 
-		// 	var data = {
-		// 		'controler'		:	'Calendar',
-		// 		'function'		:	'Table_Client',
-		// 		'params'		:	{
-		// 			'month'			:	month,
-		// 			'year'			:	year,
-		// 			'complexe'		:	complexe
-		// 		}
-		// 	};
-		// 	console.log(data)
-		// 	$.ajax({
-		// 		type		: 	"POST",
-		// 		url			: 	"pages/default/ajax/ajax.php",
-		// 		data		:	data,
-		// 		dataType	: 	"json",
-		// 	}).done(function(response){
-		// 		$(".filters").find('#client').remove()
-		// 		$(".filters").prepend(response.msg);
-				
-		// 	}).fail(function(xhr) {
-		// 		console.log(xhr.responseText);
-		// 	});	
-		// })
+			var data = {
+				'controler'		:	'Propriete',
+				'function'		:	'ByComplexe',
+				'params'		:	{
+					'complexe'		:	complexe
+				}
+			};
+			$("#appartement").addClass('bg-yellow-500')
+			$.ajax({
+				type		: 	"POST",
+				url			: 	"pages/default/ajax/ajax.php",
+				data		:	data,
+				dataType	: 	"json",
+			}).done(function(response){
+				$("#appartement")    
+								.find('option')
+    							.remove()
+    							.end()
+    							.append(response.msg)
+				$("#appartement").removeClass('bg-yellow-500')
+			}).fail(function(xhr) {
+				console.log(xhr.responseText);
+			});	
+		})
 
 		$('.run_search').on('click', function(){
 
@@ -177,6 +187,7 @@ for($year=$first_year; $year<=$this_year; $year++){
 			var month = $('#month').val();
 			var complexe = $('#complexe').val();
 			var client = $('#client').val();
+			var appartement = $('#appartement').val();
 
 
 			var data = {
@@ -186,7 +197,8 @@ for($year=$first_year; $year<=$this_year; $year++){
 					'month'			:	month,
 					'year'			:	year,
 					'complexe'		:	complexe,
-					'client'		:	client	
+					'client'		:	client,
+					'appartement'	: 	appartement
 				}
 			};
 			$(".calendar_by_societe").html("Loading.....");
@@ -202,28 +214,5 @@ for($year=$first_year; $year<=$this_year; $year++){
 				console.log(xhr.responseText);
 			});			
 		})
-
-
-		// $('.blabla').html('loading...')
-
-		// var data = {
-		// 	'controler'		:	'Calendar',
-		// 	'function'		:	'Draw_Table',
-		// 	'params'		:	{
-		// 		'month'			:	07,
-		// 		'year'			:	2022
-		// 	}
-		// };
-		// $.ajax({
-		// 	type		: 	"POST",
-		// 	url			: 	"pages/default/ajax/ajax.php",
-		// 	data		:	data,
-		// 	dataType	: 	"json",
-		// }).done(function(response){
-		// 	$(".blabla").html(response.msg);
-			
-		// }).fail(function(xhr) {
-		// 	console.log(xhr.responseText);
-		// });
 	});
 </script>

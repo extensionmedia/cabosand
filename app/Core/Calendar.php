@@ -961,6 +961,7 @@ class Calendar extends Modal{
 		$year = isset($params['year'])? $params['year']: date('y');
 		$id_complexe = $params['complexe'] != "-1"? $params['complexe']: 0;
 		$id_client = $params['client'] != "-1"? $params['client']: 0;
+		$id_propriete = $params['appartement'] != "-1"? $params['appartement']: 0;
 
 
 		$request = "
@@ -1039,6 +1040,12 @@ class Calendar extends Modal{
 				if( $propriete_locations[$j]['id_complexe'] != $id_complexe )
 					$continue = false;
 			}
+
+			if($id_propriete){
+				if( $propriete_locations[$j]['id_propriete'] != $id_propriete )
+					$continue = false;
+			}
+
 			if($continue){
 				$tr .= '<tr height="35px">';
 				for($i=1; $i<=($days_in_month*2); $i++){
@@ -1085,6 +1092,11 @@ class Calendar extends Modal{
 
 			if($id_complexe){
 				if( $propriete_locations[$row]['id_complexe'] != $id_complexe )
+					$continue = false;
+			}
+
+			if($id_propriete){
+				if( $propriete_locations[$row]['id_propriete'] != $id_propriete )
 					$continue = false;
 			}
 

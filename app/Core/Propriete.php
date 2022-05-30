@@ -1058,5 +1058,15 @@ class Propriete extends Modal{
 		}
 	}
 	
+	public function ByComplexe($params){
+		$id_complexe = isset($params['complexe'])? $params['complexe']: 0;
+
+		$data = $this->find('', ['conditions'=>['id_complexe='=>$id_complexe], 'order'=>'code'], 'propriete');
+		$options = '<option value="-1" selected>-- Appartements </option>';
+		foreach($data as $p){
+			$options .= '<option value="'.$p["id"].'">'.$p["code"].'</option>';
+		}
+		return $options;
+	}
 }
 $propriete = new Propriete;
