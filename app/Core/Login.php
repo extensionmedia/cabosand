@@ -49,7 +49,7 @@ class Login extends Modal{
 
 							if( $person ){
 
-								if( $person[0]['status'] === '1' ){
+								if( $person[0]['status'] == '1' ){
 									unset($_SESSION[$env]['token']);
 									$_SESSION[$env]["USER"] = $person[0];
 
@@ -96,11 +96,10 @@ class Login extends Modal{
 		$config = new Config;
 		$env = $config->get()["GENERAL"]["ENVIRENMENT"];
 		
-		if($auth['code'] === 1){
+		if($auth['code'] == 1){
 			$this->saveActivity("fr",$_SESSION[$env]["USER"]["id"],array("Log",1),"0");
 			return "success";
-			
-		}else if($auth['code'] === -1){
+		}else if($auth['code'] == -1){
 			return "disabled";
 		}else{
 			return $auth['msg'];

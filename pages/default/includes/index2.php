@@ -60,6 +60,7 @@
 			</div>
 		</div>
 	</div>
+	
 	<div class="page-body" style="padding-left: 10px;">
 
 		<div class="table-container">

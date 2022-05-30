@@ -5,25 +5,11 @@ $table_name = "Propriete";
 require_once($core.$table_name.".php");  
 $ob = new $table_name();
 
-$months = [
-	1	=>	'Janvier',
-	2	=>	'Février',
-	3	=>	'Mars',
-	4	=>	'Avril',
-	5	=>	'Mai',
-	6	=>	'Juin',
-	7	=>	'Juillet',
-	8	=>	'Août',
-	9	=>	'Septembre',
-	10	=>	'Octobre',
-	11	=>	'Novembre',
-	12	=>	'Décembre'
-];
-
 $years = [
 	2019	=>	'2019',
 	2020	=>	'2020',
-	2021	=>	'2021'
+	2021	=>	'2021',
+	2022	=>	'2022'
 ];
 
 $tags = [
@@ -35,12 +21,10 @@ $tags = [
 ];
 
 $filters = [
-	'Categorie'				=>	$ob->find('', ['order'=>'propriete_category'], 'propriete_category'),
+	'Client'				=>	$ob->find('', ['conditions'=>['id_status='=>11], 'order'=>'societe_name'], 'client'),
 	'Type'					=>	$ob->find('', ['order'=>'propriete_type'], 'propriete_type'),
 	'Complexe'				=>	$ob->find('', ['order'=>'name'], 'complexe'),
 	'Status'				=>	$ob->find('', ['order'=>'propriete_status' ], 'propriete_status'),
-	'Vente'					=>	[0=>['id'=>0, 'label'=>'Non Vente'], 1=>['id'=>1, 'label'=>'A Vendre']],
-	'Location'				=>	[0=>['id'=>0, 'label'=>'Non Location'], 1=>['id'=>1, 'label'=>'A Louer']],
 	'Années'				=>	$years
 ];
 	
@@ -49,7 +33,7 @@ $filters = [
 <div id="page" class="">
 	<div class="page-head">
 		<div class="title d-flex space-between">
-			<div class="name">	Appartement</div> 
+			<div class="name show_alert">	Appartement</div> 
 			<div class="actions d-flex">
 				<button class="green add" data-controler="<?= $table_name ?>"><i class="fas fa-plus"></i> Ajouter</button>
 			</div>
@@ -80,26 +64,16 @@ $filters = [
 						$string .= '<select id="'.$key.'">';
 						$string .= '	<option value="-1"> -- '.$key." -- </option>";
 						foreach($value as $k=>$v){
-							if($key === "Categorie")
-								$string .= '<option value="'.$v["id"].'">'. strtoupper( $v["propriete_category"] ) ."</option>";
 							if($key === "Type")
 								$string .= '<option value="'.$v["id"].'">'. strtoupper( $v["propriete_type"] ) ."</option>";
 							if($key === "Complexe")
 								$string .= '<option value="'.$v["id"].'">'. strtoupper( $v["name"] ) ."</option>";
 							if($key === "Status")
 								$string .= '<option value="'.$v["id"].'">'. strtoupper( $v["propriete_status"] ) ."</option>";
-							if($key === "Vente")
-								$string .= '<option value="'.$v["id"].'">'. strtoupper( $v["label"] ) ."</option>";
-							if($key === "Location")
-								$string .= '<option value="'.$v["id"].'">'. strtoupper( $v["label"] ) ."</option>";
-							if($key === "Mois"){
-								if( $k === intval(date("m")) ) 
-									$string .= '<option selected value="'.$k.'">'.$v."</option>";
-								else
-									$string .= '<option value="'.$k.'">'.$v."</option>";
-							}
+							if($key === "Client")
+								$string .= '<option value="'.$v["id"].'">'. ucfirst( $v["societe_name"] ) ."</option>";
 							if($key === "Années"){
-								if( $k === intval(date("Y")) ) 
+								if( $k == intval(date("Y")) ) 
 									$string .= '<option selected value="'.$k.'">'.$v."</option>";
 								else
 									$string .= '<option value="'.$k.'">'.$v."</option>";
@@ -152,13 +126,51 @@ $filters = [
 					'current'		=>	0
 
 				];
-				// echo $ob->Table($params);
+				//echo $ob->Table($params);
 			?>
 		</div>
 	</div>
+	<div class="hidden right-container_2 fixed top-0 right-0 left-0 bottom-0 bg-white z-100 mt-12 ml-96 border-gray-500 border-l-2 shadow pb-12">
+		<div class="w-full relative">
+			<div class="absolute top-4 -left-12 hover:bg-red-500 hover:text-white rounded py-2 px-3 cursor-pointer close_right-container_2 text-red-600">
+				<i class="fas fa-times"></i>
+			</div>
+
+			<!-- Container Title -->
+			<div class="text-lg px-4 border-b flex items-center justify-between">
+				<div class="h-12 flex items-center">
+					Appartement [<span class="code_here text-xl font-bold"></span>] 
+				<span class="right-container_2_ID hidden"></span>
+				</div>
+				<div class="flex items-center h-12 text-sm pt-2">
+					<div data-tab="form" class="show-tab border h-full cursor-pointer bg-green-600 text-white flex mr-1 shadow items-center px-4 hover:bg-gray-300 rounded-t-lg">
+						Détails
+					</div>
+					<div data-tab="depense" class="show-tab border h-full cursor-pointer flex mr-1 shadow items-center px-4 hover:bg-gray-300 rounded-t-lg">
+						Dépenses
+					</div>
+					<div data-tab="contrat" class="show-tab border h-full cursor-pointer flex mr-1 shadow items-center px-4 hover:bg-gray-300 rounded-t-lg">
+						Périodes
+					</div>
+					<div data-tab="location" class="show-tab border h-full cursor-pointer flex mr-1 shadow items-center px-4 hover:bg-gray-300 rounded-t-lg">
+						Contrats
+					</div>
+				</div>
+
+				
+			</div>
+
+			<div class="tab-container h-full overflow-y-auto px-4 py-6"></div>
+
+			<!-- Container Tabs -->
+		</div>
+	</div>
+
 	<script>
-		$(document).ready(function(){
-			$('.page_search_button').trigger('click');
-		});
+	$(document).ready(function(){
+		$('.page_search_button').trigger('click');
+	});
 	</script>
+
 </div>
+

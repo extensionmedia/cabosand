@@ -54,15 +54,19 @@ $filters = [
 				<?php
 					$string = "";
 					foreach($filters as $key=>$value){
-						$string .= '<select id="'.$key.'">';
+						$string .= '<select class="bg-yellow-100" id="'.$key.'">';
 						$string .= '	<option value="-1"> -- '.$key." -- </option>";
 						foreach($value as $k=>$v){
 							if($key === "Category")
-								$string .= '<option value="'.$v["id"].'">'. strtoupper( $v["client_category"] ) ."</option>";	
+								$string .= '<option value="'.$v["id"].'">'. ucfirst( $v["client_category"] ) ."</option>";	
 							if($key === "Type")
-								$string .= '<option value="'.$v["id"].'">'. strtoupper( $v["client_type"] ) ."</option>";	
-							if($key === "Client_Status")
-								$string .= '<option value="'.$v["id"].'">'. strtoupper( $v["client_status"] ) ."</option>";	
+								$string .= '<option value="'.$v["id"].'">'. ucfirst( $v["client_type"] ) ."</option>";	
+							if($key === "Client_Status"){
+								if($v["is_default"])
+									$string .= '<option selected value="'.$v["id"].'">'. ucfirst( $v["client_status"] ) ."</option>";	
+								else
+									$string .= '<option value="'.$v["id"].'">'. ucfirst( $v["client_status"] ) ."</option>";	
+							}
 						}
 						$string .= '</select>';
 					}
@@ -105,7 +109,9 @@ $filters = [
 				$params = [
 					'column_style'	=>	'v_client',
 					'use'			=>	'v_client',
-					'filters'		=>	[  ],
+					'filters'		=>	[ 
+						['id'	=>	'Client_Status', 'value' => 11 ],
+					 ],
 					'pp'			=>	20,
 					'current'		=>	0
 

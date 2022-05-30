@@ -570,9 +570,9 @@ class Calendar extends Modal{
 		$replace_this = ['{{type}}', '{{date}}', '{{body}}', '{{counter}}', '{{complexe}}'];
 		$complexe = '';
 		
-		if($style === 1){
+		if($style == 1){
 			$template = str_replace($replace_this, ['Par Mois', $this->months[intval($month)-1] . " - " . $year, $this->By_Month(['month'=>$month, 'year'=>$year]), $counter, "" ], $template);
-		}elseif($style === 2){
+		}elseif($style == 2){
 			
 			$complexe = '
 				<div class="d-flex">
@@ -588,11 +588,11 @@ class Calendar extends Modal{
 				</div>
 			';
 			$options = '';
-			$complexes = $this->find('', ['order'=>'name DESC'], 'complexe');
+			$complexes = $this->find('', ['conditions'=>[],'order'=>'name asc'], 'complexe');
 			foreach($complexes as $k=>$v){
 				
 				if(isset($params["id_complexe"])){
-					if($params["id_complexe"] === $v["id"]){
+					if($params["id_complexe"] == $v["id"]){
 						$options .= '<option selected value="'.$v["id"].'">'. strtoupper($v["name"]).'</option>';
 					}else{
 						$options .= '<option value="'.$v["id"].'">'. strtoupper($v["name"]).'</option>';
@@ -604,11 +604,12 @@ class Calendar extends Modal{
 			}
 			
 			if(isset($params["id_complexe"])){
-				if(isset($params["UID"])){
-					$complexe = str_replace(['{{options}}','{{clients}}'], [$options, $this->Get_Client_By_Complexe(['id_complexe'=>$params["id_complexe"], 'UID'=>$params["UID"]])] , $complexe);
-				}else{
-					$complexe = str_replace(['{{options}}','{{clients}}'], [$options, $this->Get_Client_By_Complexe(['id_complexe'=>$params["id_complexe"]])] , $complexe);
-				}
+				$complexe = str_replace(['{{options}}','{{clients}}'], [$options, $this->Get_Client_By_Complexe(['id_complexe'=>$params["id_complexe"]])] , $complexe);
+				// if(isset($params["UID"])){
+				// 	$complexe = str_replace(['{{options}}','{{clients}}'], [$options, $this->Get_Client_By_Complexe(['id_complexe'=>$params["id_complexe"], 'UID'=>$params["UID"]])] , $complexe);
+				// }else{
+				// 	$complexe = str_replace(['{{options}}','{{clients}}'], [$options, $this->Get_Client_By_Complexe(['id_complexe'=>$params["id_complexe"]])] , $complexe);
+				// }
 				
 			}else{
 				$complexe = str_replace(['{{options}}','{{clients}}'], [$options, ""] , $complexe);
@@ -620,7 +621,7 @@ class Calendar extends Modal{
 			
 			$template = str_replace($replace_this, ['Par Société', $this->months[intval($month)-1] . " - " . $year, $this->By_Societe(['month'=>$month, 'year'=>$year, 'id_complexe'=>$id_complexe]), $counter, $complexe ], $template);
 			
-		}elseif($style === 3){
+		}elseif($style == 3){
 			$template = str_replace($replace_this, ['Par Mois', $this->months[intval($month)-1] . " - " . $year, "body", $counter, "" ], $template);
 		}
 		
@@ -632,6 +633,7 @@ class Calendar extends Modal{
 	
 	public function Get_Client_By_Complexe($params){
 		$id_complexe = $params['id_complexe'];
+		$year = isset($param['year'])? $param['year']: date('Y');
 		$request = "
 					SELECT 
 						client.id, 
@@ -645,7 +647,7 @@ class Calendar extends Modal{
 					JOIN contrat on contrat.id_client = client.id
 					JOIN propriete_location on propriete_location.UID = contrat.UID
 					JOIN v_propriete on propriete_location.id_propriete = v_propriete.id
-					WHERE v_propriete.id_complexe=".$id_complexe." and year(contrat.created)=2021 
+					WHERE v_propriete.id_complexe=".$id_complexe." and year(contrat.created)=".$year."
 					GROUP BY client.societe_name 
 					ORDER BY client.societe_name
 		";
@@ -655,10 +657,10 @@ class Calendar extends Modal{
 		$reaturned = '<option selected value="-1">Client --</option>';
 		foreach($data as $k=>$v){
 			if(isset($params["UID"]))
-				if($params["UID"] === $v["UID"])
-					$reaturned .= '<option selected value="'.$v["id"].'">'.$v["client"].'</option>';
+				if($params["UID"] == $v["UID"])
+					$reaturned .= '<option selected value="'.$v["id"].'">'.$v["UID"]." - ".$params["UID"].'</option>';
 				else
-					$reaturned .= '<option value="'.$v["id"].'">'.$v["client"].'</option>';
+					$reaturned .= '<option value="'.$v["id"].'">'.$v["UID"]." - ".$params["UID"].'</option>';
 			else
 				$reaturned .= '<option value="'.$v["id"].'">'.$v["client"].'</option>';
 		}
@@ -954,6 +956,312 @@ class Calendar extends Modal{
 	}
 	
 	
+	public function Table($params = []){
+		$month = isset($params['month'])? $params['month']: date('m');
+		$year = isset($params['year'])? $params['year']: date('y');
+		$id_complexe = $params['complexe'] != "-1"? $params['complexe']: 0;
+		$id_client = $params['client'] != "-1"? $params['client']: 0;
+		$id_propriete = $params['appartement'] != "-1"? $params['appartement']: 0;
+
+
+		$request = "
+						SELECT *, p.code as code, colors.hex_string as color, client.id as id_client, p.id_complexe as id_complexe, client.first_name, client.last_name, client.societe_name 
+						FROM propriete_location 
+						LEFT JOIN propriete p ON p.id=propriete_location.id_propriete
+						LEFT JOIN contrat ON contrat.UID=propriete_location.UID
+						LEFT JOIN client on client.id=contrat.id_client
+						LEFT JOIN colors on colors.color_id=client.id_color
+						WHERE 
+								(	
+									year(date_debut)=".$year." 
+								AND 
+									month(date_debut)=".intval($month)."
+								) 
+								OR 
+								(
+									year(date_fin)=".$year." 
+								AND 
+									month(date_fin)=".intval($month)."
+								) 
+						ORDER BY id_complexe, id_propriete, date_debut, date_fin
+		";
+
+		$propriete_locations = $this->execute($request);
+
+
+		// Get total of days in the given Month and Yaer
+		$days_in_month = $this->days_in_month(['year'=>$year, 'month'=>$month]);
+		$totalOfContrats = count($propriete_locations);
+		$day = "01";
+		$month = $month > 9? $month: "0". $month;
+		$start =  new DateTime($year . "-" . $month . "-" . $day);
+		$last = new DateTime($year . "-" . $month . "-" . $days_in_month);
+
+
+
+
+		$table = '
+		<div class="relative w-full">
+			{{table_1}}
+
+			{{table_2}}
+			
+		</div>
+		';
+
+		/** First start by drowing the header of the calendar */
+		$table_1 = '
+			<table class="w-full" style="table-layout: fixed;">
+		';
+
+		$tr = '<tr>';
+
+		for($i=1; $i<=($days_in_month*2); $i++){
+		
+			$style = 'bg-blue-50 py-4 text-center text-gray-600 text-sm';
+
+			if( $i % 2 == 0 )
+				$tr .= '<td colspan="2" class="border-r border-gray-200 border-l '.$style.'">'.($i/2).'</td>';
+
+		}
+
+		$tr .= '</tr>';	
+
+		$td_style = 'border-r border-gray-200 border-l';
+
+		for($j=0; $j<$totalOfContrats; $j++){
+			$continue = true;
+			if($id_client){
+				if( $propriete_locations[$j]['id_client'] != $id_client )
+					$continue = false;
+			}
+
+			if($id_complexe){
+				if( $propriete_locations[$j]['id_complexe'] != $id_complexe )
+					$continue = false;
+			}
+
+			if($id_propriete){
+				if( $propriete_locations[$j]['id_propriete'] != $id_propriete )
+					$continue = false;
+			}
+
+			if($continue){
+				$tr .= '<tr height="35px">';
+				for($i=1; $i<=($days_in_month*2); $i++){
+				
+					if( ($i/2) % 2 == 0 )
+						if( $i % 2 == 0 )
+							$tr .= '<td colspan="2" class="'.$td_style.'"></td>';
+						else
+							$tr .= '<td colspan="2" class="bg-gray-50 '.$td_style.'"></td>';
+
+				}
+
+				$tr .= '</tr>';		
+			}	
+		}
+
+		$emptyTr= '
+			<tr>
+				<td class="bg-white" colspan="'.($days_in_month*2).'"> 
+					<div class="w-64 mx-auto my-8 text-xs text-red-800 font-light text-center flex flex-col items-center">
+						<img class="h-24" src="https://us.v-cdn.net/6031209/uploads/W6CE78AAFKJ8/image.png">
+						Aucune Période pour cette recherche
+					</div>
+				</td>
+			</tr>
+		';
+
+		$tr .= !$totalOfContrats? $emptyTr: "";
+		$tr .= '</table>';	
+		$table_1 .= $tr;
+
+		/** Drow the body of the calendar */
+		$table_2 = '
+			<table class="absolute top-12 mt-1 right-0 left-0 w-full" style="table-layout: fixed; bg-opacity-0">
+		';
+		$tr = '';
+
+		for($row=0; $row < $totalOfContrats; $row++){
+			$continue = true;
+			if($id_client){
+				if( $propriete_locations[$row]['id_client'] != $id_client )
+					$continue = false;
+			}
+
+			if($id_complexe){
+				if( $propriete_locations[$row]['id_complexe'] != $id_complexe )
+					$continue = false;
+			}
+
+			if($id_propriete){
+				if( $propriete_locations[$row]['id_propriete'] != $id_propriete )
+					$continue = false;
+			}
+
+			if($continue){
+				$tr .= '<tr height="35px">';
+				for($i=1; $i<=$days_in_month; $i++){
+
+					$date_debut = new DateTime($propriete_locations[$row]['date_debut']);
+					$date_fin = new DateTime($propriete_locations[$row]['date_fin']);
+
+					if($date_debut <= $start){
+						$startDay = 1;
+
+						if($date_fin>$last){
+							$nbrOfDays = $days_in_month;
+						}else{
+							$nbrOfDays = $start->diff($date_fin)->days+1;
+						}
+
+					}elseif($date_debut > $start){
+						if($date_fin <= $last){
+							$startDay = $start->diff($date_debut)->days+1;
+							$nbrOfDays = $date_fin->diff($date_debut)->days+1;
+						}else{
+							$startDay = $start->diff($date_debut)->days+1;
+							$nbrOfDays = $date_debut->diff($last)->days+1;
+
+						}
+
+
+					}elseif($date_debut > $start AND $date_fin>$last){
+						$startDay = $start->diff($date_debut)->days;
+						$nbrOfDays = $date_fin->diff($date_debut)->days+1;
+					}
+
+					if($i==$startDay){
+						//$color = isset($propriete_locations[$row]['color'])? 'background-color:#'.$propriete_locations[$row]['color']: "";
+						$color = 'background-color:'.$propriete_locations[$row]['color'];
+						$tr .= '
+							<td colspan="'.$nbrOfDays.'" class="truncate overflow-hidden px-1 border-b">
+								<div class="relative overflow-hidden rounded-lg w-full bg-blue-400 bg-opacity-60 text-xs text-white text-center border hover:shadow-lg hover:border-red-600 cursor-pointer" style="'.$color.'"> 
+									'.$propriete_locations[$row]['code'].' <span style="font-size:8px">('.$propriete_locations[$row]['societe_name'].')</span>
+									<span class="absolute top-0 left-0  text-white ml-1">'.$date_debut->format('d').'</span>
+									<span class="absolute top-0 right-0  text-white mr-1">'.$date_fin->format('d').'</span>
+								</div>
+							</td>
+						';
+					}else{
+						if($i<$startDay){
+							$tr .= '<td class=" border-b"></td>';
+						}
+						if($i>($startDay+$nbrOfDays-1)){
+							$tr .= '<td class=" border-b"></td>';
+						}
+					}
+				}
+				$tr .= '</tr>';				
+			}
+			
+		}
+		$tr .= '</table>';	
+		$table_2 .= $tr;
+
+
+		$table = str_replace(['{{table_1}}', '{{table_2}}'], [$table_1, $table_2], $table);
+		return $table;
+	}
+
+	public function Table_Complexe($params=[]){
+		$month = isset($params['month'])? $params['month']: date('m');
+		$year = isset($params['year'])? $params['year']: date('y');
+		$id_complexe = !isset($params['complexe'])? 0: ($params['complexe'] != "-1"? $params['complexe']: 0);
+
+
+		$request = "
+						SELECT p.id_complexe as id_complexe, complexe.name as name
+						FROM propriete_location 
+						LEFT JOIN propriete p ON p.id=propriete_location.id_propriete
+						LEFT JOIN complexe ON complexe.id=p.id_complexe
+						WHERE 
+								(	
+									year(date_debut)=".$year." 
+								AND 
+									month(date_debut)=".intval($month)."
+								) 
+								OR 
+								(
+									year(date_fin)=".$year." 
+								AND 
+									month(date_fin)=".intval($month)."
+								) 
+						GROUP BY p.id_complexe
+		";
+
+		$select = '
+		<select class="rounded-lg px-2" id="complexe">
+			<option value="-1">-- Complexe </option>
+			{{options}}						
+		</select>
+		';
+
+		$complexes = $this->execute($request);
+		$option = '';
+		foreach($complexes as $complexe){
+			if($id_complexe)
+				if($id_complexe == $complexe['id_complexe'])
+					$option .= '<option selected value="'.$complexe['id_complexe'].'">'.$complexe['name'].'</option>';
+				else
+					$option .= '<option value="'.$complexe['id_complexe'].'">'.$complexe['name'].'</option>';
+			else	
+				$option .= '<option value="'.$complexe['id_complexe'].'">'.$complexe['name'].'</option>';
+		}
+		$select = str_replace("{{options}}", $option, $select);
+		return $select;
+	}
+
+	public function Table_Client($params=[]){
+		$month = isset($params['month'])? $params['month']: date('m');
+		$year = isset($params['year'])? $params['year']: date('y');
+		$id_complexe = !isset($params['complexe'])? 0: ($params['complexe'] != "-1"? $params['complexe']: 0);
+
+		$request = "
+						SELECT complexe.id as id_complexe, client.id as id_client, client.first_name as first_name, client.last_name as last_name, client.societe_name as societe_name
+						FROM propriete_location 
+						LEFT JOIN propriete p ON p.id=propriete_location.id_propriete
+						LEFT JOIN complexe ON complexe.id=p.id_complexe
+						LEFT JOIN contrat ON contrat.UID=propriete_location.UID
+						LEFT JOIN client on client.id=contrat.id_client
+						WHERE 
+								(	
+									year(date_debut)=".$year." 
+								AND 
+									month(date_debut)=".intval($month)."
+								) 
+								OR 
+								(
+									year(date_fin)=".$year." 
+								AND 
+									month(date_fin)=".intval($month)."
+								) 
+		";
+
+		$select = '
+		<select class="rounded-lg px-2" id="client">
+			<option value="-1">-- Client </option>
+			{{options}}						
+		</select>
+		';
+
+		$complexes = $this->execute($request);
+		$option = '';
+		foreach($complexes as $complexe){
+			if($id_complexe)
+				if($id_complexe == $complexe['id_complexe'])
+					$option .= '<option selected value="'.$complexe['id_client'].'">'.$complexe['societe_name'].'</option>';
+				else
+					$option .= '<option value="'.$complexe['id_client'].'">'.$complexe['societe_name'].'</option>';
+			else	
+				$option .= '<option value="'.$complexe['id_client'].'">'.$complexe['nsociete_nameame'].'</option>';
+		}
+		$select = str_replace("{{options}}", $option, $select);
+		return $select;
+	}
+
+
 }
 
 $calendar = new Calendar;

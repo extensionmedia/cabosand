@@ -6,14 +6,14 @@ class Config{
 	private $config = array(
 				"dev"		=>	array(
 									"host"		=>	"localhost",
-									"dbname"	=>	"cabosand",
+									"dbname"	=>	"cabosand_manager",
 									"username"	=>	"root",
 									"password"	=>	""
 							),
 				"prod"		=>	array(
 									"host"		=>	"localhost",
-									"dbname"	=>	"cabosand_manager",
-									"username"	=>	"cabosand_manager",
+									"dbname"	=>	"cabosand_stage",
+									"username"	=>	"cabosand_stage",
 									"password"	=>	"1A2Z3E4R5T6Y"
 							),
 				"mail"		=>	array(

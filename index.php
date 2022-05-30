@@ -3,7 +3,7 @@ session_start();
 /*
 print_r(scandir(session_save_path()));
 */
-$host_dev = "localhost/extensionmedia/cabosand/";
+$host_dev = "localhost/apps/cabosand/";
 $host_prod = $_SERVER['SERVER_NAME'] . "/";
 $envirenment = "CABOSAND-MANAGER";
 $D_S = DIRECTORY_SEPARATOR;
@@ -14,7 +14,6 @@ $url =array();
 $lang = "";	// 	es | ar | fr | en
 $dir = "";	//	ltr | rtl | auto
 
-//var_dump($_SESSION[$envirenment]);
 //unset($_SESSION[$envirenment]["USER"]);
 
 require_once("app".$D_S."Core".$D_S."Helpers".$D_S."Config.php");

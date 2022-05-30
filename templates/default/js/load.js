@@ -744,46 +744,6 @@ $(document).ready(function(){
 		$(this).find(".sub_menu").toggleClass("hide");
 	});
 	
-	// OPEN CLICKED PAGE
-	/*
-	$(".open").on("click", function(){
-		var page = $(this).find('.url').html();
-		page = (page === "")? "index": page;
-		$(".vertical_menu ul li").removeClass("selected");
-		parent.location.hash = page;
-		
-		$(this).addClass("selected");
-		$(".modal").addClass("show").html("<div class='modal-content' style='width:75px; opacity:0.9'><i style='font-size:30px;' class='fas fa-cog fa-spin'></i></div>");
-		
-		var data = {
-			"page"	:	page,
-			"p"		:	{
-				"s"		:	0,
-				"pp"	:	50
-			}
-		};
-
-		$.ajax({
-
-			type		: 	"POST",
-			url			: 	"pages/default/includes/"+page+".php",
-			data		:	data,
-			success 	: 	function(response){
-								$('.content').html(response);
-								$(".modal").removeClass("show");
-								$(".show_vertical_menu").trigger('click');
-								checkAfterLoad();
-							},
-			error		:	function(response){
-								$('.content').html(response);
-								$(".modal").removeClass("show");
-				
-			}
-		});
-		
-	});
-	*/
-	
 	function checkAfterLoad(){
 
 		setInterval(function(){
@@ -797,6 +757,9 @@ $(document).ready(function(){
 		}, 1000);		
 	}	
 	
+	$('.show_hide_menu').on('click', function(){
+		$('.navigation-menu').toggleClass('hidden')
+	})
 });
 
 $(window).on('load', function() {

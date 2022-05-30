@@ -56,7 +56,7 @@ $(document).ready(function(){
 			data		:	data,
 			dataType	: 	"json",
 		}).done(function(response){
-			
+			console.log(response);
 			if(response.code === 1){
 				
 				if(response.msg === 'success'){

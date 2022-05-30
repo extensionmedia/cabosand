@@ -59,7 +59,6 @@ class Propriete extends Modal{
 		$columns = $this->getColumns($column_style);
 		
 		$table = '
-			<div class="table-container">
 				<div class="d-flex space-between" style="padding:0 10px 10px 10px">
 					<div style="font-size:16px; font-weight:bold">{{counter}}</div>
 					<div class="text-green" style="font-size:16px; font-weight:bold">{{total}}</div>
@@ -75,7 +74,6 @@ class Propriete extends Modal{
 						{{trs}}
 					</tbody>
 				</table>
-			</div>
 		
 		';
 		
@@ -95,6 +93,13 @@ class Propriete extends Modal{
 				$ths .= "	<button data-default='".$defaultStyleName."' value='".$column_style."' class='show_list_options'>";
 				$ths .= "		<i class='fas fa-ellipsis-h'></i></button>";
 				$ths .= "	</button>";
+				$ths .=	"</th>";
+			}else if($column['column'] === "nbr_nuite"){
+				$ths .= "<th class='text-center'";
+				$ths .=  "	<div class='d-flex'>";
+				$ths .=  		$column['label'];
+				$ths .= "		<i class='pl-5 fas fa-sort'></i> ";
+				$ths .=  "	</div>";
 				$ths .=	"</th>";
 			}else{
 				$trs_counter += $is_display === "hide"? 0:1;
@@ -130,13 +135,11 @@ class Propriete extends Modal{
 		}
 		
 		$year = "";
+		$id_client = 0;
+
 		if( count($filters) > 0 ){
 			foreach($filters as $k=>$v){
 				if($v["value"] !== "-1"){
-					if( $v["id"] === "Categorie" ){
-						$request['id_propriete_category = '] = $v["value"];
-						$item = 'id_propriete_category = ' . $v["value"];						
-					}
 
 					if( $v["id"] === "Type" ){
 						$request['id_propriete_type = '] = $v["value"];
@@ -152,22 +155,12 @@ class Propriete extends Modal{
 						$request['id_complexe = '] = $v["value"];
 						$item = 'id_complexe = ' . $v["value"];						
 					}
-					
-					if( $v["id"] === "Vente" ){
-						$request['is_for_sell = '] = $v["value"];
-						$item = 'is_for_sell = ' . $v["value"];						
-					}
-					
-					if( $v["id"] === "Location" ){
-						$request['is_for_location = '] = $v["value"];
-						$item = 'is_for_location = ' . $v["value"];						
-					}
-					
-					if( $v["id"] === "Mois" ){
-						$request['MONTH(created) = '] = $v["value"];
-						$item = 'MONTH(created) = ' . $v["value"];						
-					}
 
+					if( $v["id"] === "Client" ){
+						$id_client = $v["value"];
+						$item = 'id_client = ' . $v["value"];						
+					}
+										
 					if( $v["id"] === "Années" ){
 						$year = $v["value"];
 						$item = 'YEAR(created) = ' . $v["value"];	
@@ -179,7 +172,7 @@ class Propriete extends Modal{
 			}
 
 		}
-		
+
 		/***********
 			Body
 		***********/
@@ -199,122 +192,213 @@ class Propriete extends Modal{
 		
 		$current = isset( $params['current'] ) ? $params['current']: 0;
 		
-		//$conditions['limit'] = [$current,$pp];
-		
+		if($year == "")
+			$conditions['limit'] = [$current,$pp];
+
 		$data = $this->find('', $conditions, $use);
 		
 		// Counter
-		$counter = count($data);
+		//$counter = count($data);
 		
 		$trs = '';
+		$counter = 0;
 
-		foreach($data as $k=>$v){
-			$contrat = [];
-			$status = "";
-			$background = "";
-			$nbr_nuite = 0;
-			$total = 0;
-			$req = "";
-			
+		/** If the request is based on a specific client */
+		$client_appartements_to_show = [];
+		if($id_client != 0){
 
-			if($year !== ""){
-				$req = "select distinct id_propriete from propriete_location where year(created) = " . $year . " and id_propriete group by id_propriete";
-				$contrat = $this->find('', array("conditions AND"=>array("YEAR(created)="=>$year, "id_propriete="=>$v["id"], "status="=>1)), "v_propriete_proprietaire_location");
+			//* Check the list of contrats by client id and by year selected **/
+			if($year != "")
+				$client_contrats = $this->find('', ['conditions AND'=>['YEAR(created)='=>$year, 'id_client='=>$id_client]], 'contrat');
+			else
+				$client_contrats = $this->find('', ['conditions'=>['id_client='=>$id_client]], 'contrat');
 
-				$status = $this->Get_Status_Of_Propriete(['year'=>$year, 'id_propriete'=>$v['id']]);
-				$background = $status? $status["hex_string"]: "";
-				$status = $status? $status["propriete_status"]: "";			
-				
-			}else{
-				$contrat = $this->find('', array("conditions AND"=>array("id_propriete="=>$v["id"], "status="=>1)), "v_propriete_proprietaire_location");
-				$status = "";
-				$background = "";
-			}
 
-			foreach($contrat as $kk=>$vv){
-				$total +=  ($vv["id_propriete_location_type"] === "1")? ($vv["nbr_nuite"] * $vv["montant"]): $vv["montant"];
-				$nbr_nuite += $vv["nbr_nuite"];
-			}
+			foreach($client_contrats as $c_c){
+				$UID = $c_c['UID'];
+				$propriete_location = $this->find('', ['conditions'=>['UID='=>$UID]], 'propriete_location');
 
-			$hide = $nbr_nuite === 0? ($year === ""? "": "hide"): "";
-
-			$trs .= '<tr class="'.$hide.'" style="background-color:'.$background.'" data-page="'.$use.'">';
-			foreach($columns as $key=>$value){
-				
-				$style = (!$columns[$key]["display"])? "display:none": $columns[$key]["style"] ;
-				$is_display = (!$columns[$key]["display"])? "hide": "" ;
-
-				if(isset($v[ $columns[$key]["column"] ])){
-					
-					if($columns[$key]["column"] == "propriete_status"){
-						$trs .=   "<td style='width:55px; text-align: center'>".$status."</td>";	
-					
-					}elseif(isset($columns[$key]["format"])){
-						if($columns[$key]["format"] === "money"){
-							$trs .= "<td class='".$is_display."' style='".$style."'>" . $this->format($v[ $columns[$key]["column"] ]) . "</td>";
-						}else if($columns[$key]["format"] === "on_off"){
-							$trs .= "<td class='".$is_display."' style='".$style."'><div class='label label-red'>Désactive</div></td>";
-						}else if($columns[$key]["format"] === "color"){
-							$trs .= "<td class='".$is_display."' style='".$style."'> <span style='padding:10px 15px; background-color:".$v[ $columns[$key]["column"] ]."'>".$v[ $columns[$key]["column"] ] . "</span></td>";
-						}else if($columns[$key]["format"] === "date"){
-							$date = explode(" ", $v[ $columns[$key]["column"] ]);
-							if(count($date)>1){
-								$_date = "<div style='min-width:105px'><i class='fas fa-calendar-alt'></i> ".$date[0]."</div><div style='min-width:105px'><i class='far fa-clock'></i> ".$date[1]."</div>";
-							}else{
-								$_date = "<div><i class='fas fa-calendar-alt'></i> ".$date[0]."</div>";
-							}
-							$trs .= "<td class='".$is_display."' style='".$style.";'>".$_date."</td>";
-
-						}else{
-							$trs .= "<td class='".$is_display."' style='".$style."'>".$v[ $columns[$key]["column"] ]. "</td>";
-						}
-					}else{
-						$trs .= "<td class='".$is_display."' style='".$style."'>".$v[ $columns[$key]["column"] ]."</td>";
-					}											
-				}else{
-					if($columns[$key]["column"] == "actions"){
-						$trs .=   "<td style='width:55px; text-align: center'><button data-controler='". $this->tableName ."' class='update' value='".$v["id"]."'><i class='fas fa-ellipsis-v'></i></button></td>";	
-					
-					}elseif($columns[$key]["column"] == "total"){
-						$trs .= "<td class='".$is_display."' style='".$style."'>" . $this->format($total) . "</td>";
-					}else{
-						
-						if($columns[$key]["format"] === "money"){
-							$trs .= "<td class='".$is_display."' style='".$style."'>" . $this->format($v[ $columns[$key]["column"] ]) . "</td>";
-						}elseif($columns[$key]["column"] == "nbr_nuite"){
-							$trs .= "<td style='".$style."'><button class='show_propriete_proprietaire' data-id='".$v['id']."'>" . $nbr_nuite . "</button></td>";
-						}else if($columns[$key]["format"] === "on_off"){
-							$trs .= "<td class='".$is_display."' style='".$style."'><div class='label label-red'>Désactive</div></td>";
-						}else if($columns[$key]["format"] === "color"){
-							$trs .= "<td class='".$is_display."' style='".$style."'> <span style='padding:10px 15px; background-color:".$v[ $columns[$key]["column"] ]."'>".$v[ $columns[$key]["column"] ] . "</span></td>";
-						}else if($columns[$key]["format"] === "date"){
-							$date = explode(" ", $v[ $columns[$key]["column"] ]);
-							if(count($date)>1){
-								$_date = "<div style='min-width:105px'><i class='fas fa-calendar-alt'></i> ".$date[0]."</div><div style='min-width:105px'><i class='far fa-clock'></i> ".$date[1]."</div>";
-							}else{
-								$_date = "<div><i class='fas fa-calendar-alt'></i> ".$date[0]."</div>";
-							}
-							
-							$trs .= "<td class='".$is_display."' style='".$style.";'>".$_date."</td>";
-						}else{
-							$trs .= "<td class='".$is_display."' style='".$style."'>" . "NaN" . "</td>";
-						}						
-					}
-
+				foreach($propriete_location as $pl){
+					if (!in_array($pl['id_propriete'], $client_appartements_to_show)) 
+						array_push($client_appartements_to_show, $pl['id_propriete']);
 				}
 
+			}
+				
+		}
+
+
+		/** Select only appartments that already have proprietaire location */
+		$proprietaire_appartements_to_show = [];
+		if($year != ""){
+			//$propriete_proprietaire_location = $this->find('', ['conditions AND'=>['status='=>1, 'YEAR(de)='=>$year]], 'propriete_proprietaire_location');
+			$propriete_proprietaire_location = $this->find('', ['conditions'=>['YEAR(de)='=>$year]], 'propriete_proprietaire_location');
+
+				foreach($propriete_proprietaire_location as $pl){
+					if (!in_array($pl['id_propriete'], $proprietaire_appartements_to_show)) 
+						array_push($proprietaire_appartements_to_show, $pl['id_propriete']);
+				}
+
+		}
+
+		$show = true;
+		foreach($data as $k=>$v){
+
+			if($id_client){
+				if($client_appartements_to_show)
+					if (!in_array($v['id'], $client_appartements_to_show))
+						$show = false;					
+					else
+						$show = true;
+				else
+					$show = false;			
+			}else{
+				if($proprietaire_appartements_to_show)
+					if (!in_array($v['id'], $proprietaire_appartements_to_show))
+						$show = false;					
+					else
+						$show = true;
+				else
+					if($year != "")
+						$show = false;
+					else
+						$show = true;
+			}
+
+
+
+
+			if($show){
+				//return "show somthing : " . count($client_appartements_to_show);
+
+				$contrat = [];
+				$status = "";
+				$background = "";
+				$nbr_nuite = 0;
+				$nbr_nuite_location = 0;
+				$total = 0;
+				$locations = [];
+
+				if($year != ""){
+
+					$contrat = $this->find('', array("conditions AND"=>array("YEAR(de)="=>$year, "id_propriete="=>$v["id"], "status="=>1)), "v_propriete_proprietaire_location");
+
+					$status = $this->Get_Status_Of_Propriete(['year'=>$year, 'id_propriete'=>$v['id']]);
+					$background = $status? $status["hex_string"]: "";
+					$status = $status? $status["propriete_status"]: "";		
+					
+					if(count($contrat)) $counter++;
+
+
+					$request = "
+						SELECT SUM(TO_DAYS(propriete_location.date_fin) - TO_DAYS(propriete_location.date_debut)) AS nbr_nuite
+						FROM contrat
+						LEFT JOIN propriete_location on contrat.UID = propriete_location.UID
+						WHERE YEAR(propriete_location.created) = ".intval($year)."
+							AND propriete_location.id_propriete = ".$v['id']."
+						GROUP BY id_client
+					";
+			
+			
+					$locations = $this->execute($request);
+					foreach($locations as $loc){
+						$nbr_nuite_location += $loc['nbr_nuite'];
+					}
+
+					
+				}else{
+					$contrat = []; //$this->find('', array("conditions AND"=>array("id_propriete="=>$v["id"], "status="=>1)), "v_propriete_proprietaire_location");
+					$status = "";
+					$background = "";
+					$counter++;
+				}
+
+				foreach($contrat as $kk=>$vv){
+					$total +=  ($vv["id_propriete_location_type"] == "1")? ($vv["nbr_nuite"] * $vv["montant"]): $vv["montant"];
+					$nbr_nuite += $vv["nbr_nuite"];
+				}
+
+				$hide = $nbr_nuite === 0? ($year == ""? "": "hide"): "";
+
+				$trs .= '<tr class="'.$hide.' tr-highlight" style="background-color:'.$background.'" data-page="'.$use.'">';
+				foreach($columns as $key=>$value){
+					
+					$style = (!$columns[$key]["display"])? "display:none": $columns[$key]["style"] ;
+					$is_display = (!$columns[$key]["display"])? "hide": "" ;
+
+					if(isset($v[ $columns[$key]["column"] ])){
+						
+						if($columns[$key]["column"] == "propriete_status"){
+							$trs .=   "<td style='width:55px; text-align: center'>".$status."</td>";	
+						}elseif($columns[$key]["column"] == "code"){
+							$trs .= "<td data-id=".$v["id"]." class='".$is_display." show_right-container_2 cursor-pointer' style='".$style."'>".$v[ $columns[$key]["column"] ]."</td>";
+						}elseif(isset($columns[$key]["format"])){
+							if($columns[$key]["format"] === "money"){
+								$trs .= "<td class='".$is_display."' style='".$style."'>" . $this->format($v[ $columns[$key]["column"] ]) . "</td>";
+							}else if($columns[$key]["format"] === "on_off"){
+								$trs .= "<td class='".$is_display."' style='".$style."'><div class='label label-red'>Désactive</div></td>";
+							}else if($columns[$key]["format"] === "color"){
+								$trs .= "<td class='".$is_display."' style='".$style."'> <span style='padding:10px 15px; background-color:".$v[ $columns[$key]["column"] ]."'>".$v[ $columns[$key]["column"] ] . "</span></td>";
+							}else if($columns[$key]["format"] === "date"){
+								$date = explode(" ", $v[ $columns[$key]["column"] ]);
+								if(count($date)>1){
+									$_date = "<div style='min-width:105px'><i class='fas fa-calendar-alt'></i> ".$date[0]."</div><div style='min-width:105px'><i class='far fa-clock'></i> ".$date[1]."</div>";
+								}else{
+									$_date = "<div><i class='fas fa-calendar-alt'></i> ".$date[0]."</div>";
+								}
+								$trs .= "<td class='".$is_display."' style='".$style.";'>".$_date."</td>";
+
+							}else{
+								$trs .= "<td class='".$is_display."' style='".$style."'>".$v[ $columns[$key]["column"] ]. "</td>";
+							}
+						}else{
+							$trs .= "<td class='".$is_display."' style='".$style."'>".$v[ $columns[$key]["column"] ]."</td>";
+						}											
+					}else{
+						if($columns[$key]["column"] == "actions"){
+							$trs .=   "<td style='width:55px; text-align: center'><button data-controler='". $this->tableName ."' class='update' value='".$v["id"]."'><i class='fas fa-ellipsis-v'></i></button></td>";	
+						
+						}elseif($columns[$key]["column"] == "total"){
+							$trs .= "<td class='".$is_display."' style='".$style."'>" . $this->format($total) . "</td>";
+						}else{
+							
+							if($columns[$key]["format"] == "money"){
+								$trs .= "<td class='".$is_display."' style='".$style."'>" . $this->format($v[ $columns[$key]["column"] ]) . "</td>";
+							}elseif($columns[$key]["column"] == "nbr_nuite"){
+								$trs .= "<td style='".$style."'><button class='' data-id='".$v['id']."'>" . $nbr_nuite . "</button> / ".$nbr_nuite_location."</td>";
+							}else if($columns[$key]["format"] == "on_off"){
+								$trs .= "<td class='".$is_display."' style='".$style."'><div class='label label-red'>Désactive</div></td>";
+							}else if($columns[$key]["format"] == "color"){
+								$trs .= "<td class='".$is_display."' style='".$style."'> <span style='padding:10px 15px; background-color:".$v[ $columns[$key]["column"] ]."'>".$v[ $columns[$key]["column"] ] . "</span></td>";
+							}else if($columns[$key]["format"] == "date"){
+								$date = explode(" ", $v[ $columns[$key]["column"] ]);
+								if(count($date)>1){
+									$_date = "<div style='min-width:105px'><i class='fas fa-calendar-alt'></i> ".$date[0]."</div><div style='min-width:105px'><i class='far fa-clock'></i> ".$date[1]."</div>";
+								}else{
+									$_date = "<div><i class='fas fa-calendar-alt'></i> ".$date[0]."</div>";
+								}
+								
+								$trs .= "<td class='".$is_display."' style='".$style.";'>".$_date."</td>";
+							}else{
+								$trs .= "<td class='".$is_display."' style='".$style."'>" . "NaN" . "</td>";
+							}						
+						}
+
+					}
+
+
+				}
+				
+				$trs .= '</tr>';
 
 			}
-			
-			$trs .= '</tr>';
-			
 		}
 		
-		if(count($data) === 0)
+		if(count($data) == 0)
 			$trs = '<tr><td colspan="'.$trs_counter.'">No Data to Display!</td></tr>';
 		
 		$counter = $counter . " Operations";
-		return str_replace(["{{ths}}", "{{trs}}", "{{sql}}", "{{counter}}"], [$ths, $trs, $sql, $counter], $table);
+		return str_replace(["{{ths}}", "{{trs}}", "{{sql}}", "{{counter}}", "{{total}}"], [$ths, $trs, $sql, $counter, ""], $table);
 		
 	}
 	
@@ -357,6 +441,32 @@ class Propriete extends Modal{
 		return $view->render($push);
 	}
 	
+	public function Edit($params){
+		
+		$push = [];
+		$push['complexe'] =	$this->find('', ['order' => 'name desc'], 'complexe');
+		$push['propriete_category'] =	$this->find('', ['order' => 'propriete_category desc'], 'propriete_category');
+		$push['propriete_type'] =	$this->find('', ['order' => 'propriete_type desc'], 'propriete_type');
+		$push['propriete_status'] =	$this->find('', ['order' => 'propriete_status desc'], 'propriete_status');
+		$push['depenses'] = $this->find('', [ 'conditions' => ['id_propriete=' => $params['id'] ] ], 'depense');
+		$push['notess'] = $this->find('', [ 'conditions AND' => ['module='=>'propriete', 'id_module=' => $params['id'] ], 'order'=>'created DESC' ], 'notes');
+		
+		$push['Obj']	=	new Propriete;
+		
+		$propriete = $this->find('', [ 'conditions'=>[ 'id='=>$params['id'] ] ], '');		
+		if( count($propriete) > 0 ){
+			$proprietaire = $this->find('', ['conditions' => ['id=' => $propriete[0]['id_proprietaire'] ] ], 'proprietaire');
+			$push['propriete'] = $propriete[0];
+			if(count($proprietaire) > 0)
+				$push['proprietaire'] = $proprietaire[0];
+		}
+		
+		
+		$view = new View("propriete.edit");
+		
+		return $view->render($push);
+	}
+
 	public function Store($params){
 				
 		$created = date('Y-m-d H:i:s');
@@ -465,12 +575,14 @@ class Propriete extends Modal{
 				}
 			}else{
 				$msg = "Code: " . $data["code"];
-				$this->saveActivity("fr", $created_by, ['Propriete', 1], $this->getLastID(), $msg);
+				$id = $this->getLastID();
+				$this->saveActivity("fr", $created_by, ['Propriete', 1], $id, $msg);
+
 				$data_ = [
 					'created'				=>	$data['created'],
 					'created_by'			=>	$data['created_by'],
 					'id_propriete_status'	=>	$data['id_propriete_status'],
-					'id_propriete'			=>	$data['id']
+					'id_propriete'			=>	$id
 				];	
 				$this->save($data_, 'status_of_propriete');
 			}
@@ -946,5 +1058,19 @@ class Propriete extends Modal{
 		}
 	}
 	
+	public function ByComplexe($params){
+		$id_complexe = isset($params['complexe'])? $params['complexe']: 0;
+		$id_propriete = !isset($params['propriete'])? 0: ($params['propriete'] != "-1"? $params['propriete']: 0);
+
+		$data = $this->find('', ['conditions'=>['id_complexe='=>$id_complexe], 'order'=>'code'], 'propriete');
+		$options = '<option value="-1" selected>-- Appartements </option>';
+		foreach($data as $p){
+			if($p["id"]==$id_propriete)
+				$options .= '<option selected value="'.$p["id"].'">'.$p["code"].'</option>';
+			else
+				$options .= '<option value="'.$p["id"].'">'.$p["code"].'</option>';
+		}
+		return $options;
+	}
 }
 $propriete = new Propriete;

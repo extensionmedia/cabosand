@@ -23,7 +23,8 @@ $months = [
 $years = [
 	2019	=>	'2019',
 	2020	=>	'2020',
-	2021	=>	'2021'
+	2021	=>	'2021',
+	2022	=>	'2022'
 ];
 
 $status = [ ['id'=>0, 'label'=>'Archivé'], ['id'=>1, 'label'=>'Activé'] ];
@@ -136,7 +137,7 @@ $filters = [
 				$params = [
 					'column_style'	=>	'v_contrat',
 					'use'			=>	'v_contrat',
-					'filters'		=>	[  ],
+					'filters'		=>	[ ['id'=>'Années', 'value'=>date("Y")]  ],
 					'pp'			=>	20,
 					'current'		=>	0
 

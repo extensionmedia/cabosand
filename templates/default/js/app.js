@@ -2911,7 +2911,7 @@ $(document).ready(function() {
 			data		:	data,
 			dataType	: 	"json",
 		}).done(function(response){
-			if (response.code === 1){
+			if (response.code == 1){
 				$("#propriete_code").val(response.msg);
 				$("#propriete_ville").val(response.ville);
 				$("#propriete_adresse").val(response.adresse);

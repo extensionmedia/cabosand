@@ -278,31 +278,31 @@ class Depense extends Modal{
 		$conditions = [ 'conditions AND' => [ 'YEAR(created) = ' => $year, 'MONTH(created) = ' => $month ] ];
 
 		$request = '
-		SELECT
-			SUM(montant) AS `total`,
-			MONTH(
-				created
-			) AS `month`,
-			YEAR(
-				created
-			) AS `year`
-		FROM
-			depense
-			';
-		
-		if(isset($params['year']))
-			$request .= '
-		WHERE YEAR(created) = ' . $year;
-		
-		$request .='
-		GROUP BY
-			MONTH(
-				created
-			),
-			YEAR(
-				created
-			)
-	';
+						SELECT
+							SUM(montant) AS `total`,
+							MONTH(
+								created
+							) AS `month`,
+							YEAR(
+								created
+							) AS `year`
+						FROM
+							depense
+							';
+						
+						if(isset($params['year']))
+							$request .= '
+						WHERE YEAR(created) = ' . $year;
+						
+						$request .='
+						GROUP BY
+							MONTH(
+								created
+							),
+							YEAR(
+								created
+							)
+					';
 
 		return $this->execute($request); // find('', $conditions , 'v_depense');
 		
@@ -782,33 +782,43 @@ class Depense extends Modal{
 		}
 	}
 	
-	public function FindBy($params){
-		$source = [
-						  "ActionScript",
-						  "AppleScript",
-						  "Asp",
-						  "BASIC",
-						  "C",
-						  "C++",
-						  "Clojure",
-						  "COBOL",
-						  "ColdFusion",
-						  "Erlang",
-						  "Fortran",
-						  "Groovy",
-						  "Haskell",
-						  "Java",
-						  "JavaScript",
-						  "Lisp",
-						  "Perl",
-						  "PHP",
-						  "Python",
-						  "Ruby",
-						  "Scala",
-						  "Scheme"
-						];
-		return $source;
+	public function ByPropriete($params){
+		$depenses = $this->find('', [ 'conditions'=>[ 'id_propriete=' => $params["id"] ], 'order'=>'date_depense desc' ], 'Depense');
+
+		$template = '
+			
+			<div class="depenses">
+				<div class="d-flex space-between pb-10">
+					<div class="title">Dépenses</div>
+					<div style="font-wheight:bold: font-size:12px"> {{total}} </div>
+				</div>
+				{{items}}
+			</div>
+		
+		';
+		
+		$items = '';
+		$total = 0;
+		foreach($depenses as $depense){
+			$date_depense = isset($depense["date_depense"])? $depense["date_depense"]: $depense["created"];
+			$total += $depense["montant"];
+			
+			$items .= '
+						<div class="item">
+							<div class="d-flex space-between">
+								<div class="date">'.$date_depense.'</div>
+								<div class="montant">'.$this->format($depense["montant"]).'</div>
+							</div>
+							<div class="description">'.$depense["libelle"].'</div>
+						</div>
+			';
+		}
+		$empty = '<div class="label label-default"> Aucune Dépense! </div>';
+		
+		$items = $items === ''? $empty: $items;
+		$total = $this->format($total);
+		return str_replace(["{{items}}", "{{total}}"], [$items, $total], $template);
+		
 	}
-	
 }
 $depense = new Depense;

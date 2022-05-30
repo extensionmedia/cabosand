@@ -2,7 +2,7 @@
 	<div class="row pb-5">
 		<div class="col_4">
 			<label for="periode_de">Date Début</label>
-			<input type="date" id="periode_de" value="<?= isset($ppl)? $ppl["de"]: "2021-01-01" ?>">
+			<input type="date" id="periode_de" value="<?= isset($ppl)? $ppl["de"]: $year."-01-01" ?>">
 			<?php
 				if(isset($ppl))
 					echo '<input type="hidden" id="id" value="'.$ppl["id"].'">'
@@ -10,7 +10,7 @@
 		</div>
 		<div class="col_4">
 			<label for="periode_a">Date Fin </label>
-			<input type="date" id="periode_a" value="<?= isset($ppl)? $ppl["a"]: "2021-12-31" ?>">
+			<input type="date" id="periode_a" value="<?= isset($ppl)? $ppl["a"]: $year."-12-31" ?>">
 		</div>
 		<div class="col_4">
 			<label for="periode_nuite">Nuités </label>
@@ -26,9 +26,9 @@
 			<label for="date_fin">Date Fin </label>
 			<select id="ppl_type">
 				<option selected value="-1"></option>
-				<option <?= isset($ppl)? ($ppl["id_propriete_location_type"] === "1"? "selected": ""): "" ?> value="1">Par Nuit</option>
-				<option <?= isset($ppl)? ($ppl["id_propriete_location_type"] === "2"? "selected": ""): "" ?> value="2">Par Mois</option>
-				<option <?= isset($ppl)? ($ppl["id_propriete_location_type"] === "3"? "selected": ""): "" ?> value="3">Forfait</option>
+				<option <?= isset($ppl)? ($ppl["id_propriete_location_type"] == "1"? "selected": ""): "" ?> value="1">Par Nuit</option>
+				<option <?= isset($ppl)? ($ppl["id_propriete_location_type"] == "2"? "selected": ""): "" ?> value="2">Par Mois</option>
+				<option <?= isset($ppl)? ($ppl["id_propriete_location_type"] == "3"? "selected": ""): "" ?> value="3">Forfait</option>
 			</select>
 		</div>
 	</div>
@@ -36,7 +36,7 @@
 		<div class="col_12 d-flex">
 			<div>
 				<label class="switch" style="width: 40px">
-					<input class="field" id="status" type="checkbox" <?= isset($ppl)? ($ppl["status"] === "1"? "checked": ""): "" ?>>
+					<input class="field" id="status" type="checkbox" <?= isset($ppl)? ($ppl["status"] == "1"? "checked": ""): "" ?>>
 					<span class="slider round"></span>
 				</label>
 			</div>

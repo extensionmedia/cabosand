@@ -146,7 +146,7 @@ class Propriete_Proprietaire_Location extends Modal{
 	public function Create($params){
 		$id_propriete = $params["id_propriete"];
 		$view = new View("propriete_proprietaire_location.create");
-		return $view->render(['id_propriete'=>$id_propriete]);
+		return $view->render(['id_propriete'=>$id_propriete, 'year'=>date('Y')]);
 	}
 	
 	public function Store($params){
@@ -312,7 +312,7 @@ class Propriete_Proprietaire_Location extends Modal{
 		foreach($ppl as $k=>$v){
 			$type = 'Par Nuit';
 			$type = ($v["id_propriete_location_type"] === "1")? $type: ($v["id_propriete_location_type"] === "2"? "Par Mois": "Forfait");
-			$status = ($v["status"] === "1")? "<div class='label label-green'>Activé</div>": "<div class='label label-red'>Archivé</div>";
+			$status = ($v["status"] == "1")? "<div class='label label-green'>Activé</div>": "<div class='label label-red'>Archivé</div>";
 			$trs .= '
 							<tr>
 								<td>
@@ -393,6 +393,91 @@ class Propriete_Proprietaire_Location extends Modal{
 			';
 		}
 		return $trs;
+	}
+
+	public function ByPropriete($params = []){
+		
+		$year = $params['year'] != "-1"? $params['year']: "";
+
+
+		if($year != "")
+			$ppl = $this->find('', ['conditions AND'=>['id_propriete=' => $params['id_propriete'], 'YEAR(created)=' => $year ], 'order'=>'created DESC'], 'v_propriete_proprietaire_location');
+		else
+			$ppl = $this->find('', ['conditions'=>['id_propriete=' => $params['id_propriete'] ], 'order'=>'created DESC'], 'v_propriete_proprietaire_location');
+		
+			$template = '
+			<div class="ppl_wrapper shadow-lg">
+				<div class="popup-content ppl">
+					<div class="header d-flex space-between mb-10">
+						<div class="title" style="font-weight:bold; padding-top:7px">Contrats envers Propriétaire</div>
+						<div class="">
+							<button class="add green" value="'.$params['id_propriete'].'"><i class="fas fa-plus"></i> Ajouter</button>
+							<button class="refresh hide" value="'.$params['id_propriete'].'"><i class="fas fa-plus"></i> ref</button>
+						</div>
+					</div>
+					<div class="ppl-add-container"></div>
+					<div class="body border border-red">
+						<table>
+							<thead>
+								<tr>
+									<th class="bg-red text-white">PERIODE</th>
+									<th class="bg-red text-white">TYPE</th>
+									<th class="bg-red text-white">MONTANT</th>
+									<th class="bg-red text-white">STATUS</th>
+									<th class="bg-red text-white"></th>
+								</tr>
+							</thead>
+
+							<tbody>
+								{{trs}}
+							</tbody>
+						</table>
+					</div>
+				</div>			
+			</div>
+		';
+		
+		$trs = '';
+		
+		
+		foreach($ppl as $k=>$v){
+			$type = 'Par Nuit';
+			$type = ($v["id_propriete_location_type"] === "1")? $type: ($v["id_propriete_location_type"] === "2"? "Par Mois": "Forfait");
+			$status = ($v["status"] == "1")? "<div class='label label-green'>Activé</div>": "<div class='label label-red'>Archivé</div>";
+			$trs .= '
+							<tr>
+								<td>
+									<div class="d-flex ppl-periode">
+										<div>'.$v["de"].'</div>
+										<div class="pl-5 pr-5 text-red" style="font-size:16px">[ '.$v["nbr_nuite"].' ]</div>
+										<div>'.$v["a"].'</div>
+									</div>
+								</td>
+								<td>'.$type.'</td>
+								<td style="text-align:right; font-weight:bold;">'. $this->format( $v["montant"] ).'</td>
+								<td class="text-center">'.$status.'</td>
+								<td style="width:50px; text-align:center">
+									<button class="ppl-update" value="' . $v["id"] . '">
+										<i class="fas fa-ellipsis-v"></i>
+									</button>
+								</td>
+							</tr>
+			';
+		}		
+		
+		$empty = '
+						<tr>
+							<td colspan="3">
+								<div class="flex justify-center text-red text-lg py-4 show_alert">
+									Pas de périodes enregistré envers le propriétaire
+								</div>
+							</td>
+						</tr>
+		';
+
+		$trs =  $trs == ''? $empty: $trs ;
+
+		return str_replace(["{{trs}}"], [$trs], $template);
 	}
 	
 }

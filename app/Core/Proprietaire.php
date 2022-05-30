@@ -85,7 +85,7 @@ class Proprietaire extends Modal{
 	public function ShortTable($params = []){
 		$template = '
 			
-			<div class="short_table">
+			<div class="short_table h-96 overflow-y-auto">
 				<div class="search_bar">
 					<input type="text" class="request" data-controler="Proprietaire" data-id="id_proprietaire">
 				</div>

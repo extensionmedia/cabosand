@@ -173,7 +173,7 @@ class Contrat_Periode extends Modal{
 	public function Create($params){
 		$UID = $params["UID"];
 		$view = new View("contrat_periode.create");
-		return $view->render(['UID'=>$UID]);
+		return $view->render(['UID'=>$UID, 'year'=>date('Y')]);
 	}
 	
 	public function Store($params){
@@ -391,7 +391,7 @@ class Contrat_Periode extends Modal{
 			if($isDisponible){
 				if ($propriete->IsDisponibleOnThisPeriode(['id_propriete'=>$id_propriete, 'date_debut'=>$v["date_debut"], 'date_fin'=>$v["date_fin"]]) ){
 					$btn = '
-							<button data-id_periode="'.$v["id"].'" data-UID="'.$params['UID'].'" data-id_propriete="'.$id_propriete.'" data-date_debut="'.$v["date_debut"].'" data-date_fin="'.$v["date_fin"].'"  class="transparent add_this_propriete_to_this_contrat">
+							<button data-id_periode="'.$v["id"].'" data-UID="'.$params['UID'].'" data-id_propriete="'.$id_propriete.'" data-date_debut="'.$v["date_debut"].'" data-date_fin="'.$v["date_fin"].'"  class="transparent py-1 px-2 add_this_propriete_to_this_contrat">
 								<i class="fas fa-check"></i> 
 							</button>';
 				}else{
@@ -408,7 +408,7 @@ class Contrat_Periode extends Modal{
 			}
 			
 			
-			$status = ($v["status"] === "1")? "<div class='label label-green'>Activé</div>": "<div class='label label-red'>Archivé</div>";
+			$status = ($v["status"] == "1")? "<div class='label label-green'>Activé</div>": "<div class='label label-red'>Archivé</div>";
 			$trs .= '<div data-id="'.$v["id"].'" data-date_debut="'.$v["date_debut"].'" data-date_fin="'.$v["date_fin"].'" class="item d-flex space-between">
 						<div class="d-flex">
 							<div class="dates d-flex">

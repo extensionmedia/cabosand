@@ -490,11 +490,13 @@ input[type="text"]:disabled {
 	background-color: rgba(213,213,213,1.00)
 }
 
+/*
 #propriete_to_periode .periodes_container.items .item button{
 	padding: 5px 7px!important;
 	height: auto!important;
 	background-color: transparent;
 }
+*/
 
 #propriete_to_periode .periodes_container.items .item:last-child{
 	border-bottom: none
@@ -1061,8 +1063,8 @@ input:checked + .slider:before {
     position: relative;
     left: 50%;
     top: 50%;
-    width: 150px;
-    height: 150px;
+    width: 90px;
+    height: 90px;
     margin: -75px 0 0 -75px;
     border-radius: 50%;
     border: 3px solid transparent;

@@ -73,37 +73,37 @@ require_once($core."Contrat.php");
 
 
 			
-$current_month = date('m');
-$current_year = date('Y');
-			
-$options = array(	"counter"		=>	0,
-				 	"style"			=>	(isset($_POST["style"]))? $_POST["style"]:"month_"
-				);
+		$current_month = date('m');
+		$current_year = date('Y');
+					
+		$options = array(	"counter"		=>	0,
+							"style"			=>	(isset($_POST["style"]))? $_POST["style"]:"month_"
+						);
 
 
-			
-//$_data = $contrat->find("" , array("conditions OR"=>array("")),"v_contrat_periode");
-$request = "select * from v_contrat_periode where (year(date_debut)=".$current_year." and month(date_debut)=" . intval($current_month) .") OR (year(date_fin)=".$current_year." and month(date_fin)=" . intval($current_month) .") order by date_debut, date_fin";
+					
+		//$_data = $contrat->find("" , array("conditions OR"=>array("")),"v_contrat_periode");
+		$request = "select * from v_contrat_periode where (year(date_debut)=".$current_year." and month(date_debut)=" . intval($current_month) .") OR (year(date_fin)=".$current_year." and month(date_fin)=" . intval($current_month) .") order by date_debut, date_fin";
 
-$_data = $contrat->execute($request);
+		$_data = $contrat->execute($request);
 
-//$_data = $contrat->fetchAll("v_contrat_periode");		
-			
-$data = array();
-foreach($_data as $k=>$v){
-	array_push($data, array(
-		"societe_name"	=>	$v["societe_name"],
-		"date_debut"	=>	$v["date_debut"],
-		"date_fin"		=>	$v["date_fin"],
-		"color"			=>	$v["color"]
-	));
-}
-			
-			
-$args = array("options"=>$options,"data"=>$data);
-//var_dump($args);
+		//$_data = $contrat->fetchAll("v_contrat_periode");		
+					
+		$data = array();
+		foreach($_data as $k=>$v){
+			array_push($data, array(
+				"societe_name"	=>	$v["societe_name"],
+				"date_debut"	=>	$v["date_debut"],
+				"date_fin"		=>	$v["date_fin"],
+				"color"			=>	$v["color"]
+			));
+		}
+					
+					
+		$args = array("options"=>$options,"data"=>$data);
+		//var_dump($args);
 
-echo $calendar->drawCalendar(($current_month),$current_year, $args);
+		echo $calendar->drawCalendar(($current_month),$current_year, $args);
 			
 			?>
 			</div>
@@ -141,7 +141,7 @@ echo $calendar->drawCalendar(($current_month),$current_year, $args);
 
 
 
-<div class="row mb-20 activities hide">
+<div class="row mb-20 activities">
 	<div class="panel">
 		<div class="panel-header">
 			Activités récentes

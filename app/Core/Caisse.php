@@ -43,7 +43,6 @@ class Caisse extends Modal{
 		
 		
 		$table = '
-			<div class="table-container">
 				<div class="d-flex space-between" style="padding:0 10px 10px 10px">
 					<div style="font-size:16px; font-weight:bold">{{counter}}</div>
 					<div class="d-flex" style="font-size:16px; font-weight:bold">
@@ -62,7 +61,6 @@ class Caisse extends Modal{
 						{{trs}}
 					</tbody>
 				</table>
-			</div>		
 		';
 		
 		/***********
@@ -75,14 +73,14 @@ class Caisse extends Modal{
 			$style = ""; 
 			$is_display = ( isset($column["display"]) )? ($column["display"])? "" : "hide" : "";
 			
-			if($column['column'] === "actions"){
+			if($column['column'] == "actions"){
 				$ths .= "<th class='". $is_display . "'>";
 				$ths .= "	<button data-default='".$defaultStyleName."' value='".$column_style."' class='show_list_options'>";
 				$ths .= "		<i class='fas fa-ellipsis-h'></i></button>";
 				$ths .= "	</button>";
 				$ths .=	"</th>";
 			}else{
-				$trs_counter += $is_display === "hide"? 0:1;
+				$trs_counter += $is_display == "hide"? 0:1;
 				$ths .= "<th class='sort_by ". $is_display . "' data-sort='" . $column['column'] . "' data-sort_type='desc'>";
 				$ths .=  "	<div class='d-flex'>";
 				$ths .=  		$column['label'];
@@ -107,7 +105,7 @@ class Caisse extends Modal{
 							$request[ 'LOWER(CONVERT(' . $v. ' USING latin1)) like '] = '%' . strtolower( $params['request'] ) . '%';
 							
 							$item = 'LOWER(CONVERT(' . $v. ' USING latin1)) like %' . strtolower( $params['request'] ) . '%';
-							$sql .= $sql===''? $item.'<br>': ' AND '.$item.'<br>';
+							$sql .= $sql==''? $item.'<br>': ' AND '.$item.'<br>';
 							
 						}
 					}
@@ -122,7 +120,7 @@ class Caisse extends Modal{
 		
 		$conditions = [];
 		
-		if( count($request) === 1 ){
+		if( count($request) == 1 ){
 			$conditions['conditions'] = $request;
 		}elseif( count($request) > 1 ){
 			$conditions['conditions AND'] = $request;

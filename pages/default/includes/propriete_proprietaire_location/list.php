@@ -97,7 +97,7 @@ $filters = [
 									$string .= '<option value="'.$k.'">'.$v."</option>";
 							}
 							if($key === "Années"){
-								if( $k === intval(date("Y")) ) 
+								if( $k == intval(date("Y")) ) 
 									$string .= '<option selected value="'.$k.'">'.$v."</option>";
 								else
 									$string .= '<option value="'.$k.'">'.$v."</option>";

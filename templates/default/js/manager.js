@@ -362,6 +362,10 @@ $(document).ready(function(){
 
 	});
 	
+	$(document).on('click', '.show_alert', function(){
+		alert('show')
+	})
+
 	$(document).on('click', '.open', function(){
 		var page = $(this).attr('data-page');
 		var data = {
@@ -384,7 +388,7 @@ $(document).ready(function(){
 			dataType	: 	"json",
 		}).done(function(response){
 			
-			if(response.msg === 1){
+			if(response.msg == 1){
 
 				var data = {};
 
@@ -523,7 +527,7 @@ $(document).ready(function(){
 	
 	/*** Search */
 	$(document).on('click', '.page_search_button', function(){
-		
+		console.log('search clicked')
 		$('body').preloader();
 		
 		var tags = [];
@@ -1083,7 +1087,8 @@ $(document).ready(function(){
 		}
 		
 		if(continu){
-			
+			$(this).prop('disabled', true).html('<i class="fas fa-sync fa-spin"></i>');
+			console.log('clicked.....')
 			var columns = {
 				'de'							:	$("#periode_de").val(),
 				'a'								:	$("#periode_a").val(),
@@ -1229,7 +1234,7 @@ $(document).ready(function(){
 			'params'		:	{
 				'UID'			:	$(this).val(),
 				'id_propriete'	:	$(this).attr('data-id_propriete'),
-				'id_client'		:	$(this).attr('data-id'),
+				'id_client'		:	$('option:selected', this).attr('data-id'), // $(this).attr('data-id'),
 			}
 		};
 
@@ -1250,7 +1255,8 @@ $(document).ready(function(){
 	});
 	
 	$(document).on('click', '.add_this_propriete_to_this_contrat', function(){
-		
+		$(this).prop('disabled', true).html('<i class="fas fa-sync fa-spin"></i>');
+		console.log('clicked.....')
 		var data = {
 			'controler'		:	'Propriete_Location',
 			'function'		:	'Store',
@@ -1644,7 +1650,7 @@ $(document).ready(function(){
 		};
 		
 		var _this = $(this);
-		
+		$(this).prop('disabled', true).html('<i class="fas fa-sync fa-spin"></i>');
 		$.ajax({
 			type		: 	"POST",
 			url			: 	"pages/default/ajax/ajax.php",
@@ -2005,7 +2011,7 @@ $(document).ready(function(){
 		}
 		console.log($("#nbr__nuite").val());
 		if(continu){
-			
+			$(this).prop('disabled', true).html('<i class="fas fa-sync fa-spin"></i>');
 			var columns = {
 				'date_debut'					:	$("#date_debut").val(),
 				'date_fin'						:	$("#date_fin").val(),
