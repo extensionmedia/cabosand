@@ -1060,11 +1060,15 @@ class Propriete extends Modal{
 	
 	public function ByComplexe($params){
 		$id_complexe = isset($params['complexe'])? $params['complexe']: 0;
+		$id_propriete = !isset($params['propriete'])? 0: ($params['propriete'] != "-1"? $params['propriete']: 0);
 
 		$data = $this->find('', ['conditions'=>['id_complexe='=>$id_complexe], 'order'=>'code'], 'propriete');
 		$options = '<option value="-1" selected>-- Appartements </option>';
 		foreach($data as $p){
-			$options .= '<option value="'.$p["id"].'">'.$p["code"].'</option>';
+			if($p["id"]==$id_propriete)
+				$options .= '<option selected value="'.$p["id"].'">'.$p["code"].'</option>';
+			else
+				$options .= '<option value="'.$p["id"].'">'.$p["code"].'</option>';
 		}
 		return $options;
 	}

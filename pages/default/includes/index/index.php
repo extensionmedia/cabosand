@@ -135,14 +135,9 @@ for($year=$first_year; $year<=$this_year; $year++){
 				dataType	: 	"json",
 			}).done(function(response){
 
-				$("#appartement")    
-								.find('option')
-    							.remove()
-    							.end()
-    							.append('<option value="-1" selected>-- Appartements</option>')
-
 				$(".filters").find('#complexe').remove()
 				$(".filters").prepend(response.msg);
+				$("#complexe").trigger('change')
 				
 			}).fail(function(xhr) {
 				console.log(xhr.responseText);
@@ -155,15 +150,18 @@ for($year=$first_year; $year<=$this_year; $year++){
 			var year = $(this).val();
 			var month = $('#month').val();
 			var complexe = $('#complexe').val();
+			var propriete = $('#appartement').val();
 
 			var data = {
 				'controler'		:	'Propriete',
 				'function'		:	'ByComplexe',
 				'params'		:	{
-					'complexe'		:	complexe
+					'complexe'		:	complexe,
+					'propriete'		:	propriete
 				}
 			};
 			$("#appartement").addClass('bg-yellow-500')
+			console.log(data)
 			$.ajax({
 				type		: 	"POST",
 				url			: 	"pages/default/ajax/ajax.php",

@@ -1261,26 +1261,6 @@ class Calendar extends Modal{
 		return $select;
 	}
 
-	public function Draw_Table(){
-		$template = '
-			<table class="w-full" border="1">
-				<thead>
-					<tr class="border py-4 bg-red-200">
-						<th>YEAR</th>
-						<th>MONTH</th>
-						<th>PROPRIETE</th>
-						<th>COMPLEXE</th>
-						<th>ROW</th>
-					</tr>
-				</thead>
-			</table>
-
-		';
-
-		$this->Scrapp(2020);
-
-		return $template;
-	}
 
 }
 
