@@ -45,28 +45,6 @@ for($year=$first_year; $year<=$this_year; $year++){
 		<!-- Draw here the calendar by Month and Client-->
 		<?= $calendar->Table_Month([]) ?>
 
-		<div class="row">
-			<div class="col_12">
-				<div id="mycalendar">
-					<div class="mycalendar-container">
-						<div class="mycalendar-header">
-							<div class="title"><i class="far fa-calendar-alt"></i> Calendar</div>
-							<div class="tabs">
-								<ul>
-									<li><a class="active" data-style="1" href="#tab1">Mois</a></li>
-								</ul>
-							</div>
-						</div>
-						
-						<div class="mycalendar-body pb-20">
-								<?= $calendar->Get(["style"=>1,"counter"=>0, "id_complexe"=>"", "UID"=>""]) ?>							
-						</div>
-						
-					</div>
-				</div>
-			</div>
-		</div>
-
 		<div class="shadow rounded border mx-2 mt-8 mb-24">
 			<div class="py-2 bg-white px-2 flex items-center gap-4 justify-between">
 				<div class="flex items-center gap-4 filters">

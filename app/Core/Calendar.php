@@ -530,12 +530,7 @@ class Calendar extends Modal{
 
 		return $calendar;
 	}
-	
-	
-	public function drawCalendar_2($month,$year, $args=null){
-		$table = '<table class="calendar">';
-	}
-	
+		
 	
 	/*****************************
 			MY CALENDAR
@@ -673,7 +668,14 @@ class Calendar extends Modal{
 		$month = intval(isset($params['month'])? $params['month']: date('m'));
 		$year = intval(isset($params['year'])? $params['year']: date('Y'));
 
-		$request = "select * from v_contrat_periode where (year(date_debut)=".$year." and month(date_debut)=" . intval($month) .") OR (year(date_fin)=".$year." and month(date_fin)=" . intval($month) .") order by date_debut, date_fin";
+		$request = "
+			SELECT * 
+			FROM v_contrat_periode 
+			WHERE 
+				(year(date_debut)=".$year." AND month(date_debut)=" . intval($month) .") 
+			OR 	(year(date_fin)=".$year." AND month(date_fin)=" . intval($month) .") 
+			ORDER BY date_debut, date_fin";
+
 		$_data = $this->execute($request);
 		$data = array();
 		foreach($_data as $k=>$v){
@@ -686,10 +688,10 @@ class Calendar extends Modal{
 		}
 		
 		
-		$calendar = '<table cellpadding="0" cellspacing="0" class="calendar">';
+		$calendar = '<table class="w-full bg-gray-100" style="table-layout: fixed;">';
 
 		$headings = array("Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi");
-		$calendar.= '<tr class="calendar-row"><td class="calendar-day-head">'.implode('</td><td class="calendar-day-head">',$headings).'</td></tr>';
+		$calendar.= '<tr class="bg-green-300"><td class="text-center py-3 text-green-600 border-2 border-green-200">'.implode('</td><td class="text-center py-3 text-green-600 border-2 border-green-200">',$headings).'</td></tr>';
 
 		$running_day = date('w',mktime(0,0,0,$month,1,$year)); 		// order of first day in the week
 		$days_in_month = date('t',mktime(0,0,0,$month,1,$year)); 	// number of days in given month
@@ -697,15 +699,15 @@ class Calendar extends Modal{
 		$day_counter = 0;
 		$dates_array = array();
 
-		$calendar.= '<tr class="calendar-row">';
+		$calendar.= '<tr class="">';
 
 		for($x = 0; $x < $running_day; $x++):
-			$calendar.= '<td class="calendar-day-np"> </td>';
+			$calendar.= '<td class="calendar-day-np bg-white" style="background:white !important"> </td>';
 			$days_in_this_week++;
 		endfor;
 
 		for($list_day = 1; $list_day <= $days_in_month; $list_day++):
-			$calendar.= '<td class="calendar-day">';
+			$calendar.= '<td class="calendar-day min-h-16 h-24 overflow-hidden align-top hover:bg-blue-100 border-2 border-green-200 bg-transparent" style="padding-top:24px !important">';
 
 			$day = ($list_day<10)? "0" . $list_day: $list_day;
 			$_month = ($month>9)? $month: "0".$month;
@@ -721,10 +723,10 @@ class Calendar extends Modal{
 					if(!in_array($v["societe_name"], $complexes)){
 						array_push($complexes,$v["societe_name"]);
 						if($i<6){
-							$calendar.= "<div class='label label-green' style='padding:2px 3px; font-size:10px;background-color:" .  $v["color"] . "'>" .  $v["societe_name"] . "</div>";
+							$calendar.= "<div class='py-1 px-2 rounded-lg border-green-50 text-white my-1' style='padding:2px 3px; font-size:10px;background-color:" .  $v["color"] . "'>" .  $v["societe_name"] . "</div>";
 						}else{
 							$j++;
-							$hided .= "<div class='label label-green' style='padding:2px 3px; font-size:10px;background-color:" .  $v["color"] . "'>" .  $v["societe_name"] . "</div>";
+							$hided .= "<div class='py-1 px-2 rounded-lg border-green-50 text-white my-1' style='padding:2px 3px; font-size:10px;background-color:" .  $v["color"] . "'>" .  $v["societe_name"] . "</div>";
 						}
 						$i++;							
 					}
@@ -750,7 +752,7 @@ class Calendar extends Modal{
 		
 		if($days_in_this_week < 8):
 			for($x = 1; $x <= (8 - $days_in_this_week); $x++):
-				$calendar.= '<td class="calendar-day-np"> </td>';
+				$calendar.= '<td class="calendar-day-np" style="background:white !important"> </td>';
 			endfor;
 		endif;
 		
@@ -1263,31 +1265,6 @@ class Calendar extends Modal{
 
 	public function Table_Month($params){
 
-		$template = '
-			<div class="calendar rounded shadow mx-1">
-				<div class="calendar_header flex justify-between bg-gray-50 py-2 px-2 text-gray-600">
-					<div class="">
-						<i class="far fa-calendar-alt"></i> Calendar
-					</div>
-					<div class="flex items-center justify-between">
-						<div class="flex items-center gap-2">
-							<div class="py-1 px-2 text-gray-500 rounded cursor-pointer hover:bg-gray-400">
-								<i class="fas fa-grip-lines"></i>
-							</div>
-							<div class="calendar_body_refresh py-1 px-2 text-gray-500 rounded cursor-pointer hover:bg-gray-400">
-								<i class="fas fa-arrows-rotate"></i>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="calendar_body py-2 px-2">
-					Body
-				</div>
-			</div>
-		';
-		return $template;
-	}
-	public function Table_Month_Body($params){
 		$months = [
 			1	=>	'Janvier',
 			2	=>	'Février',
@@ -1310,7 +1287,7 @@ class Calendar extends Modal{
 			array_push($years, $year);
 		}
 
-		$select_months = '<select class="calendar_month border-0">';
+		$select_months = '<select class="calendar_month border-0 bg-transparent text-center">';
 		foreach($months as $k=>$m){
 			if($k == date('m'))
 				$select_months .= '<option selected value="'.$k.'">'.$m.'</option>';
@@ -1319,7 +1296,7 @@ class Calendar extends Modal{
 		}
 		$select_months .= '</select>';
 
-		$select_years = '<select class="calendar_year border-0">';
+		$select_years = '<select class="calendar_year border-0 bg-transparent text-center">';
 		foreach($years as $y){
 			if($y == date('Y'))
 				$select_years .= '<option selected value="'.$y.'">'.$y.'</option>';
@@ -1328,24 +1305,55 @@ class Calendar extends Modal{
 		}
 		$select_years .= '</select>';
 
-		$template = '
-			<div class="text-gray-800">
-				<div class="flex justify-between items-center py-1">
-					<div class="font-bold text-sm">Agendar par Client</div>
-					<div class="flex calendar_year_month items-center border border-gray-500 rounded overflow-hidden">
-						<div class="calendar_year_month_prev py-3 px-4 hover:bg-gray-100 hover:text-gray-700 cursor-pointer">
+		$month_year = '
+			<div class="text-gray-800 p-2">
+				<div class="flex justify-center items-center py-1">
+					<div class="flex calendar_year_month items-center border border-gray-300 rounded overflow-hidden">
+						<div class="calendar_year_month_prev py-3 px-4 bg-gray-100 hover:bg-gray-300 hover:text-gray-700 cursor-pointer">
 							<i class="fa fa-chevron-left"></i>
 						</div>
 						'.$select_months.'
 						'.$select_years.'
-						<div class="calendar_year_month_next py-3 px-4 hover:bg-gray-100 hover:text-gray-700 cursor-pointer">
+						<div class="calendar_year_month_next py-3 px-4 bg-gray-100 hover:bg-gray-300 hover:text-gray-700 cursor-pointer">
 							<i class="fa fa-chevron-right"></i>
 						</div>
 					</div>
 				</div>
 			</div>
 		';
+
+		$template = '
+			<div class="calendar rounded shadow mx-1">
+				<div class="calendar_header flex justify-between bg-green-100 py-2 px-2 text-green-600">
+					<div class="">
+						<i class="far fa-calendar-alt"></i> Calendar
+					</div>
+					<div class="flex items-center justify-between">
+						<div class="flex items-center gap-2">
+							<div class="py-1 px-2 text-green-500 rounded cursor-pointer hover:bg-green-400">
+								<i class="fas fa-grip-lines"></i>
+							</div>
+							<div class="calendar_body_refresh py-1 px-2 text-green-500 rounded cursor-pointer hover:bg-green-400">
+								<i class="fas fa-arrows-rotate"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+				'.$month_year.'
+				<div class="calendar_body py-2 px-2">
+					'.$this->By_Month(['month'=>7, 'year'=>2022]).'
+				</div>
+			</div>
+		';
 		return $template;
+	}
+	public function Table_Month_Body($params){
+		
+
+		$template = '
+			body here
+		';
+		return  $this->By_Month(['month'=>7, 'year'=>2022]);
 	}
 
 }

@@ -89,7 +89,7 @@
 
 /*******************  CALENDAR 2 **********/
 
-table.calendar{ border-left:1px solid #e7eaf0; width: 100%; margin-top: 15px}
+table.calendar{ border-left:1px solid red; width: 100%; margin-top: 15px}
 table.calendar tr td{ 
 	background-color: white;
 	vertical-align: top;
@@ -116,8 +116,7 @@ td.calendar-day	{
 	vertical-align: top
 }
 
-td.calendar-day:hover	{ background:#eceff5; }
-td.calendar-day-np	{ background:#ECEEF0 !important; min-height:80px; } * html div.calendar-day-np { height:80px; }
+td.calendar-day-np	{ background:#ECEEF0 !important; } * html div.calendar-day-np { height:80px; }
 
 td.calendar-day-head { 
 	background:white; 
