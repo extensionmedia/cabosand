@@ -83,6 +83,7 @@ class Menu extends Modal{
 			'Caisse'				=>	'<li class="open show_hide_menu" data-page="caisse.list"><i class="fas fa-cash-register"></i> Caisses </li>',
 			'Propriété'				=>	'<li class="has_sub" data-sub-target="propriete"><i class="fas fa-home"></i> Propriété <div class="down"><i class="fas fa-caret-down"></i></div></li>',
 				'Appartements'			=>	'<li class="open show_hide_menu sub propriete hide" data-page="propriete.list"><i class="fas fa-home"></i> Liste Apparts. </li>',
+				'Type Appartement'		=>	'<li class="open show_hide_menu sub propriete hide" data-page="propriete_type.list"><i class="fas fa-home"></i> Type App. </li>',
 			'Contrat'				=>	'<li class="open show_hide_menu" data-page="contrat.list"><i class="fas fa-file-contract"></i> Contrat </li>',
 			'Client'				=>	'<li class="open show_hide_menu" data-page="client.list"><i class="fas fa-user-tie"></i> Client </li>',
 			'Propriétaire'			=>	'<li class="open show_hide_menu" data-page="proprietaire.list"><i class="fas fa-user"></i> Propriétaire </li>',
