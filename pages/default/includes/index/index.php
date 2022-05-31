@@ -39,7 +39,12 @@ for($year=$first_year; $year<=$this_year; $year++){
 		</div>
 	</div>
 
+	
+	
 	<div class="body pb-8 border h-full">
+		<!-- Draw here the calendar by Month and Client-->
+		<?= $calendar->Table_Month([]) ?>
+
 		<div class="row">
 			<div class="col_12">
 				<div id="mycalendar">
@@ -108,6 +113,69 @@ for($year=$first_year; $year<=$this_year; $year++){
 
 <script>
 	$(document).ready(function(){
+
+		$(document).on('click', '.calendar_body_refresh', function(){
+			$('.calendar_body').html("Loading...")
+			var year = 2022;
+			var month = 5;
+			var data = {
+				'controler'		:	'Calendar',
+				'function'		:	'Table_Month_Body',
+				'params'		:	{
+					'month'			:	month,
+					'year'			:	year
+				}
+			};
+			$.ajax({
+				type		: 	"POST",
+				url			: 	"pages/default/ajax/ajax.php",
+				data		:	data,
+				dataType	: 	"json",
+			}).done(function(response){
+				$('.calendar_body').html(response.msg)
+			}).fail(function(xhr) {
+				console.log(xhr.responseText);
+			});	
+
+
+		})
+
+		$(document).on('click', '.calendar_year_month_prev', function(){
+			var current_year= $('.calendar_year').prop('selectedIndex');
+			var current_month = $('.calendar_month').prop('selectedIndex');
+			var total_months = $('.calendar_month option').length;
+			var total_year = $('.calendar_year option').length;
+			if(current_month == 0){
+				if(current_year == 0){
+					// Alert the first of the list
+				}else{
+					$('.calendar_month option').eq(total_months-1).prop('selected', true);
+					$('.calendar_year option').eq(current_year-1).prop('selected', true);
+
+				}
+			}else{
+				$('.calendar_month option').eq(current_month-1).prop('selected', true);
+			}
+		})
+
+		$(document).on('click', '.calendar_year_month_next', function(){
+			var current_year= $('.calendar_year').prop('selectedIndex');
+			var current_month = $('.calendar_month').prop('selectedIndex');
+			var total_months = $('.calendar_month option').length;
+			var total_year = $('.calendar_year option').length;
+
+			if(current_month == total_months-1){
+				if(current_year == total_year-1){
+					// alert the end of the list
+				}else{
+					$('.calendar_month option').eq(0).prop('selected', true);
+					$('.calendar_year option').eq(current_year+1).prop('selected', true);
+
+				}
+			}else{
+				$('.calendar_month option').eq(current_month+1).prop('selected', true);
+			}
+		})
 
 		$('#month').on('change', function(){
 			$('#year').trigger('change')

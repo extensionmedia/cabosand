@@ -1261,6 +1261,92 @@ class Calendar extends Modal{
 		return $select;
 	}
 
+	public function Table_Month($params){
+
+		$template = '
+			<div class="calendar rounded shadow mx-1">
+				<div class="calendar_header flex justify-between bg-gray-50 py-2 px-2 text-gray-600">
+					<div class="">
+						<i class="far fa-calendar-alt"></i> Calendar
+					</div>
+					<div class="flex items-center justify-between">
+						<div class="flex items-center gap-2">
+							<div class="py-1 px-2 text-gray-500 rounded cursor-pointer hover:bg-gray-400">
+								<i class="fas fa-grip-lines"></i>
+							</div>
+							<div class="calendar_body_refresh py-1 px-2 text-gray-500 rounded cursor-pointer hover:bg-gray-400">
+								<i class="fas fa-arrows-rotate"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="calendar_body py-2 px-2">
+					Body
+				</div>
+			</div>
+		';
+		return $template;
+	}
+	public function Table_Month_Body($params){
+		$months = [
+			1	=>	'Janvier',
+			2	=>	'Février',
+			3	=>	'Mars',
+			4	=>	'Avril',
+			5	=>	'Mai',
+			6	=>	'Juin',
+			7	=>	'Juillet',
+			8	=>	'Août',
+			9	=>	'Septembre',
+			10	=>	'Octobre',
+			11	=>	'Novembre',
+			12	=>	'Décembre'
+		];
+		
+		$first_year = 2019;
+		$this_year = date('Y');
+		$years = [];
+		for($year=$first_year; $year<=$this_year; $year++){
+			array_push($years, $year);
+		}
+
+		$select_months = '<select class="calendar_month border-0">';
+		foreach($months as $k=>$m){
+			if($k == date('m'))
+				$select_months .= '<option selected value="'.$k.'">'.$m.'</option>';
+			else
+				$select_months .= '<option value="'.$k.'">'.$m.'</option>';
+		}
+		$select_months .= '</select>';
+
+		$select_years = '<select class="calendar_year border-0">';
+		foreach($years as $y){
+			if($y == date('Y'))
+				$select_years .= '<option selected value="'.$y.'">'.$y.'</option>';
+			else
+				$select_years .= '<option value="'.$y.'">'.$y.'</option>';
+		}
+		$select_years .= '</select>';
+
+		$template = '
+			<div class="text-gray-800">
+				<div class="flex justify-between items-center py-1">
+					<div class="font-bold text-sm">Agendar par Client</div>
+					<div class="flex calendar_year_month items-center border border-gray-500 rounded overflow-hidden">
+						<div class="calendar_year_month_prev py-3 px-4 hover:bg-gray-100 hover:text-gray-700 cursor-pointer">
+							<i class="fa fa-chevron-left"></i>
+						</div>
+						'.$select_months.'
+						'.$select_years.'
+						<div class="calendar_year_month_next py-3 px-4 hover:bg-gray-100 hover:text-gray-700 cursor-pointer">
+							<i class="fa fa-chevron-right"></i>
+						</div>
+					</div>
+				</div>
+			</div>
+		';
+		return $template;
+	}
 
 }
 

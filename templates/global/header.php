@@ -10,7 +10,7 @@
 
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.1/tailwind.min.css" integrity="sha512-biy/TXdue7ElI4oop0vK1o0JVMwDtG2AeA1VEqJU3Z6LqZMMi6KTbc2ND1MC557MijurEJSPDVHV3WgwBgF1Pw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-	<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"/>
 	<link href="<?= HTTP.HOST ?>templates/global/css/api/Ycss-1.1.1.css" rel="stylesheet">
 	<link href="<?= HTTP.HOST ?>templates/global/css/api/sweetalert2.min.css" rel="stylesheet">
 	<link href="<?= HTTP.HOST ?>templates/<?= APP_TEMPLATE ?>/css/app.css?version=<?= time() ?>" rel="stylesheet">
