@@ -92,10 +92,11 @@ for($year=$first_year; $year<=$this_year; $year++){
 <script>
 	$(document).ready(function(){
 
+		/** Calendar Style By Month */
 		$(document).on('click', '.calendar_body_refresh', function(){
 			$('.calendar_body').html("Loading...")
-			var year = 2022;
-			var month = 5;
+			var month = $('.calendar_month').val();
+			var year = $('.calendar_year').val();
 			var data = {
 				'controler'		:	'Calendar',
 				'function'		:	'Table_Month_Body',
@@ -104,6 +105,7 @@ for($year=$first_year; $year<=$this_year; $year++){
 					'year'			:	year
 				}
 			};
+			$('.calendar_body').preloader();
 			$.ajax({
 				type		: 	"POST",
 				url			: 	"pages/default/ajax/ajax.php",
@@ -111,8 +113,10 @@ for($year=$first_year; $year<=$this_year; $year++){
 				dataType	: 	"json",
 			}).done(function(response){
 				$('.calendar_body').html(response.msg)
+				$("#preloader").remove();
 			}).fail(function(xhr) {
 				console.log(xhr.responseText);
+				$("#preloader").remove();
 			});	
 
 
@@ -134,6 +138,7 @@ for($year=$first_year; $year<=$this_year; $year++){
 			}else{
 				$('.calendar_month option').eq(current_month-1).prop('selected', true);
 			}
+			$('.calendar_body_refresh').trigger('click');
 		})
 
 		$(document).on('click', '.calendar_year_month_next', function(){
@@ -153,8 +158,11 @@ for($year=$first_year; $year<=$this_year; $year++){
 			}else{
 				$('.calendar_month option').eq(current_month+1).prop('selected', true);
 			}
+			$('.calendar_body_refresh').trigger('click');
 		})
 
+
+		/** Calendar Style By Complexe/Appartement/Client */
 		$('#month').on('change', function(){
 			$('#year').trigger('change')
 		});
@@ -189,7 +197,6 @@ for($year=$first_year; $year<=$this_year; $year++){
 				console.log(xhr.responseText);
 			});	
 		})
-
 
 		$(document).on('change', '#complexe', function(){
 

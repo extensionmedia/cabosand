@@ -1264,7 +1264,8 @@ class Calendar extends Modal{
 	}
 
 	public function Table_Month($params){
-
+		$month = isset($params['month'])? $params['month']: date("m");		
+		$year = isset($params['year'])? $params['year']: date("Y");	
 		$months = [
 			1	=>	'Janvier',
 			2	=>	'Février',
@@ -1283,8 +1284,8 @@ class Calendar extends Modal{
 		$first_year = 2019;
 		$this_year = date('Y');
 		$years = [];
-		for($year=$first_year; $year<=$this_year; $year++){
-			array_push($years, $year);
+		for($year_=$first_year; $year_<=$this_year; $year_++){
+			array_push($years, $year_);
 		}
 
 		$select_months = '<select class="calendar_month border-0 bg-transparent text-center">';
@@ -1341,19 +1342,17 @@ class Calendar extends Modal{
 				</div>
 				'.$month_year.'
 				<div class="calendar_body py-2 px-2">
-					'.$this->By_Month(['month'=>7, 'year'=>2022]).'
+					'.$this->By_Month(['month'=>$month, 'year'=>$year]).'
 				</div>
 			</div>
 		';
 		return $template;
 	}
 	public function Table_Month_Body($params){
-		
+		$month = isset($params['month'])? $params['month']: date("m");		
+		$year = isset($params['year'])? $params['year']: date("Y");		
 
-		$template = '
-			body here
-		';
-		return  $this->By_Month(['month'=>7, 'year'=>2022]);
+		return  $this->By_Month(['month'=>$month, 'year'=>$year]);
 	}
 
 }
