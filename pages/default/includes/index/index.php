@@ -161,7 +161,11 @@ for($year=$first_year; $year<=$this_year; $year++){
 			$('.calendar_body_refresh').trigger('click');
 		})
 
-
+		$(document).on('click', '.collapse', function(){
+			var target_ = $(this).data('target');
+			$('.'+target_).toggleClass('hidden');
+			$(this).toggleClass('bg-red-400');
+		})
 		/** Calendar Style By Complexe/Appartement/Client */
 		$('#month').on('change', function(){
 			$('#year').trigger('change')

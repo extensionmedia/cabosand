@@ -1331,7 +1331,7 @@ class Calendar extends Modal{
 					</div>
 					<div class="flex items-center justify-between">
 						<div class="flex items-center gap-2">
-							<div class="py-1 px-2 text-green-500 rounded cursor-pointer hover:bg-green-400">
+							<div data-target="calendar_body" class="collapse py-1 px-2 text-green-500 rounded cursor-pointer hover:bg-green-400">
 								<i class="fas fa-grip-lines"></i>
 							</div>
 							<div class="calendar_body_refresh py-1 px-2 text-green-500 rounded cursor-pointer hover:bg-green-400">
