@@ -86,5 +86,26 @@ class Parametre extends Modal{
 		
 	}
 	
+	/** Propriete Type */
+	public function Appartement_Type(){
+		$request = "
+			SELECT *, 
+			(
+				SELECT
+					COUNT(propriete.id)
+				FROM
+					propriete
+				WHERE
+					propriete.id_propriete_type = propriete_type.id
+			) AS nbr
+			FROM propriete_type
+			ORDER BY propriete_type
+		";
+		$types = $this->execute($request);
+		$push['types'] = $types;
+		$view = new View("parametres.propriete_type");
+		return $view->render($push);
+	}
+
 }
 $parametre = new Parametre;

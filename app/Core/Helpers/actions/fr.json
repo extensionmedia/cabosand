@@ -31,6 +31,20 @@
 							"message"	:	"a supprimer un fichier de la Propriete"
 						}
 	},
+	"Propriete_Type":{
+		"-1"		:	{
+							"title"		:	"Supprimer",
+							"message"	:	"a supprimer un type d appartement"					
+						},
+		"0"			:	{
+							"title"		:	"Modifier",
+							"message"	:	"a modifié un type d appartement"					
+						},
+		"1"			:	{	
+							"title"		:	"Ajouter",
+							"message"	:	"a ajouté un type d appartement"
+						}	
+	},
 	"Notes":{
 		"-1"		:	{
 							"title"		:	"Supprimer",

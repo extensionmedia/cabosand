@@ -11,6 +11,7 @@
 				<ul>
 					<li class="selected" data-page="Get_General"><i class="fas fa-angle-right"></i> Général</li>
 					<li data-page="Get_Module"><i class="fas fa-angle-right"></i> Modules</li>
+					<li data-page="Appartement_Type"><i class="fas fa-angle-right"></i> Appatement Type</li>
 				</ul>
 			</div>
 
