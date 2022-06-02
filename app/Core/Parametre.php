@@ -123,7 +123,9 @@ class Parametre extends Modal{
 			ORDER BY propriete_status
 		";
 		$statuses = $this->execute($request);
+		$colors = $this->fetchAll('colors');
 		$push['statuses'] = $statuses;
+		$push['colors'] = $colors;
 		$view = new View("parametres.propriete_status");
 		return $view->render($push);
 	}

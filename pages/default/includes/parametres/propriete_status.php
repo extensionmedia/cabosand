@@ -19,6 +19,17 @@
                     Définir valeur par défaut
                 </label>
             </div>
+            <div class="my-4">
+                <div class="text-xs mb-2">
+                    Couleur :
+                </div>
+                <select>
+                    <option value="-1">-- Couleurs</option>
+                    <?php foreach($colors as $c){ ?>
+                        <option data-hex="<?= $c["hex_string"] ?>" value="<?= $c["color_id"] ?>"><?= $c["name"] ?></option>  
+                    <?php } ?>
+                </select>
+            </div>
             <div class="flex items-start mb-6">
                 <div class="flex items-center h-5">
                     <input id="all_ligne" type="checkbox" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800" required>
@@ -60,8 +71,8 @@
         <div class="border border-t-0 border-gray-300 hover:bg-gray-50 h-10 px-2 flex items-center">
             <div class="font-light w-32"> <?= $status["id"] ?> </div>
             <div class="font-light flex-1"> <?= $status["propriete_status"] ?> (<?= $status["nbr"] ?>) </div>
-            <div class="font-light w-64 text-center"> <?= $status["all_ligne"]? "<span class='bg-green-200 rounded-lg py-1 px-4 border'><i class='fa-solid fa-list-check'></i>Toute la ligne</span>": "" ?> </div>
-            <div class="font-light w-64 text-center"> <?= $status["is_default"]? "<span class='bg-green-200 rounded-lg py-1 px-4 border'><i class='fa-solid fa-list-check'></i> Par Défaut</span>": "" ?> </div>
+            <div class="font-light w-64 text-center"> <?= $status["all_ligne"]? "<span class='bg-green-200 rounded-lg py-1 px-4 border'><i class='fa-solid fa-list-check'></i></span>": "" ?> </div>
+            <div class="font-light w-64 text-center"> <?= $status["is_default"]? "<span class='bg-green-200 rounded-lg py-1 px-4 border'><i class='fa-solid fa-list-check'></i></span>": "" ?> </div>
             <div class="font-light w-32 flex justify-between"> 
                 <div data-id="<?= $status["id"] ?>" data-appartement_status="<?= $status["propriete_status"] ?>" data-is_default="<?= $status["is_default"] ?>" class="modifier border rounded py-1 px-2 bg-gray-400 text-gray-900 rounded cursor-pointer hover:bg-gray-600 hover:text-white">
                     Modifier
