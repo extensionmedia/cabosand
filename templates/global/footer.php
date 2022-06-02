@@ -168,6 +168,8 @@
 		});
 	}
 
+	
+
 	// Load Contrats envers Proprtitaire
 	function loadContrat(id){
 		var year = $("#Années").val();
