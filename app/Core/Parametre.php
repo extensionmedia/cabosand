@@ -107,5 +107,26 @@ class Parametre extends Modal{
 		return $view->render($push);
 	}
 
+	/** Propriete Type */
+	public function Appartement_Status(){
+		$request = "
+			SELECT *, 
+			(
+				SELECT
+					COUNT(propriete.id)
+				FROM
+					propriete
+				WHERE
+					propriete.id_propriete_status = propriete_status.id
+			) AS nbr
+			FROM propriete_status
+			ORDER BY propriete_status
+		";
+		$statuses = $this->execute($request);
+		$push['statuses'] = $statuses;
+		$view = new View("parametres.propriete_status");
+		return $view->render($push);
+	}
+
 }
 $parametre = new Parametre;
