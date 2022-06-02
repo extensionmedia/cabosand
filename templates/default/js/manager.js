@@ -2503,7 +2503,7 @@ $(document).ready(function(){
 		$('.parametre_menu ul li').removeClass('selected');
 		$(this).addClass('selected');
 		
-		$('.general').preloader();
+		$('.parametre_content').preloader();
 		
 		$.ajax({
 			type		: 	"POST",

@@ -107,7 +107,7 @@ class Parametre extends Modal{
 		return $view->render($push);
 	}
 
-	/** Propriete Type */
+	/** Propriete Statut */
 	public function Appartement_Status(){
 		$request = "
 			SELECT *, 
@@ -128,5 +128,26 @@ class Parametre extends Modal{
 		return $view->render($push);
 	}
 
+
+	/** Propriete Catégories */
+	public function Appartement_Category(){
+		$request = "
+			SELECT *, 
+			(
+				SELECT
+					COUNT(propriete.id)
+				FROM
+					propriete
+				WHERE
+					propriete.id_propriete_category = propriete_category.id
+			) AS nbr
+			FROM propriete_category
+			ORDER BY propriete_category
+		";
+		$categories = $this->execute($request);
+		$push['categories'] = $categories;
+		$view = new View("parametres.propriete_category");
+		return $view->render($push);
+	}
 }
 $parametre = new Parametre;
