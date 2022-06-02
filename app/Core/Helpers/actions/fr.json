@@ -31,6 +31,20 @@
 							"message"	:	"a supprimer un fichier de la Propriete"
 						}
 	},
+	"Propriete_Category":{
+		"-1"		:	{
+							"title"		:	"Supprimer",
+							"message"	:	"a supprimer une catégorie d appartement"					
+						},
+		"0"			:	{
+							"title"		:	"Modifier",
+							"message"	:	"a modifié une catégorie d appartement"					
+						},
+		"1"			:	{	
+							"title"		:	"Ajouter",
+							"message"	:	"a ajouté une catégorie d appartement"
+						}	
+	},
 	"Propriete_Type":{
 		"-1"		:	{
 							"title"		:	"Supprimer",
@@ -43,6 +57,20 @@
 		"1"			:	{	
 							"title"		:	"Ajouter",
 							"message"	:	"a ajouté un type d appartement"
+						}	
+	},
+	"Propriete_Status":{
+		"-1"		:	{
+							"title"		:	"Supprimer",
+							"message"	:	"a supprimer un statut d appartement"					
+						},
+		"0"			:	{
+							"title"		:	"Modifier",
+							"message"	:	"a modifié un statut d appartement"					
+						},
+		"1"			:	{	
+							"title"		:	"Ajouter",
+							"message"	:	"a ajouté un statut d appartement"
 						}	
 	},
 	"Notes":{

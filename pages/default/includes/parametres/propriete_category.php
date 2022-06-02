@@ -40,18 +40,20 @@
         </div>
     </div>
 
-    <div class="w-full my-4">
+    <div class="w-full my-4 shadow">
         <div class="border border-gray-300 bg-gray-200 h-10 px-2 flex items-center rounded-t-md">
-            <div class="font-light w-32"> #ID </div>
-            <div class="font-light flex-1"> Catégorie d'appartement </div>
-            <div class="font-light w-64 text-center"> Par Défaut </div>
-            <div class="font-light w-32"> </div>
+            <div class="text-gray-700 font-bold w-20"> #ID </div>
+            <div class="text-gray-700 font-bold flex-1"> Catégorie d'appartement </div>
+            <div class="text-gray-700 font-bold w-24 text-center"> Appart. </div>
+            <div class="text-gray-700 font-bold w-20 text-center"> Par Défaut </div>
+            <div class="text-gray-700 font-bold w-32"> </div>
         </div>
         <?php foreach($categories as $category){ ?>
         <div class="border border-t-0 border-gray-300 hover:bg-gray-50 h-10 px-2 flex items-center">
-            <div class="font-light w-32"> <?= $category["id"] ?> </div>
-            <div class="font-light flex-1"> <?= $category["propriete_category"] ?> (<?= $category["nbr"] ?>) </div>
-            <div class="font-light w-64 text-center"> <?= $category["is_default"]? "<span class='bg-green-200 rounded-lg py-1 px-4 border'><i class='fa-solid fa-list-check'></i> Par Défaut</span>": "" ?> </div>
+            <div class="font-light w-20"> <?= $category["id"] ?> </div>
+            <div class="font-light flex-1"> <?= $category["propriete_category"] ?> </div>
+            <div class="font-bold text-yellow-600 w-24 text-center"> <?= $category["nbr"] ?></div>
+            <div class="font-light w-20 text-center"> <?= $category["is_default"]? "<span class='bg-green-200 rounded-lg py-1 px-4 border'><i class='fa-solid fa-circle-check'></i></span>": "" ?> </div>
             <div class="font-light w-32 flex justify-between"> 
                 <div data-id="<?= $category["id"] ?>" data-appartement_category="<?= $category["propriete_category"] ?>" data-is_default="<?= $category["is_default"] ?>" class="modifier border rounded py-1 px-2 bg-gray-400 text-gray-900 rounded cursor-pointer hover:bg-gray-600 hover:text-white">
                     Modifier

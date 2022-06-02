@@ -110,7 +110,7 @@ class Parametre extends Modal{
 	/** Propriete Statut */
 	public function Appartement_Status(){
 		$request = "
-			SELECT *, 
+			SELECT *, colors.hex_string, colors.name,
 			(
 				SELECT
 					COUNT(propriete.id)
@@ -120,6 +120,7 @@ class Parametre extends Modal{
 					propriete.id_propriete_status = propriete_status.id
 			) AS nbr
 			FROM propriete_status
+			LEFT JOIN colors on colors.color_id = propriete_status.id_color
 			ORDER BY propriete_status
 		";
 		$statuses = $this->execute($request);

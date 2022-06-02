@@ -42,16 +42,16 @@
 
     <div class="w-full my-4">
         <div class="border border-gray-300 bg-gray-200 h-10 px-2 flex items-center rounded-t-md">
-            <div class="font-light w-32"> #ID </div>
+            <div class="font-light w-20"> #ID </div>
             <div class="font-light flex-1"> Type d'appartement </div>
             <div class="font-light w-64 text-center"> Par Défaut </div>
             <div class="font-light w-32"> </div>
         </div>
         <?php foreach($types as $type){ ?>
         <div class="border border-t-0 border-gray-300 hover:bg-gray-50 h-10 px-2 flex items-center">
-            <div class="font-light w-32"> <?= $type["id"] ?> </div>
+            <div class="font-light w-20"> <?= $type["id"] ?> </div>
             <div class="font-light flex-1"> <?= $type["propriete_type"] ?> (<?= $type["nbr"] ?>) </div>
-            <div class="font-light w-64 text-center"> <?= $type["is_default"]? "<span class='bg-green-200 rounded-lg py-1 px-4 border'><i class='fa-solid fa-list-check'></i> Par Défaut</span>": "" ?> </div>
+            <div class="font-light w-64 text-center"> <?= $type["is_default"]? "<span class='bg-green-200 rounded-lg py-1 px-4 border'><i class='fa-solid fa-circle-check'></i></span>": "" ?> </div>
             <div class="font-light w-32 flex justify-between"> 
                 <div data-id="<?= $type["id"] ?>" data-appartement_type="<?= $type["propriete_type"] ?>" data-is_default="<?= $type["is_default"] ?>" class="modifier border rounded py-1 px-2 bg-gray-400 text-gray-900 rounded cursor-pointer hover:bg-gray-600 hover:text-white">
                     Modifier

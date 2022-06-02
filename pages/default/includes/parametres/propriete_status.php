@@ -23,12 +23,15 @@
                 <div class="text-xs mb-2">
                     Couleur :
                 </div>
-                <select>
-                    <option value="-1">-- Couleurs</option>
-                    <?php foreach($colors as $c){ ?>
-                        <option data-hex="<?= $c["hex_string"] ?>" value="<?= $c["color_id"] ?>"><?= $c["name"] ?></option>  
-                    <?php } ?>
-                </select>
+                <div class="flex items-center gap-2">
+                    <select id="color">
+                        <option data-hex="#fff" value="-1">-- Couleurs</option>
+                        <?php foreach($colors as $c){ ?>
+                            <option data-hex="<?= $c["hex_string"] ?>" value="<?= $c["color_id"] ?>"><?= $c["name"] ?></option>  
+                        <?php } ?>
+                    </select>
+                    <div class="color_display rounded-xl py-4 px-12"></div>
+                </div>
             </div>
             <div class="flex items-start mb-6">
                 <div class="flex items-center h-5">
@@ -61,20 +64,25 @@
 
     <div class="w-full my-4">
         <div class="border border-gray-300 bg-gray-200 h-10 px-2 flex items-center rounded-t-md">
-            <div class="font-light w-32"> #ID </div>
-            <div class="font-light flex-1"> Statut d'appartement </div>
-            <div class="font-light w-64 text-center"> Draw </div>
-            <div class="font-light w-64 text-center"> Par Défaut </div>
-            <div class="font-light w-32"> </div>
+            <div class="text-gray-700 font-bold w-20"> #ID </div>
+            <div class="text-gray-700 font-bold flex-1"> Statut d'appartement </div>
+            <div class="text-gray-700 font-bold w-24 text-center"> Appart. </div>
+            <div class="text-gray-700 font-bold w-20 text-center"> Ligne </div>
+            <div class="text-gray-700 font-bold w-20 text-center"> Par Défaut </div>
+            <div class="text-gray-700 font-bold w-32"> </div>
         </div>
         <?php foreach($statuses as $status){ ?>
         <div class="border border-t-0 border-gray-300 hover:bg-gray-50 h-10 px-2 flex items-center">
-            <div class="font-light w-32"> <?= $status["id"] ?> </div>
-            <div class="font-light flex-1"> <?= $status["propriete_status"] ?> (<?= $status["nbr"] ?>) </div>
-            <div class="font-light w-64 text-center"> <?= $status["all_ligne"]? "<span class='bg-green-200 rounded-lg py-1 px-4 border'><i class='fa-solid fa-list-check'></i></span>": "" ?> </div>
-            <div class="font-light w-64 text-center"> <?= $status["is_default"]? "<span class='bg-green-200 rounded-lg py-1 px-4 border'><i class='fa-solid fa-list-check'></i></span>": "" ?> </div>
+            <div class="font-light w-20 relative pl-2"> 
+                <?= $status["id"] ?> 
+                <span class="absolute top-0 left-0 -mt-1 -ml-2 rounded-full px-1 py-3 border border-gray-400" style="background-color:<?= $status["hex_string"] ?>"></span>
+            </div>
+            <div class="font-light flex-1"> <?= $status["propriete_status"] ?> </div>
+            <div class="font-bold text-yellow-600 w-24 text-center"> <?= $status["nbr"] ?></div>
+            <div class="font-light w-20 text-center"> <?= $status["all_ligne"]? "<span class='bg-green-200 rounded-lg py-1 px-4 border'><i class='fa-solid fa-circle-check'></i></span>": "" ?> </div>
+            <div class="font-light w-20 text-center"> <?= $status["is_default"]? "<span class='bg-green-200 rounded-lg py-1 px-4 border'><i class='fa-solid fa-circle-check'></i></span>": "" ?> </div>
             <div class="font-light w-32 flex justify-between"> 
-                <div data-id="<?= $status["id"] ?>" data-appartement_status="<?= $status["propriete_status"] ?>" data-is_default="<?= $status["is_default"] ?>" class="modifier border rounded py-1 px-2 bg-gray-400 text-gray-900 rounded cursor-pointer hover:bg-gray-600 hover:text-white">
+                <div data-id="<?= $status["id"] ?>" data-name="<?= $status["name"] ?>" data-id_color="<?= $status["id_color"] ?>" data-all_ligne="<?= $status["all_ligne"] ?>" data-appartement_status="<?= $status["propriete_status"] ?>" data-is_default="<?= $status["is_default"] ?>" class="modifier border rounded py-1 px-2 bg-gray-400 text-gray-900 rounded cursor-pointer hover:bg-gray-600 hover:text-white">
                     Modifier
                 </div>
                 <?php if($status["nbr"] == 0){ ?>
@@ -90,11 +98,20 @@
 <script>
     $(document).ready(function(){
 
+        /** Display color */
+        $("#color").on('change', function(){
+            var hex_color = $(this).find(':selected').data('hex');
+            $('.color_display').css("background-color", hex_color)
+        })
+
         /** Add New */
         $('.ajouter').on('click', function(){
             $("#id").val("")
             $("#appartement_status").val("")
             $('#is_default').prop('checked', false)
+            $('#all_ligne').prop('checked', false)
+            $("#color").val(-1)
+            $("#color").trigger('change')
             $('.form').removeClass('hidden')
             $("#appartement_status").focus()
         })
@@ -104,6 +121,9 @@
             var appartement_status = $(this).data('appartement_status')
             var id = $(this).data('id')
             var is_default = $(this).data('is_default')
+            var all_ligne = $(this).data('all_ligne')
+            var id_color = $(this).data('id_color')
+
             $("#id").val(id)
             $("#appartement_status").val(appartement_status)
             if(is_default){
@@ -111,6 +131,16 @@
             }else{
                 $('#is_default').prop('checked', false)
             }
+
+            if(all_ligne){
+                $('#all_ligne').prop('checked', true)
+            }else{
+                $('#all_ligne').prop('checked', false)
+            }
+
+            $("#color").val(id_color)
+            $("#color").trigger('change')
+
             $('.form').removeClass('hidden')
             $("#appartement_status").focus()
         })
@@ -120,6 +150,7 @@
 			var appartement_status = $('#appartement_status').val();
 			var is_default = $('#is_default').prop("checked");
 			var all_ligne = $('#all_ligne').prop("checked");
+			var id_color = $('#color').val();
 
 			var data = {
 				'controler'		:	'Propriete_Status',
@@ -127,7 +158,8 @@
 				'params'		:	{
 					'propriete_status'			:	appartement_status,
 					'is_default'			    :	is_default,
-					'all_ligne'			        :	all_ligne
+					'all_ligne'			        :	all_ligne,
+					'id_color'			        :	id_color
 				}
 			};
 

@@ -229,7 +229,7 @@ class Propriete_Type extends Modal{
 			if(count($data) === 1){
 				$data = $data[0];
 				$created_by	=	$_SESSION[ $this->config->get()['GENERAL']['ENVIRENMENT'] ]['USER']['id'];
-				$msg = $data["propriete_type"] . $data["propriete_type"];
+				$msg = $data["propriete_type"];
 				$this->saveActivity("fr", $created_by, ['Propriete_Type', -1], $data["id"], $msg);
 				$this->delete($params["id"]);
 				return 1;
