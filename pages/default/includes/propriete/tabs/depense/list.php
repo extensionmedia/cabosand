@@ -35,7 +35,7 @@
             </div>
             <?php foreach($depenses as $exp){ ?>
                 <div class="border border-t-0 border-gray-300 hover:bg-gray-50 h-10 px-2 flex items-center">
-                    <div class="font-light w-32"> <?= $exp["date_depense"] ?> </div>
+                    <div class="font-light w-32"> <?= $exp["created"] ?> </div>
                     <div class="font-light flex-1"> <?= $exp["libelle"] ?> </div>
                     <div class="font-bold text-yellow-600 w-24 text-right"> <?= $Obj->format($exp["montant"]) ?></div>
                 </div>

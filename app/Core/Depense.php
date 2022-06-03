@@ -784,10 +784,11 @@ class Depense extends Modal{
 	
 	public function ByPropriete($params){
 
-		$depenses = $this->find('', [ 'conditions'=>[ 'id_propriete=' => $params["id"] ], 'order'=>'date_depense desc' ], 'Depense');
+		$depenses = $this->find('', [ 'conditions'=>[ 'id_propriete=' => $params["id"] ], 'order'=>'created desc' ], 'Depense');
 		$total = 0;
-		foreach($depenses as $d){
+		foreach($depenses as $k=>$d){
 			$total += $d['montant'];
+			$depenses[$k]["created"] = explode(" ", $depenses[$k]["created"])[0];
 		}
 		$push['depenses'] = $depenses;
 		$push['total'] = $total;
@@ -804,9 +805,9 @@ class Depense extends Modal{
 		$id_propriete = isset($params['id_propriete'])? $params['id_propriete']: 0;
 
 		if($year)
-			$depenses = $this->find('', [ 'conditions AND'=>[ 'id_propriete=' => $id_propriete, 'YEAR(date_depense)=' => $year ], 'order'=>'date_depense desc' ], 'Depense');
+			$depenses = $this->find('', [ 'conditions AND'=>[ 'id_propriete=' => $id_propriete, 'YEAR(created)=' => $year ], 'order'=>'created desc' ], 'Depense');
 		else
-			$depenses = $this->find('', [ 'conditions'=>[ 'id_propriete=' => $id_propriete], 'order'=>'date_depense desc' ], 'Depense');
+			$depenses = $this->find('', [ 'conditions'=>[ 'id_propriete=' => $id_propriete], 'order'=>'created desc' ], 'Depense');
 
 		$total = 0;
 
@@ -839,14 +840,14 @@ class Depense extends Modal{
 			</div>
 		';
 
-		foreach($depenses as $exp){
+		foreach($depenses as $k=>$exp){
 			if(!$total) $items = '';
 
 			$total += $exp["montant"];
-
+			$exp["created"] = explode(" ", $exp["created"])[0];
 			$items .= '
 				<div class="border border-t-0 border-gray-300 hover:bg-gray-50 h-10 px-2 flex items-center">
-					<div class="font-light w-32"> '.$exp["date_depense"].' </div>
+					<div class="font-light w-32"> '.$exp["created"].' </div>
 					<div class="font-light flex-1"> '.$exp["libelle"].' </div>
 					<div class="font-bold text-yellow-600 w-24 text-right"> '.$this->format($exp["montant"]).'</div>
 				</div>
