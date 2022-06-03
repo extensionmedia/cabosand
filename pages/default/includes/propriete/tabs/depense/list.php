@@ -2,7 +2,7 @@
     <div class="flex items-center justify-between">
         <div class="text-2xl flex-1">Dépenses d'appartement</div>
 
-        <select data-id="<?= $id_propriete ?>" id="depense_year" class="w-24 rounded">
+        <select data-id_propriete="<?= $id_propriete ?>" id="depense_year" class="w-24 rounded">
             <option value="-1">-- Année</option>
             <?php 
                 $start_year = 2019;
@@ -52,7 +52,7 @@
     $(document).ready(function(){
         $('#depense_year').on('change', function(){
             var year = $(this).val();
-            var id_propriete = $(this).data('id');
+            var id_propriete = $(this).data('id_propriete');
 
 			var data = {
 				'controler'		:	'Depense',
