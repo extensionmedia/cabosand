@@ -72,6 +72,20 @@
 							"title"		:	"Ajouter",
 							"message"	:	"a ajouté un statut d appartement"
 						}	
+	},	
+	"Depense_Category":{
+		"-1"		:	{
+							"title"		:	"Supprimer",
+							"message"	:	"a supprimer une catégorie dépense"					
+						},
+		"0"			:	{
+							"title"		:	"Modifier",
+							"message"	:	"a modifié une catégorie dépense"					
+						},
+		"1"			:	{	
+							"title"		:	"Ajouter",
+							"message"	:	"a ajouté une catégorie dépense"
+						}	
 	},
 	"Notes":{
 		"-1"		:	{

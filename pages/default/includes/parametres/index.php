@@ -10,9 +10,10 @@
 			<div class="parametre_menu shadow" style="width:248px">
 				<ul>
 					<li class="selected" data-page="Get_General"><i class="fas fa-angle-right"></i> Général</li>
+					<li data-page="Appartement_Category"><i class="fas fa-angle-right"></i> Appatement Catégories</li>
 					<li data-page="Appartement_Type"><i class="fas fa-angle-right"></i> Appatement Type</li>
 					<li data-page="Appartement_Status"><i class="fas fa-angle-right"></i> Appatement Statut</li>
-					<li data-page="Appartement_Category"><i class="fas fa-angle-right"></i> Appatement Catégories</li>
+					<li data-page="Depense_Category"><i class="fas fa-angle-right"></i> Dépense Catégories</li>
 					<li data-page="Get_Module"><i class="fas fa-angle-right"></i> Modules</li>
 				</ul>
 			</div>

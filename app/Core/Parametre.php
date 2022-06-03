@@ -152,5 +152,28 @@ class Parametre extends Modal{
 		$view = new View("parametres.propriete_category");
 		return $view->render($push);
 	}
+
+	/** Dépense Catégories */
+	public function Depense_Category(){
+		$request = "
+			SELECT *, 
+			(
+				SELECT
+					SUM(depense.montant)
+				FROM
+					depense
+				WHERE
+					depense.id_category = depense_category.id
+			) AS total
+			FROM depense_category
+			ORDER BY depense_category
+		";
+		$categories = $this->execute($request);
+		$push['categories'] = $categories;
+		$push['Obj'] = new $this;
+
+		$view = new View("parametres.depense_category");
+		return $view->render($push);
+	}
 }
 $parametre = new Parametre;
