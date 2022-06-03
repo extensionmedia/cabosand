@@ -147,15 +147,15 @@
 	}
 
 	// Load Depense
-	function loadDepense(id){
+	function loadDepense(id_propriete){
 		var data = {
 			'controler'		:	'Depense',
 			'function'		:	'ByPropriete',
 			'params'		:	{
-				'id'	:	id
+				'id_propriete'	:	id_propriete
 			}
 		};
-		
+		console.log(data);
 		$.ajax({
 			type		: 	"POST",
 			url			: 	"pages/default/ajax/ajax.php",

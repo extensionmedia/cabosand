@@ -784,7 +784,7 @@ class Depense extends Modal{
 	
 	public function ByPropriete($params){
 
-		$depenses = $this->find('', [ 'conditions'=>[ 'id_propriete=' => $params["id"] ], 'order'=>'created desc' ], 'Depense');
+		$depenses = $this->find('', [ 'conditions'=>[ 'id_propriete=' => $params["id_propriete"] ], 'order'=>'created desc' ], 'Depense');
 		$total = 0;
 		foreach($depenses as $k=>$d){
 			$total += $d['montant'];
@@ -792,9 +792,9 @@ class Depense extends Modal{
 		}
 		$push['depenses'] = $depenses;
 		$push['total'] = $total;
-		$push['id_propriete'] = $params["id"];
+		$push['id_propriete'] = $params["id_propriete"];
 		$Obj = new $this;
-		$push['Obj'] = $Obj;
+		$push['Obj'] = $this;
 		$view = new View("propriete.tabs.depense.list");
 		return $view->render($push);
 		
