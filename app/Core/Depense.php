@@ -801,7 +801,7 @@ class Depense extends Modal{
 	}
 
 	public function ByProprieteByYear($params){
-		$year = $params['year']!="-1"? $params['year']: 0;
+		$year = $params['year'] != "-1"? $params['year']: 0;
 		$id_propriete = isset($params['id_propriete'])? $params['id_propriete']: 0;
 
 		if($year)

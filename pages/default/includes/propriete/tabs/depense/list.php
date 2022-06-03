@@ -40,6 +40,11 @@
                     <div class="font-bold text-yellow-600 w-24 text-right"> <?= $Obj->format($exp["montant"]) ?></div>
                 </div>
             <?php } ?>
+            <?php if(count($depenses) == 0){ ?>
+                <div class="border border-t-0 border-gray-300 hover:bg-gray-50 flex items-center">
+                    <div class="font-light w-full py-4 bg-blue-50 text-center"> Aucune dépense pour <b><?= $this_year ?></b> </div>
+                </div>
+            <?php } ?>
         </div>
     </div>
 </div>
