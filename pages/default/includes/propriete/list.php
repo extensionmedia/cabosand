@@ -139,7 +139,7 @@ $filters = [
 			<!-- Container Title -->
 			<div class="text-lg px-4 border-b flex items-center justify-between">
 				<div class="h-12 flex items-center">
-					Appartement [<span class="code_here text-xl font-bold"></span>] 
+					<span class="code_here text-xl font-bold"></span>
 				<span class="right-container_2_ID hidden"></span>
 				</div>
 				<div class="flex items-center h-12 text-sm pt-2">

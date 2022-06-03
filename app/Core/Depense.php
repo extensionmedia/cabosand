@@ -785,95 +785,75 @@ class Depense extends Modal{
 	public function ByPropriete($params){
 
 		$depenses = $this->find('', [ 'conditions'=>[ 'id_propriete=' => $params["id"] ], 'order'=>'date_depense desc' ], 'Depense');
+		$total = 0;
+		foreach($depenses as $d){
+			$total += $d['montant'];
+		}
+		$push['depenses'] = $depenses;
+		$push['total'] = $total;
+		$push['id_propriete'] = $params["id"];
+		$Obj = new $this;
+		$push['Obj'] = $Obj;
+		$view = new View("propriete.tabs.depense.list");
+		return $view->render($push);
+		
+	}
+
+	public function ByProprieteByYear($params){
+		$year = $params['year']!="-1"? $params['year']: 0;
+		$id_propriete = isset($params['id_propriete'])? $params['id_propriete']: 0;
+
+		if($year)
+			$depenses = $this->find('', [ 'conditions AND'=>[ 'id_propriete=' => $id_propriete, 'YEAR(date_depense)=' => $year ], 'order'=>'date_depense desc' ], 'Depense');
+		else
+			$depenses = $this->find('', [ 'conditions'=>[ 'id_propriete=' => $id_propriete], 'order'=>'date_depense desc' ], 'Depense');
+
+		$total = 0;
 
 		$template = '
-		<div class="w-full h-full px-2 relative">    
-			<div class="hidden form absolute top-0 right-0 left-0 bottom-0 bg-gray-500 bg-opacity-30">
-				<div class="border bg-gray-100 rounded-lg shadow p-4 mt-4 w-3/5 mx-auto">
-					<div class="text-md font-bold">
-						Ajouter / Modifier Dépense
-					</div>
-					<div class="my-4">
-						<div class="text-xs mb-2">
-							Catégorie :
+				<div class="depense_body">
+					<div class="flex gap-4 justify-center border border-green-100 bg-green-50 py-4 p2 my-2">
+						<div class="font-bold">
+							Total : 
 						</div>
-						<input type="text" name="" value="fff" id="appartement_category" class="py-2 px-3 border border-gray-200 rounded">
-						<input type="hidden" name="" id="id" value="0">
-					</div>
-					<div class="flex items-start mb-6">
-						<div class="flex items-center h-5">
-							<input id="is_default" type="checkbox" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800" required>
+						<div class="font-bold">
+							{{total}}
 						</div>
-						<label for="is_default" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-							Définir valeur par défaut
-						</label>
 					</div>
-					<div class="pt-4 border-t border-gray-400 flex gap-4">
-						<button class="btn btn-green enregistrer">
-							<i class="fas fa-floppy-disk"></i> 
-							Enregistrer
-						</button>
-						<button class="btn annuller">
-							Annuler
-						</button>
-					</div>
-				</div>        
-			</div>
-	
-	
-	
-		<div class="flex items-center justify-between">
-			<div class="text-2xl">Catégorie d\'appartements</div>
-			<div class="ajouter h-8 w-8 bg-green-500 rounded text-white text-lg justify-center flex items-center cursor-pointer hover:bg-green-600 focus:bg-red-700">
-				<i class="fas fa-plus"></i>
-			</div>
-		</div>
-	
-		<div class="w-full my-4 shadow">
-			<div class="border border-gray-300 bg-gray-200 h-10 px-2 flex items-center rounded-t-md">
-				<div class="text-gray-700 font-bold w-20"> #ID </div>
-				<div class="text-gray-700 font-bold flex-1"> Catégorie d\'appartement </div>
-				<div class="text-gray-700 font-bold w-24 text-center"> Appart. </div>
-				<div class="text-gray-700 font-bold w-20 text-center"> Par Défaut </div>
-				<div class="text-gray-700 font-bold w-32"> </div>
-			</div>
-			{{items}}
-		</div>
-	</div>
-		
-		';
-		
-		$items = '';
-		foreach($depenses as $depense){
-			$date_depense = isset($depense["date_depense"])? $depense["date_depense"]: $depense["created"];
-			$total += $depense["montant"];
-			
-			$items .= '
-				<div class="border border-t-0 border-gray-300 hover:bg-gray-50 h-10 px-2 flex items-center">
-					<div class="font-light w-20"> <?= $category["id"] ?> </div>
-					<div class="font-light flex-1"> <?= $category["propriete_category"] ?> </div>
-					<div class="font-bold text-yellow-600 w-24 text-center"> <?= $category["nbr"] ?></div>
-					<div class="font-light w-20 text-center">  </div>
-					<div class="font-light w-32 flex justify-between"> 
-						<div data-id="<?= $category["id"] ?>" data-appartement_category="<?= $category["propriete_category"] ?>" data-is_default="<?= $category["is_default"] ?>" class="modifier border rounded py-1 px-2 bg-gray-400 text-gray-900 rounded cursor-pointer hover:bg-gray-600 hover:text-white">
-							Modifier
+
+					<div class="w-full my-4 shadow">
+						<div class="border border-gray-300 bg-gray-200 h-10 px-2 flex items-center rounded-t-md">
+							<div class="text-gray-700 font-bold w-32"> Date </div>
+							<div class="text-gray-700 font-bold flex-1"> Designation </div>
+							<div class="text-gray-700 font-bold w-24 text-right"> Montant </div>
 						</div>
-						<?php if($category["nbr"] == 0){ ?>
-						<div data-id="<?= $category["id"] ?>"  class="supprimer rounded py-1 px-2 text-red-600 text-white rounded cursor-pointer hover:bg-red-600 hover:text-white flex items-center">
-							<i class="fa-solid fa-trash-can"></i>
-						</div>
-						<?php } ?>
+						{{items}}
 					</div>
 				</div>
-			
+		';
+
+
+		$items = '
+			<div class="border border-t-0 border-gray-300 hover:bg-gray-50 flex items-center">
+				<div class="font-light w-full py-4 bg-blue-50 text-center"> Aucune dépense pour <b>'.$year.'</b> </div>
+			</div>
+		';
+
+		foreach($depenses as $exp){
+			if(!$total) $items = '';
+
+			$total += $exp["montant"];
+
+			$items .= '
+				<div class="border border-t-0 border-gray-300 hover:bg-gray-50 h-10 px-2 flex items-center">
+					<div class="font-light w-32"> '.$exp["date_depense"].' </div>
+					<div class="font-light flex-1"> '.$exp["libelle"].' </div>
+					<div class="font-bold text-yellow-600 w-24 text-right"> '.$this->format($exp["montant"]).'</div>
+				</div>
 			';
 		}
-		$empty = '<div class="label label-default"> Aucune Dépense! </div>';
-		
-		$items = $items === ''? $empty: $items;
-
-		return str_replace(["{{items}}"], [$items], $template);
-		
+		$template = str_replace(['{{items}}', '{{total}}'], [$items, $this->format($total)], $template);
+		return $template;
 	}
 }
 $depense = new Depense;
