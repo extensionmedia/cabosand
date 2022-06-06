@@ -98,7 +98,16 @@ for($year=$first_year; $year<=$this_year; $year++){
 				</div>
 			</div>
 			<div class="calendar_by_societe">
-
+				<table>
+					<tr>
+						<td class="bg-white" colspan="60"> 
+							<div class="w-64 mx-auto my-8 text-xs text-red-800 font-light text-center flex flex-col items-center">
+								<img class="h-24" src="https://us.v-cdn.net/6031209/uploads/W6CE78AAFKJ8/image.png">
+								Aucune Période pour cette recherche
+							</div>
+						</td>
+					</tr>
+				</table>
 			</div>
 
 		</div>
@@ -119,9 +128,24 @@ for($year=$first_year; $year<=$this_year; $year++){
 		$(".list-show").on('click', function(){
 			$('.list-container').toggleClass('hidden')
 		})
+
 		$(".input-list").on('click', function(){
 			$('.list-container').toggleClass('hidden')
 		})
+
+		$(".input-list").on('input', function(){
+			var request = $(this).val()
+			request = request.toLowerCase()
+			$(".list-item").each(function(){
+				var txt = $(this).html().toLowerCase()
+				if(txt.includes(request)){
+					$(this).removeClass('hidden')
+				}else{
+					$(this).addClass('hidden')
+				}
+			})
+		})
+
 		$(".list-item").on('click', function(){
 			$(".input-list").val($(this).html())
 			$('.list-container').addClass('hidden')
