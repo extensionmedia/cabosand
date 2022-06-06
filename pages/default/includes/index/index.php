@@ -63,6 +63,23 @@ for($year=$first_year; $year<=$this_year; $year++){
 							<option value="<?= $c['id'] ?>"><?= $c['societe_name']==''? $c['first_name'].' '.$c['last_name']: $c['societe_name']  ?></option>
 						<?php } ?>
 					</select>
+
+
+					<div class="relative border rounded-lg text-gray-800 bg-white">
+						<input placeholder="-- Appartement" type="text" class="input-list w-full py-1 pl-3" style="padding-right:24px !important">
+						<div class="list-show absolute top-0 right-0 m-2 cursor-pointer text-gray-400 hover:text-gray-800">
+							<i class="fa fa-chevron-down"></i>
+						</div>
+						<div class="z-50 list-container bg-white absolute top-0 left-0 w-48 overflow-y-auto max-h-64 mt-8 border rounded shadow  py-2">
+						<?php foreach($complexe->find('', ['order'=>'name asc'], 'complexe') as $c){ ?>
+							<div data-id="<?= $c['id'] ?>" class="list-item cursor-pointer py-1 px-3 hover:bg-gray-100 truncate ..."><?= $c['name'] ?></div>
+						<?php } ?>
+							
+						</div>
+					</div>
+
+
+
 					<button class='run_search rounded-lg'>
 						<i class="fa fa-search"></i>
 					</button>
@@ -91,6 +108,24 @@ for($year=$first_year; $year<=$this_year; $year++){
 
 <script>
 	$(document).ready(function(){
+
+		$(document).mouseup(function(e) {
+			var container = $(".list-container");
+			if (!container.is(e.target) && container.has(e.target).length === 0) {
+				container.addClass('hidden')
+			}
+		});
+		
+		$(".list-show").on('click', function(){
+			$('.list-container').toggleClass('hidden')
+		})
+		$(".input-list").on('click', function(){
+			$('.list-container').toggleClass('hidden')
+		})
+		$(".list-item").on('click', function(){
+			$(".input-list").val($(this).html())
+			$('.list-container').addClass('hidden')
+		})
 
 		/** Calendar Style By Month */
 		$(document).on('click', '.calendar_body_refresh', function(){

@@ -34,5 +34,62 @@ class Depense_Category extends Modal{
 		return $columns;
 		
 	}
+
+	public function Remove($params){
+		if(isset($params["id"])){
+			
+			$data = $this->find('', ['conditions' => [ 'id=' => $params['id'] ] ], '');
+			if(count($data) === 1){
+				$data = $data[0];
+				$created_by	=	$_SESSION[ $this->config->get()['GENERAL']['ENVIRENMENT'] ]['USER']['id'];
+				$msg = $data["depense_category"];
+				$this->saveActivity("fr", $created_by, ['Depense_Category', -1], $data["id"], $msg);
+				$this->delete($params["id"]);
+				return 1;
+			}else{
+				return 0;
+			}
+
+		}else{
+			return 0;
+		}
+	}
+
+	public function Store($params){
+		
+		$created = date('Y-m-d H:i:s');
+		$created_by	=	$_SESSION[ $this->config->get()['GENERAL']['ENVIRENMENT'] ]['USER']['id'];
+
+		if($params['is_default'] == "true"){
+			foreach($this->fetchAll() as $f){
+				$this->save(['id'=>$f['id'], 'is_default'=>0]);
+			}
+		}
+
+		$data = [
+			'depense_category'	=>	trim(addslashes($params['depense_category'])),
+			'is_default'		=>	$params['is_default']=="true"? 1: 0,
+		];
+		
+		if( isset($params["id"]) ){
+			$data["id"] = $params["id"];
+		}
+		
+		if($this->save($data)){
+			if(isset($data["id"])){
+				$msg = $params["depense_category"];
+				$this->saveActivity("fr", $created_by, ['Depense_Category', 0], $data["id"], $msg);				
+			}else{
+				$msg = $data["depense_category"] ;
+				$this->saveActivity("fr", $created_by, ['Depense_Category', 1], $this->getLastID(), $msg);	
+			}
+
+			return 1;
+			
+		}else{
+			return $this->err;
+		}		
+		
+	}
 }
 $depense_category = new Depense_Category;
