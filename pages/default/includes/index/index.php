@@ -46,6 +46,20 @@ for($year=$first_year; $year<=$this_year; $year++){
 		<?= $calendar->Table_Month([]) ?>
 
 		<div class="shadow rounded border mx-2 mt-8 mb-24">
+			<div class="border">
+				<div class="relative border border-gray-600 rounded-lg text-gray-800 bg-white">
+					<input placeholder="-- Appartement" type="text" class="input-list w-full py-1 pl-3 rounded-lg" style="padding-right:24px !important;">
+					<div class="list-show absolute top-0 right-0 m-2 cursor-pointer text-gray-400 hover:text-gray-800">
+						<i class="fa fa-chevron-down"></i>
+					</div>
+					<div class="z-50 hidden list-container bg-white absolute top-0 left-0 w-48 overflow-y-auto max-h-64 mt-8 border rounded shadow  py-2">
+					<?php foreach($complexe->find('', ['order'=>'name asc'], 'complexe') as $c){ ?>
+						<div data-id="<?= $c['id'] ?>" class="list-item cursor-pointer py-1 px-3 hover:bg-gray-100 truncate ..."><?= $c['name'] ?></div>
+					<?php } ?>
+						
+					</div>
+				</div>
+			</div>
 			<div class="py-2 bg-white px-2 flex items-center gap-4 justify-between">
 				<div class="flex items-center gap-4 filters">
 					<select class="rounded-lg px-2" id="complexe">
@@ -63,22 +77,6 @@ for($year=$first_year; $year<=$this_year; $year++){
 							<option value="<?= $c['id'] ?>"><?= $c['societe_name']==''? $c['first_name'].' '.$c['last_name']: $c['societe_name']  ?></option>
 						<?php } ?>
 					</select>
-
-
-					<div class="relative border rounded-lg text-gray-800 bg-white">
-						<input placeholder="-- Appartement" type="text" class="input-list w-full py-1 pl-3" style="padding-right:24px !important">
-						<div class="list-show absolute top-0 right-0 m-2 cursor-pointer text-gray-400 hover:text-gray-800">
-							<i class="fa fa-chevron-down"></i>
-						</div>
-						<div class="z-50 list-container bg-white absolute top-0 left-0 w-48 overflow-y-auto max-h-64 mt-8 border rounded shadow  py-2">
-						<?php foreach($complexe->find('', ['order'=>'name asc'], 'complexe') as $c){ ?>
-							<div data-id="<?= $c['id'] ?>" class="list-item cursor-pointer py-1 px-3 hover:bg-gray-100 truncate ..."><?= $c['name'] ?></div>
-						<?php } ?>
-							
-						</div>
-					</div>
-
-
 
 					<button class='run_search rounded-lg'>
 						<i class="fa fa-search"></i>
@@ -98,16 +96,13 @@ for($year=$first_year; $year<=$this_year; $year++){
 				</div>
 			</div>
 			<div class="calendar_by_societe">
-				<table>
-					<tr>
-						<td class="bg-white" colspan="60"> 
-							<div class="w-64 mx-auto my-8 text-xs text-red-800 font-light text-center flex flex-col items-center">
-								<img class="h-24" src="https://us.v-cdn.net/6031209/uploads/W6CE78AAFKJ8/image.png">
-								Aucune Période pour cette recherche
-							</div>
-						</td>
-					</tr>
-				</table>
+				<?= $calendar->Table([
+					'year'			=>	2022,
+					'month'			=>	6,
+					'complexe'		=>	-1,
+					'client'		=>	-1,
+					'appartement'	=>	-1
+				]) ?>
 			</div>
 
 		</div>
