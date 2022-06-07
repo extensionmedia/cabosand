@@ -56,7 +56,7 @@ for($year=$first_year; $year<=$this_year; $year++){
 						<?php } ?>
 					</select>
 					<div class="relative border border-gray-600 rounded-lg text-gray-800 bg-white">
-						<input id="appartement" data-id_appartement="-1" placeholder="-- Appartement" type="text" class="input-list w-full py-1 pl-3 rounded-lg" style="padding-right:24px !important;">
+						<input id="id_appartement" data-id_appartement="-1" placeholder="-- Appartement" type="text" class="input-list w-full py-1 pl-3 rounded-lg" style="padding-right:24px !important;">
 						<div class="list-show absolute top-0 right-0 m-2 cursor-pointer text-gray-400 hover:text-gray-800">
 							<i class="fa fa-chevron-down"></i>
 						</div>
@@ -116,11 +116,11 @@ for($year=$first_year; $year<=$this_year; $year++){
 			$('.list-container').toggleClass('hidden')
 		})
 
-		$(".input-list").on('click', function(){
+		$("#id_appartement").on('click', function(){
 			$('.list-container').toggleClass('hidden')
 		})
 
-		$(".input-list").on('input', function(){
+		$("#id_appartement").on('input', function(){
 			var request = $(this).val()
 			request = request.toLowerCase()
 			$(".list-item").each(function(){
@@ -137,8 +137,8 @@ for($year=$first_year; $year<=$this_year; $year++){
 		})
 
 		$(document).on('click',".list-item", function(){
-			$("#appartement").val($(this).html())
-			$("#appartement").attr("data-id_appartement",$(this).data("id_appartement"))
+			$("#id_appartement").val($(this).html())
+			$("#id_appartement").attr("data-id_appartement",$(this).data("id_appartement"))
 			
 			$('.list-container').addClass('hidden')
 		})
@@ -258,7 +258,7 @@ for($year=$first_year; $year<=$this_year; $year++){
 			var year = $(this).val();
 			var month = $('#month').val();
 			var complexe = $('#complexe').val();
-			var propriete = $('#appartement').data('id');
+			var propriete = $('#id_appartement').data('id_appartement');
 
 			var data = {
 				'controler'		:	'Propriete',
@@ -277,18 +277,19 @@ for($year=$first_year; $year<=$this_year; $year++){
 				dataType	: 	"json",
 			}).done(function(response){
 				$(".list-container").html(response.msg)
-				$("#appartement").removeClass('bg-yellow-500')
+				$("#id_appartement").removeClass('bg-yellow-500')
 			}).fail(function(xhr) {
 				console.log(xhr.responseText);
 			});	
 		})
 
 		$('.run_search').on('click', function(){
+
 			var year = $('#year').val();
 			var month = $('#month').val();
 			var complexe = $('#complexe').val();
 			var client = $('#client').val();
-			var appartement = $('#appartement').data("id_appartement");
+			var appartement = $('#id_appartement').attr("data-id_appartement")
 
 
 			var data = {

@@ -162,6 +162,7 @@ class Calendar extends Modal{
 		$id_client = $params['client'] != "-1"? $params['client']: 0;
 		$id_propriete = $params['appartement'] != "-1"? $params['appartement']: 0;
 
+		$nbr = 0;
 
 		$request = "
 						SELECT 
@@ -213,6 +214,9 @@ class Calendar extends Modal{
 
 		$table = '
 		<div class="relative w-full">
+			<div class="py-2 px-2 text-xl font-bold">
+				Nombre d\'operations : {{nbr}}
+			</div>
 			{{table_1}}
 
 			{{table_2}}
@@ -298,7 +302,7 @@ class Calendar extends Modal{
 
 		/** Drow the body of the calendar */
 		$table_2 = '
-			<table class="absolute top-12 mt-1 right-0 left-0 w-full" style="table-layout: fixed; bg-opacity-0">
+			<table class="absolute top-24 mt-1 right-0 left-0 w-full" style="table-layout: fixed; bg-opacity-0">
 		';
 		$tr = '';
 
@@ -363,6 +367,7 @@ class Calendar extends Modal{
 								</div>
 							</td>
 						';
+						$nbr++;
 					}else{
 						if($i<$startDay){
 							$tr .= '<td class=" border-b"></td>';
@@ -380,7 +385,7 @@ class Calendar extends Modal{
 		$table_2 .= $tr;
 
 
-		$table = str_replace(['{{table_1}}', '{{table_2}}'], [$table_1, $table_2], $table);
+		$table = str_replace(['{{table_1}}', '{{table_2}}', '{{nbr}}'], [$table_1, $table_2, $nbr], $table);
 		return $table;
 	}
 
