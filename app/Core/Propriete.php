@@ -1063,12 +1063,13 @@ class Propriete extends Modal{
 		$id_propriete = !isset($params['propriete'])? 0: ($params['propriete'] != "-1"? $params['propriete']: 0);
 
 		$data = $this->find('', ['conditions'=>['id_complexe='=>$id_complexe], 'order'=>'code'], 'propriete');
-		$options = '<option value="-1" selected>-- Appartements </option>';
+		$options = '';
 		foreach($data as $p){
-			if($p["id"]==$id_propriete)
-				$options .= '<option selected value="'.$p["id"].'">'.$p["code"].'</option>';
-			else
-				$options .= '<option value="'.$p["id"].'">'.$p["code"].'</option>';
+			$options .= '<div data-id_appartement="'.$p["id"].'" class="list-item cursor-pointer py-1 px-3 hover:bg-gray-100 truncate ...">'.$p["code"].'</div>';
+			// if($p["id"]==$id_propriete)
+			// 	$options = '<div data-id="'.$p["id"].'" class="list-item cursor-pointer py-1 px-3 hover:bg-gray-100 truncate ...">'.$p["code"].'</div>';
+			// else
+			// 	$options .= '<option value="'.$p["id"].'">'.$p["code"].'</option>';
 		}
 		return $options;
 	}

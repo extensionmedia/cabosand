@@ -46,20 +46,7 @@ for($year=$first_year; $year<=$this_year; $year++){
 		<?= $calendar->Table_Month([]) ?>
 
 		<div class="shadow rounded border mx-2 mt-8 mb-24">
-			<div class="border">
-				<div class="relative border border-gray-600 rounded-lg text-gray-800 bg-white">
-					<input placeholder="-- Appartement" type="text" class="input-list w-full py-1 pl-3 rounded-lg" style="padding-right:24px !important;">
-					<div class="list-show absolute top-0 right-0 m-2 cursor-pointer text-gray-400 hover:text-gray-800">
-						<i class="fa fa-chevron-down"></i>
-					</div>
-					<div class="z-50 hidden list-container bg-white absolute top-0 left-0 w-48 overflow-y-auto max-h-64 mt-8 border rounded shadow  py-2">
-					<?php foreach($complexe->find('', ['order'=>'name asc'], 'complexe') as $c){ ?>
-						<div data-id="<?= $c['id'] ?>" class="list-item cursor-pointer py-1 px-3 hover:bg-gray-100 truncate ..."><?= $c['name'] ?></div>
-					<?php } ?>
-						
-					</div>
-				</div>
-			</div>
+
 			<div class="py-2 bg-white px-2 flex items-center gap-4 justify-between">
 				<div class="flex items-center gap-4 filters">
 					<select class="rounded-lg px-2" id="complexe">
@@ -68,9 +55,14 @@ for($year=$first_year; $year<=$this_year; $year++){
 							<option value="<?= $c['id'] ?>"><?= $c['name'] ?></option>
 						<?php } ?>
 					</select>
-					<select class="rounded-lg px-2" id="appartement">
-						<option value="-1">-- Appartement </option>
-					</select>
+					<div class="relative border border-gray-600 rounded-lg text-gray-800 bg-white">
+						<input id="appartement" data-id_appartement="-1" placeholder="-- Appartement" type="text" class="input-list w-full py-1 pl-3 rounded-lg" style="padding-right:24px !important;">
+						<div class="list-show absolute top-0 right-0 m-2 cursor-pointer text-gray-400 hover:text-gray-800">
+							<i class="fa fa-chevron-down"></i>
+						</div>
+						<div class="z-50 hidden list-container bg-white absolute top-0 left-0 w-48 overflow-y-auto max-h-64 mt-8 border rounded shadow  py-2">							
+						</div>
+					</div>
 					<select class="rounded-lg px-2" id="client">
 						<option value="-1">-- Client </option>
 						<?php foreach($client->find('', ['conditions'=>['id_status='=>11], 'order'=>'first_name asc'], 'client') as $c){ ?>
@@ -139,10 +131,15 @@ for($year=$first_year; $year<=$this_year; $year++){
 					$(this).addClass('hidden')
 				}
 			})
+			if($(this).val() == ""){
+				$(this).attr('data-id_appartement', '-1')
+			}
 		})
 
-		$(".list-item").on('click', function(){
-			$(".input-list").val($(this).html())
+		$(document).on('click',".list-item", function(){
+			$("#appartement").val($(this).html())
+			$("#appartement").attr("data-id_appartement",$(this).data("id_appartement"))
+			
 			$('.list-container').addClass('hidden')
 		})
 
@@ -261,7 +258,7 @@ for($year=$first_year; $year<=$this_year; $year++){
 			var year = $(this).val();
 			var month = $('#month').val();
 			var complexe = $('#complexe').val();
-			var propriete = $('#appartement').val();
+			var propriete = $('#appartement').data('id');
 
 			var data = {
 				'controler'		:	'Propriete',
@@ -279,11 +276,7 @@ for($year=$first_year; $year<=$this_year; $year++){
 				data		:	data,
 				dataType	: 	"json",
 			}).done(function(response){
-				$("#appartement")    
-								.find('option')
-    							.remove()
-    							.end()
-    							.append(response.msg)
+				$(".list-container").html(response.msg)
 				$("#appartement").removeClass('bg-yellow-500')
 			}).fail(function(xhr) {
 				console.log(xhr.responseText);
@@ -291,12 +284,11 @@ for($year=$first_year; $year<=$this_year; $year++){
 		})
 
 		$('.run_search').on('click', function(){
-
 			var year = $('#year').val();
 			var month = $('#month').val();
 			var complexe = $('#complexe').val();
 			var client = $('#client').val();
-			var appartement = $('#appartement').val();
+			var appartement = $('#appartement').data("id_appartement");
 
 
 			var data = {
@@ -310,7 +302,8 @@ for($year=$first_year; $year<=$this_year; $year++){
 					'appartement'	: 	appartement
 				}
 			};
-			$(".calendar_by_societe").html("Loading.....");
+			$(".calendar_by_societe").preloader();
+			console.log(data)
 			$.ajax({
 				type		: 	"POST",
 				url			: 	"pages/default/ajax/ajax.php",
