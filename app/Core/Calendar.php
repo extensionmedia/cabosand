@@ -209,13 +209,14 @@ class Calendar extends Modal{
 		$start =  new DateTime($year . "-" . $month . "-" . $day);
 		$last = new DateTime($year . "-" . $month . "-" . $days_in_month);
 
-
+		
+		$appartements = [];
 
 
 		$table = '
 		<div class="relative w-full">
 			<div class="py-2 px-2 text-xl font-bold">
-				Nombre d\'operations : {{nbr}}
+				Nombre d\'appartements : {{nbr}}
 			</div>
 			{{table_1}}
 
@@ -270,6 +271,9 @@ class Calendar extends Modal{
 			}
 
 			if($continue){
+				if(!in_array( $propriete_locations[$j]['code'], $appartements))
+					array_push($appartements, $propriete_locations[$j]['code']);
+
 				$tr .= '<tr height="35px">';
 				for($i=1; $i<=($days_in_month*2); $i++){
 				
@@ -385,7 +389,7 @@ class Calendar extends Modal{
 		$table_2 .= $tr;
 
 
-		$table = str_replace(['{{table_1}}', '{{table_2}}', '{{nbr}}'], [$table_1, $table_2, $nbr], $table);
+		$table = str_replace(['{{table_1}}', '{{table_2}}', '{{nbr}}'], [$table_1, $table_2, count($appartements)], $table);
 		return $table;
 	}
 

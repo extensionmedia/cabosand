@@ -269,7 +269,6 @@ for($year=$first_year; $year<=$this_year; $year++){
 				}
 			};
 			$("#appartement").addClass('bg-yellow-500')
-			console.log(data)
 			$.ajax({
 				type		: 	"POST",
 				url			: 	"pages/default/ajax/ajax.php",
@@ -304,7 +303,6 @@ for($year=$first_year; $year<=$this_year; $year++){
 				}
 			};
 			$(".calendar_by_societe").preloader();
-			console.log(data)
 			$.ajax({
 				type		: 	"POST",
 				url			: 	"pages/default/ajax/ajax.php",
