@@ -352,6 +352,15 @@ class Caisse extends Modal{
 		return $view->render($push);
 	}
 	
+	public function GetListAsSelect(){
+		$select = '<select class="bulk_change_type_selected">';
+		$select .= '	<option value="-1">-- Caisses </option>';
+		foreach($this->fetchAll() as $item){
+			$select .= '	<option value="'.$item["id"].'">' . ucfirst($item["name"]) . '</option>';
+		}
+		$select .= '</select>';
+		return $select;
+	}
 
 }
 $caisse = new Caisse;

@@ -91,5 +91,15 @@ class Depense_Category extends Modal{
 		}		
 		
 	}
+
+	public function GetListAsSelect(){
+		$select = '<select class="bulk_change_type_selected">';
+		$select .= '	<option value="-1">-- Catégories </option>';
+		foreach($this->find('', ['order'=>'depense_category'], '') as $item){
+			$select .= '	<option value="'.$item["id"].'">'.ucfirst($item["depense_category"]).'</option>';
+		}
+		$select .= '</select>';
+		return $select;
+	}
 }
 $depense_category = new Depense_Category;

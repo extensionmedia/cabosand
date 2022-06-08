@@ -150,3 +150,9 @@ $filters = [
 		</div>
 	</div>
 </div>
+<style>
+	.selectedRow{
+		background-color: #f6fc74 !important;
+		border-left: 2px solid #f00 !important
+	}
+</style>

@@ -404,11 +404,27 @@ class Depense extends Modal{
 		
 		
 		$table = '
-			<div class="table-container">
+
+				<div class="bulk_container hidden py-2 px-2 bg-yellow-50 shadow border border-yellow-400 mb-2 flex gap-2 items-center">
+					<div class="text-yellow-800"> <b class="nbr_operations_a_changer">0</b> Opérations à changer  </div>
+					<select class="bulk_change_type w-64">
+						<option value="-1">-- choix </option>
+						<option value="category">Dépense Catégorie </option>
+						<option value="caisse">Caisse </option>
+					</select>
+					<div class="bulk_change_selected"></div>
+					<button class="makeChanges">Changer</button>
+
+				</div>
+
 				<div class="d-flex space-between" style="padding:0 10px 10px 10px">
-					<div style="font-size:16px; font-weight:bold">{{counter}}</div>
+					<div class="flex gap-4 items-center">
+						<div style="font-size:16px; font-weight:bold">{{counter}}</div>
+					</div>
+					
 					<div class="text-green" style="font-size:16px; font-weight:bold">{{total}}</div>
 				</div>
+
 				<table id="depensetable">	
 					<thead>	
 						<tr>
@@ -420,7 +436,110 @@ class Depense extends Modal{
 						{{trs}}
 					</tbody>
 				</table>
-			</div>
+				<script>
+					$(document).ready(function(){
+						$(".makeChanges").on("click", function(){
+							if($(".bulk_change_selected").html() != ""){
+								if( $(".bulk_change_selected select").val() != "-1" ){
+
+									var Ids = [];
+									var TypeId = $(".bulk_change_selected select").val()
+									$(".selectThisRow").each(function(){
+										if($(this).prop("checked")){
+											Ids.push($(this).val());
+										}
+									})
+
+									if(Ids){
+										$(".table-container").preloader();
+										var data = {
+											"controler"		:	"Depense",
+											"function"		:	"BulkEdit",
+											"params"		:	{
+												"bulk_type"		:	$(".bulk_change_type").val() == "caisse"? "Caisse": "Depense_Category",
+												"Ids"			:	Ids,
+												"TypeId"		:	TypeId
+											}
+										};
+		
+										$.ajax({
+											type		: 	"POST",
+											url			: 	"pages/default/ajax/ajax.php",
+											data		:	data,
+											dataType	: 	"json",
+										}).done(function(response){
+											$(".page_search_button").trigger("click")
+										}).fail(function(xhr) {
+											$(".page_search_button").trigger("click")
+											console.log(xhr.responseText);
+										});
+									}
+								}
+							}
+							
+
+						})
+
+
+						$(".selectAllRows").on("click", function(){
+							$(".selectThisRow").prop("checked", $(this).prop("checked"))
+							if( $(this).prop("checked") ){
+								$(".selectThisRow").parent().parent().parent().addClass("selectedRow")
+								$(".bulk_container").removeClass("hidden")
+								$(".bulk_change_type").prop("selectedIndex", 0);
+								$(".bulk_change_selected").html("")
+
+								$(".nbr_operations_a_changer").html($(".selectThisRow").length)
+							}else{
+								$(".selectThisRow").parent().parent().parent().removeClass("selectedRow")
+								$(".bulk_container").addClass("hidden")
+							}
+						})
+
+						$(".selectThisRow").on("click", function(){
+							var isChecked = false;
+							var nbrCounter = 0;
+							$(".selectThisRow").each(function(){
+								if($(this).prop("checked")){
+									isChecked = true;
+									nbrCounter++;
+								}
+							})
+							if(isChecked){
+								$(".bulk_container").removeClass("hidden")
+							}else{
+								$(".bulk_container").addClass("hidden")
+							}
+							$(this).parent().parent().parent().toggleClass("selectedRow")
+							$(".nbr_operations_a_changer").html(nbrCounter)
+						})
+
+						$(".bulk_change_type").on("change", function(){
+							var bulk_type = $(this).val()
+							if(bulk_type == "-1"){
+								$(".bulk_change_selected").html("")
+							}else{
+								var data = {
+									"controler"		:	bulk_type == "caisse"? "Caisse": "Depense_Category",
+									"function"		:	"GetListAsSelect"
+								};
+
+								$.ajax({
+									type		: 	"POST",
+									url			: 	"pages/default/ajax/ajax.php",
+									data		:	data,
+									dataType	: 	"json",
+								}).done(function(response){
+									$(".bulk_change_selected").html(response.msg)
+								}).fail(function(xhr) {
+									console.log(xhr.responseText);
+								});
+							}
+
+
+						})
+					});
+				</script>
 		
 		';
 		
@@ -439,6 +558,14 @@ class Depense extends Modal{
 				$ths .= "	<button data-default='".$defaultStyleName."' value='".$column_style."' class='show_list_options'>";
 				$ths .= "		<i class='fas fa-ellipsis-h'></i></button>";
 				$ths .= "	</button>";
+				$ths .=	"</th>";
+			}elseif($column['column'] === "created"){
+				$trs_counter += $is_display === "hide"? 0:1;
+				$ths .= "<th>";
+				$ths .=  "	<label class='d-flex gap-2'>";
+				$ths .=  "		<input type='checkbox' class='selectAllRows'>";
+				$ths .=  		$column['label'];
+				$ths .=  "	</label>";
 				$ths .=	"</th>";
 			}else{
 				$trs_counter += $is_display === "hide"? 0:1;
@@ -547,7 +674,7 @@ class Depense extends Modal{
 		foreach($data as $k=>$v){
 			
 			$background = isset($v["all_ligne"])? $v["all_ligne"]? $v["hex_string"]: "": "";
-			$trs .= '<tr style="background-color:'.$background.'" data-page="'.$use.'">';
+			$trs .= '<tr class="" style="background-color:'.$background.'" data-page="'.$use.'">';
 			foreach($columns as $key=>$value){
 				
 				$style = (!$columns[$key]["display"])? "display:none": $columns[$key]["style"] ;
@@ -570,8 +697,7 @@ class Depense extends Modal{
 							}else if($columns[$key]["format"] === "date"){
 								$date = explode(" ", $v[ $columns[$key]["column"] ]);
 								if(count($date)>1){
-									$_date = "<div style='min-width:105px'><i class='fas fa-calendar-alt'></i> ".$date[0]."</div><div style='min-width:105px'><i class='far fa-clock'></i> ".$date[1]."</div>";
-									$_date = "<div style='min-width:105px'><i class='fas fa-calendar-alt'></i> ".$date[0]."</div>";
+									$_date = "<label style='min-width:105px'><input value='".$v["id"]."' class='selectThisRow' type='checkbox'> ".$date[0]."</label>";
 								}else{
 									$_date = "<div><i class='fas fa-calendar-alt'></i> ".$date[0]."</div>";
 								}
@@ -601,9 +727,9 @@ class Depense extends Modal{
 						}else if($columns[$key]["format"] === "date"){
 							$date = explode(" ", $v[ $columns[$key]["column"] ]);
 							if(count($date)>1){
-								$_date = "<div style='min-width:105px'><i class='fas fa-calendar-alt'></i> ".$date[0]."</div><div style='min-width:105px'><i class='far fa-clock'></i> ".$date[1]."</div>";
+								$_date = "<div style='min-width:105px'>check<i class='fas fa-calendar-alt'></i> ".$date[0]."</div><div style='min-width:105px'><i class='far fa-clock'></i> ".$date[1]."</div>";
 							}else{
-								$_date = "<div><i class='fas fa-calendar-alt'></i> ".$date[0]."</div>";
+								$_date = "<div>check<i class='fas fa-calendar-alt'></i> ".$date[0]."</div>";
 							}
 							
 							$trs .= "<td class='".$is_display."' style='".$style.";'>".$_date."</td>";
@@ -856,5 +982,37 @@ class Depense extends Modal{
 		$template = str_replace(['{{items}}', '{{total}}'], [$items, $this->format($total)], $template);
 		return $template;
 	}
+
+	public function BulkEdit($params = []){
+		$type = $params["bulk_type"];
+		$TypeId = $params["TypeId"];
+		$data = [];
+		$created_by	=	$_SESSION[ $this->config->get()['GENERAL']['ENVIRENMENT'] ]['USER']['id'];
+		foreach($params["Ids"] as $id){
+			$data = [];
+			$data["updated"] = date('Y-m-d H:i:s');
+			$data["updated_by"] = $created_by;
+			$data["id"] = $id;
+			if($type == "Caisse"){
+				$data["id_caisse"] = $TypeId;
+			}else{
+				$data["id_category"] = $TypeId;
+			}
+
+			
+			if($this->save($data)){
+				if($type == "Caisse"){
+					$msg = "A modifier la Caisse pour une dépense ";
+				}else{
+					$msg = "A modifier la Category pour une dépense ";
+				}
+				$this->saveActivity("fr", $created_by, ['Depense', 0], $data["id"], $msg);							
+			}
+
+		}
+		return 1;
+
+	}
+	
 }
 $depense = new Depense;

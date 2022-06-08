@@ -48,7 +48,10 @@ if(isset($depense)){
 						<?php require_once($core."Caisse.php"); 
 								$selected = "";
 								foreach( $caisse->find("",["conditions"=>["status="=>1], "order"=>"name"],"") as $k=>$v){
-									if ($v["is_default"])  $selected = "selected"; else $selected = "";
+									if( isset($depense) )
+										if ($depense["id_caisse"] === $v["id"]) $selected = "selected"; else $selected = "";
+									else
+										if ($v["is_default"])  $selected = "selected"; else $selected = "";
 						?>	
 					<option <?= $selected ?> value="<?= $v["id"] ?>"> <?= strtoupper( $v["name"] ) ?> </option>
 						<?php } ?>
