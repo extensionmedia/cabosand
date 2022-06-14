@@ -1,7 +1,7 @@
 <?php if (session_status() == PHP_SESSION_NONE) { session_start(); } 
 
 $core = $_SESSION["CORE"];
-$table_name = "Propriete";
+$table_name = "Propriete_Location";
 require_once($core.$table_name.".php");  
 $ob = new $table_name();
 
@@ -27,19 +27,15 @@ $years = [
 
 $tags = [
 	[ 'hide'=>'', 'id'=>'code', 'label' => 'Code'],
-	[ 'hide'=>'hide', 'id'=>'nbr_chambre', 'label' => 'Chambres'],
-	[ 'hide'=>'hide', 'id'=>'notes', 'label' => 'Notes'],
+	[ 'hide'=>'hide', 'id'=>'client', 'label' => 'Client'],
+	[ 'hide'=>'hide', 'id'=>'complexe', 'label' => 'Complexe'],
 	[ 'hide'=>'hide', 'id'=>'proprietaire', 'label' => 'Proprietaire'],
 	[ 'hide'=>'hide', 'id'=>'phone', 'label' => 'Téléphone']
 ];
 
 $filters = [
-	'Categorie'				=>	$ob->find('', ['order'=>'propriete_category'], 'propriete_category'),
-	'Type'					=>	$ob->find('', ['order'=>'propriete_type'], 'propriete_type'),
 	'Complexe'				=>	$ob->find('', ['order'=>'name'], 'complexe'),
-	'Status'				=>	$ob->find('', ['order'=>'propriete_status' ], 'propriete_status'),
-	'Vente'					=>	[0=>['id'=>0, 'label'=>'Non Vente'], 1=>['id'=>1, 'label'=>'A Vendre']],
-	'Location'				=>	[0=>['id'=>0, 'label'=>'Non Location'], 1=>['id'=>1, 'label'=>'A Louer']]
+	'Client'				=>	$ob->find('', ['order'=>'first_name' ], 'client'),
 ];
 	
 ?>
@@ -47,7 +43,7 @@ $filters = [
 <div id="page" class="">
 	<div class="page-head">
 		<div class="title d-flex space-between">
-			<div class="name">	Appartement</div> 
+			<div class="name">	Périodes</div> 
 			<div class="actions d-flex">
 				<button class="green add" data-controler="<?= $table_name ?>"><i class="fas fa-plus"></i> Ajouter</button>
 			</div>
@@ -56,7 +52,7 @@ $filters = [
 		<div class="search d-flex space-between">
 			<div class="request d-flex">
 				<input type="text" placeholder="chercher" class="mr-5">
-				<button class="mr-5 page_search_button" data-controler="<?= $table_name ?>" data-use="v_propriete" data-column_style="v_propriete"><i class="fa fa-search"></i></button>
+				<button class="mr-5 page_search_button" data-controler="<?= $table_name ?>" data-use="v_propriete_location" data-column_style="v_propriete_location"><i class="fa fa-search"></i></button>
 				
 				<!-- TAGS -->
 				<div class="tags">
@@ -75,40 +71,25 @@ $filters = [
 				<?php
 					$string = "";
 					foreach($filters as $key=>$value){
-						$string .= '<select id="'.$key.'">';
+						$string .= '<select class="" id="'.$key.'">';
 						$string .= '	<option value="-1"> -- '.$key." -- </option>";
 						foreach($value as $k=>$v){
-							if($key === "Categorie")
-								$string .= '<option value="'.$v["id"].'">'. strtoupper( $v["propriete_category"] ) ."</option>";
-							if($key === "Type")
-								$string .= '<option value="'.$v["id"].'">'. strtoupper( $v["propriete_type"] ) ."</option>";
 							if($key === "Complexe")
 								$string .= '<option value="'.$v["id"].'">'. strtoupper( $v["name"] ) ."</option>";
-							if($key === "Status")
-								$string .= '<option value="'.$v["id"].'">'. strtoupper( $v["propriete_status"] ) ."</option>";
-							if($key === "Vente")
-								$string .= '<option value="'.$v["id"].'">'. strtoupper( $v["label"] ) ."</option>";
-							if($key === "Location")
-								$string .= '<option value="'.$v["id"].'">'. strtoupper( $v["label"] ) ."</option>";
-							if($key === "Mois"){
-								if( $k === intval(date("m")) ) 
-									$string .= '<option selected value="'.$k.'">'.$v."</option>";
-								else
-									$string .= '<option value="'.$k.'">'.$v."</option>";
-							}
-							if($key === "Années"){
-								if( $k === intval(date("Y")) ) 
-									$string .= '<option selected value="'.$k.'">'.$v."</option>";
-								else
-									$string .= '<option value="'.$k.'">'.$v."</option>";
-							}
-								
+							if($key === "Client")
+								$string .= '<option value="'.$v["id"].'">'. strtoupper( $v["first_name"] ) ."</option>";
 						}
 						$string .= '</select>';
 					}
 				echo $string;
-				?>
+				?>	
 			</div>
+
+			<div class="flex">
+				<input class="m-0" type="date">
+				<input class="m-0" type="date">			
+			</div>
+
 		</div>
 		<div class="result d-flex space-between">
 			
@@ -143,8 +124,8 @@ $filters = [
 		<div class="table-container">
 			<?php
 				$params = [
-					'column_style'	=>	'v_propriete',
-					'use'			=>	'v_propriete',
+					'column_style'	=>	'v_propriete_location',
+					'use'			=>	'propriete_location',
 					'filters'		=>	[  ],
 					'pp'			=>	20,
 					'current'		=>	0

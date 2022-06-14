@@ -29,20 +29,17 @@ class Propriete_Location extends Modal{
 	}	
 	
 		
-	public function getColumns(){
+	public function getColumns($style = null){
 		
-		if ( isset($this->columns) ){
-			return $this->columns;
-		}else{
-			$columns = array();
-			$l = new ListView();
-			foreach($l->getDefaultStyle("v_propriete_location")["data"] as $k=>$v){
-				array_push($columns, array("column" => $v["column"], "label" => $v["label"], "style"=>$v["style"], "display"=>$v["display"]) );
-				
-			}
-			array_push($columns, array("column" => "actions", "label" => "", "style"=>"min-width:105px; width:105px", "display"=>1) );
-			return $columns;
+		$style = (is_null($style))? strtolower($this->tableName): $style;
+		
+		$columns = array();
+		$l = new ListView();
+		foreach($l->getDefaultStyle($style, $columns)["data"] as $k=>$v){
+			array_push($columns, array("column" => $v["column"], "label" => $v["label"], "style"=>$v["style"], "display"=>$v["display"], "format"=>$v["format"]) );
 		}
+		array_push($columns, array("column" => "actions", "label" => "", "style"=>"min-width:105px; width:105px", "display"=>1) );
+		return $columns;
 		
 	}
 	
@@ -323,10 +320,6 @@ class Propriete_Location extends Modal{
 
 		return str_replace(["{{trs}}"], [$trs_location], $template);
 
-	}
-
-	public function Get_Periodes_Of_Client($params = []){
-		
 	}
 	
 }
