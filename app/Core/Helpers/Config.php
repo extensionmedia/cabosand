@@ -14,7 +14,7 @@ class Config{
 									"host"		=>	"localhost",
 									"dbname"	=>	"cabosand_stage",
 									"username"	=>	"cabosand_stage",
-									"password"	=>	""
+									"password"	=>	"1A2Z3E4R5T6Y"
 							),
 				"mail"		=>	array(
 							"host"			=>	"mail.aspi-confort.com",
