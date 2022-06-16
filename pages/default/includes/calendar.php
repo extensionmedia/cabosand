@@ -83,7 +83,13 @@ require_once($core."Contrat.php");
 
 
 	//$_data = $contrat->find("" , array("conditions OR"=>array("")),"v_contrat_periode");
-	$request = "select * from v_contrat_periode where (year(date_debut)=".$current_year." and month(date_debut)=" . intval($current_month) .") OR (year(date_fin)=".$current_year." and month(date_fin)=" . intval($current_month) .") order by date_debut, date_fin";
+	$request = "
+	select * 
+	from v_contrat_periode 
+	where 
+		(year(date_debut)=".$current_year." and month(date_debut)=" . intval($current_month) .") 
+	OR 	(year(date_fin)=".$current_year." and month(date_fin)=" . intval($current_month) .") 
+	order by date_debut, date_fin";
 
 	$_data = $contrat->execute($request);
 

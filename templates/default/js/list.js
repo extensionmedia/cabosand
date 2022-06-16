@@ -246,12 +246,17 @@ $(document).ready(function(){
 			data		:	data,
 			dataType	: 	"json",
 		}).done(function(response){
-			if (response.code === 1){
+			console.log(response)
+			$('body').modal();
+			$('#modal').html("<div class='modal-content' style='width:420px; padding:0; border:0; border-radius:3px'>" + response.msg + "</div>");
+			/*
+			if (response.code == 1){
 				$(".modal").html("<div class='modal-content' style='width:420px; padding:0; border:0; border-radius:3px'>" + response.msg + "</div>");
 
 			}else{
 				$(".modal").html("<div class='modal-content' style='width:420px; padding:0; border:0; border-radius:3px'>" + response.msg + "</div>");
 			}
+			*/
 
 		}).fail(function(response, textStatus){
 			alert(textStatus);

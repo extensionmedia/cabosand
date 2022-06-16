@@ -52,7 +52,7 @@ $filters = [
 		<div class="search d-flex space-between">
 			<div class="request d-flex">
 				<input type="text" placeholder="chercher" class="mr-5">
-				<button class="mr-5 page_search_button" data-controler="<?= $table_name ?>" data-use="v_propriete_location" data-column_style="v_propriete_location"><i class="fa fa-search"></i></button>
+				<button class="mr-5 page_search_button" data-controler="<?= $table_name ?>" data-use="propriete_location" data-column_style="v_propriete_location"><i class="fa fa-search"></i></button>
 				
 				<!-- TAGS -->
 				<div class="tags">
@@ -86,8 +86,8 @@ $filters = [
 			</div>
 
 			<div class="flex">
-				<input class="m-0" type="date">
-				<input class="m-0" type="date">			
+				<input class="m-0 date_debut" type="date" value="<?= date('Y').'-'.date('m').'-01' ?>">
+				<input class="m-0 date_fin" type="date" value="<?= date('Y-m-d') ?>">			
 			</div>
 
 		</div>
@@ -128,7 +128,8 @@ $filters = [
 					'use'			=>	'propriete_location',
 					'filters'		=>	[  ],
 					'pp'			=>	20,
-					'current'		=>	0
+					'current'		=>	0,
+					'dates'			=>	[date('Y').'-'.date('m').'-01', date('Y-m-d')]
 
 				];
 				echo $ob->Table($params);

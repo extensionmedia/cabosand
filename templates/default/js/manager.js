@@ -543,6 +543,18 @@ $(document).ready(function(){
 			filters.push( { 'id':$(this).prop("id"), 'value' : $(this).val() }  );			
 		});
 
+		var dates = [];
+		if($('input.date_debut').length > 0){
+			if($('input.date_debut').val() != '' && $('input.date_fin').val() != ''){
+				dates.push($('input.date_debut').val())
+			}
+		}
+		if($('input.date_fin').length > 0){
+			if($('input.date_debut').val() != '' && $('input.date_fin').val() != ''){
+				dates.push($('input.date_fin').val())
+			}
+		}
+
 		var data = {
 			'controler'	:	$(this).attr("data-controler"),
 			'function'	:	'Table',
@@ -553,7 +565,8 @@ $(document).ready(function(){
 				'column_style'	:	$(this).attr('data-column_style'),
 				'filters'		:	filters,
 				'pp'			:	parseInt( $(".pp select").val() ),
-				'current'		:	parseInt(  $(".current").html() )
+				'current'		:	parseInt(  $(".current").html() ),
+				'dates'			:	dates
 			}
 		};
 		

@@ -43,6 +43,270 @@ class Propriete_Location extends Modal{
 		
 	}
 	
+	public function Table($params = []){
+		
+		$column_style = (isset($params['column_style']))? $params['column_style']: strtolower($this->tableName);
+		
+		$filters = (isset($params["filters"]))? $params["filters"]: [];
+		
+		$l = new ListView();
+		$defaultStyleName = $l->getDefaultStyleName($column_style);
+		$columns = $this->getColumns($column_style);
+		
+		
+		$table = '
+				<table id="proprieteLocationtable">	
+					<thead>	
+						<tr>
+							{{ths}}
+						</tr>
+						
+					</thead>
+					<tbody>
+						{{trs}}
+					</tbody>
+				</table>		
+		';
+		
+		/***********
+			Columns
+		***********/
+		$ths = '';
+		$trs_counter = 1;
+		foreach($columns as $column){
+
+			$style = ""; 
+			$is_display = ( isset($column["display"]) )? ($column["display"])? "" : "hide" : "";
+
+			if($column['column'] === "actions"){
+				$ths .= "<th class='". $is_display . "'>";
+				$ths .= "	<button data-default='".$defaultStyleName."' value='".$column_style."' class='show_list_options'>";
+				$ths .= "		<i class='fas fa-ellipsis-h'></i></button>";
+				$ths .= "	</button>";
+				$ths .=	"</th>";
+			}else{
+				$trs_counter += $is_display === "hide"? 0:1;
+				$ths .= "<th class='sort_by ". $is_display . "' data-sort='" . $column['column'] . "' data-sort_type='desc'>";
+				$ths .=  "	<div class='d-flex'>";
+				$ths .=  		$column['label'];
+				$ths .= "		<i class='pl-5 fas fa-sort'></i> ";
+				$ths .=  "	</div>";
+				$ths .=	"</th>";
+			}
+
+		}
+		
+		/***********
+			Conditions
+		***********/
+		
+		$request = [];
+		$sql = '';
+		if(isset($params['request'])){
+			if( $params['request'] !== "" ){
+				if( isset($params['tags']) ){
+					if( count( $params['tags'] ) > 0 ){
+						foreach( $params['tags'] as $k=>$v ){
+							$request[ 'LOWER(CONVERT(' . $v. ' USING latin1)) like '] = '%' . strtolower( $params['request'] ) . '%';
+							
+							$item = 'LOWER(CONVERT(' . $v. ' USING latin1)) like %' . strtolower( $params['request'] ) . '%';
+							$sql .= $sql===''? $item.'<br>': ' AND '.$item.'<br>';
+							
+						}
+					}
+				}
+			}
+		}
+		
+		if( count($filters) > 0 ){
+			foreach($filters as $k=>$v){
+				if($v["value"] !== "-1"){
+
+					if( $v["id"] === "Complexe" ){
+						$request['id_complexe = '] = $v["value"];
+						$item = 'id_complexe = ' . $v["value"];						
+					}
+					
+					if( $v["id"] === "Client" ){
+						$request['id_client = '] = $v["value"];
+						$item = 'id_client = ' . $v["value"];						
+					}
+
+					$sql .= $sql===''? $item.'<br>': ' AND '.$item.'<br>';					
+				}
+				
+			}
+
+		}
+		
+		/***********
+			Body
+		***********/
+		$use = (isset($params['use']))? strtolower($params['use']): strtolower($this->tableName);
+		
+		$pp = isset( $params['pp'] ) ? $params['pp']: 50;
+		$current = isset( $params['current'] ) ? $params['current']: 0;
+
+		$orderBy = (isset($params['sort']))? $params['sort'] :"pl.created desc";
+
+		$where = '';
+		if(isset($params['dates'])){
+			$where = " pl.date_debut>='".$params['dates'][0]."' AND pl.date_fin<='".$params['dates'][1]."'";
+		}
+		$where = $where==''? '': 'WHERE '.$where;
+		$request = "
+			SELECT 
+				pl.created as created,
+				contrat.UID as UID,
+				app.code AS code,
+				client.first_name AS first_name,
+				client.last_name AS last_name,
+				client.societe_name AS societe_name,
+				client.id AS id_client,
+				client.first_name as first_name,
+				client.last_name as last_name,
+				client.id_status as id_status,
+				client.id as id_client,
+				complexe.name as complexe_name,
+				pl.id as id,
+				pl.date_debut as date_debut,
+				pl.date_fin as date_fin,
+				TO_DAYS(pl.date_fin) - TO_DAYS(pl.date_debut) AS nbr_days
+			FROM propriete_location pl
+
+			LEFT JOIN propriete app on app.id = pl.id_propriete
+			LEFT JOIN complexe on complexe.id = app.id_complexe
+			LEFT JOIN contrat_periode on contrat_periode.id = pl.id_periode
+			LEFT JOIN contrat on contrat.UID = contrat_periode.UID
+			LEFT JOIN client on client.id = contrat.id_client
+
+			".$where."
+
+			ORDER BY ".$orderBy."
+
+			Limit ".$current.", ".$pp."
+			
+		";
+
+		//die($request);
+		/*
+		$conditions = [];
+		
+		if( count($request) === 1 ){
+			$conditions['conditions'] = $request;
+		}elseif( count($request) > 1 ){
+			$conditions['conditions AND'] = $request;
+		}
+		
+		if(isset($params['sort'])){
+			$conditions['order'] = $params['sort'];
+		}else{
+			$conditions['order'] = 'created desc';
+		}
+		
+		// Counter
+		$counter = 0;
+		foreach($this->find('', $conditions, $use) as $k=>$v){
+			$counter++;
+		}
+		
+		$pp = isset( $params['pp'] ) ? $params['pp']: 20;
+		$current = isset( $params['current'] ) ? $params['current']: 0;
+		$conditions['limit'] = [$current,$pp];
+		*/
+		//$data = $this->find('', $conditions, $use);
+		$data = $this->execute($request);
+		$trs = '';
+
+		
+		foreach($data as $k=>$v){
+			
+			$background = isset($v["all_ligne"])? $v["all_ligne"]? $v["hex_string"]: "": "";
+			$trs .= '<tr class="" style="background-color:'.$background.'" data-page="'.$use.'">';
+			foreach($columns as $key=>$value){
+				
+				$style = (!$columns[$key]["display"])? "display:none": $columns[$key]["style"] ;
+				$is_display = (!$columns[$key]["display"])? "hide": "" ;
+
+				if(isset($v[ $columns[$key]["column"] ])){
+					if($columns[$key]["column"] == "name"){
+						$code = $v["code"] === ""? "": "<div style='font-size:10px; font-weight:bold'>" . $v["code"] . "</div>";
+						$complexe = $v["name"] === ""? "": $v["name"] . $code;
+						$trs .= "<td class='".$is_display."' style='".$style."'>" . $complexe . "</td>";
+					}elseif($columns[$key]["column"] == "first_name"){
+						if($v['societe_name'] == '')
+							$trs .= "<td class='".$is_display."' style='".$style."'>" . $v['societe_name'] . "</td>";
+						else
+							$trs .= "<td class='".$is_display."' style='".$style."'>" . $v['first_name']. " " . $v['last_name'] . "</td>";		
+					}elseif($columns[$key]["column"] == "nbr_days"){
+						$trs .= "
+							<td class='".$is_display."' style='".$style."'>
+								<div class='bg-green-50 border border-green-200 rounded-lg py-1 px-2 shadow w-12 mx-auto text-xl'>".$v['nbr_days']."</div>
+							</td>";
+					}else{
+					
+						if(isset($columns[$key]["format"])){
+							if($columns[$key]["format"] === "money"){
+								$trs .= "<td class='".$is_display."' style='".$style."'>" . $this->format($v[ $columns[$key]["column"] ]) . "</td>";
+							}else if($columns[$key]["format"] === "on_off"){
+								$trs .= "<td class='".$is_display."' style='".$style."'><div class='label label-red'>Désactive</div></td>";
+							}else if($columns[$key]["format"] === "color"){
+								$trs .= "<td class='".$is_display."' style='".$style."'> <span style='padding:10px 15px; background-color:".$v[ $columns[$key]["column"] ]."'>".$v[ $columns[$key]["column"] ] . "</span></td>";
+							}else if($columns[$key]["format"] === "date"){
+								$date = explode(" ", $v[ $columns[$key]["column"] ]);
+								if(count($date)>1){
+									$_date = "<div><i class='fas fa-calendar-alt'></i> ".$date[0]."</div>";
+								}else{
+									$_date = "<div><i class='fas fa-calendar-alt'></i> ".$date[0]."</div>";
+								}
+								$trs .= "<td class='".$is_display."' style='".$style.";'>".$_date."</td>";
+
+							}else{
+								$trs .= "<td class='".$is_display."' style='".$style."'>".$v[ $columns[$key]["column"] ]. "</td>";
+							}
+						}else{
+							$trs .= "<td class='".$is_display."' style='".$style."'>".$v[ $columns[$key]["column"] ]."</td>";
+						}
+					}	
+				}else{
+					if($columns[$key]["column"] == "actions"){
+						$trs .=   "<td style='width:55px; text-align: center'><button data-controler='". $this->tableName ."' class='update' value='".$v["id"]."'><i class='fas fa-ellipsis-v'></i></button></td>";	
+					}else{
+						
+						if($columns[$key]["format"] === "money"){
+							$trs .= "<td class='".$is_display."' style='".$style."'>" . $this->format($v[ $columns[$key]["column"] ]) . "</td>";
+						}else if($columns[$key]["format"] === "on_off"){
+							$trs .= "<td class='".$is_display."' style='".$style."'><div class='label label-red'>Désactive</div></td>";
+						}else if($columns[$key]["format"] === "color"){
+							$trs .= "<td class='".$is_display."' style='".$style."'> <span style='padding:10px 15px; background-color:".$v[ $columns[$key]["column"] ]."'>".$v[ $columns[$key]["column"] ] . "</span></td>";
+						}else if($columns[$key]["format"] === "date"){
+							$date = explode(" ", $v[ $columns[$key]["column"] ]);
+							if(count($date)>1){
+								$_date = "<div style='min-width:105px'>check<i class='fas fa-calendar-alt'></i> ".$date[0]."</div><div style='min-width:105px'><i class='far fa-clock'></i> ".$date[1]."</div>";
+							}else{
+								$_date = "<div>check<i class='fas fa-calendar-alt'></i> ".$date[0]."</div>";
+							}
+							
+							$trs .= "<td class='".$is_display."' style='".$style.";'>".$_date."</td>";
+						}else{
+							$trs .= "<td class='".$is_display."' style='".$style."'></td>";
+						}						
+					}
+
+				}
+
+
+			}
+			$trs .= '</tr>';
+			
+		}
+		
+		if(count($data) === 0)
+			$trs = '<tr><td colspan="'.$trs_counter.'">No Data to Display!</td></tr>';
+
+		return str_replace(["{{ths}}", "{{trs}}"], [$ths, $trs], $table);
+		
+	}
 	
 	//	Draw Table
 	public function drawTable($args = null, $conditions = null, $useTableName = null){
