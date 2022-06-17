@@ -6,7 +6,7 @@ class Config{
 	private $config = array(
 				"dev"		=>	array(
 									"host"		=>	"localhost",
-									"dbname"	=>	"cabosand_manager",
+									"dbname"	=>	"cabosand",
 									"username"	=>	"root",
 									"password"	=>	""
 							),
