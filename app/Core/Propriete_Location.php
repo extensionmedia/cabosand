@@ -49,6 +49,8 @@ class Propriete_Location extends Modal{
 		
 		$filters = (isset($params["filters"]))? $params["filters"]: [];
 		
+		$orderBy = isset($params['sort'])? $params['sort'] :"created desc";
+
 		$l = new ListView();
 		$defaultStyleName = $l->getDefaultStyleName($column_style);
 		$columns = $this->getColumns($column_style);
@@ -76,7 +78,7 @@ class Propriete_Location extends Modal{
 		foreach($columns as $column){
 
 			$style = ""; 
-			$is_display = ( isset($column["display"]) )? ($column["display"])? "" : "hide" : "";
+			$is_display = isset($column["display"])? ($column["display"]? "" : " hidden") : "";
 
 			if($column['column'] === "actions"){
 				$ths .= "<th class='". $is_display . "'>";
@@ -85,13 +87,32 @@ class Propriete_Location extends Modal{
 				$ths .= "	</button>";
 				$ths .=	"</th>";
 			}else{
-				$trs_counter += $is_display === "hide"? 0:1;
-				$ths .= "<th class='sort_by ". $is_display . "' data-sort='" . $column['column'] . "' data-sort_type='desc'>";
-				$ths .=  "	<div class='d-flex'>";
-				$ths .=  		$column['label'];
-				$ths .= "		<i class='pl-5 fas fa-sort'></i> ";
-				$ths .=  "	</div>";
-				$ths .=	"</th>";
+				$trs_counter += $is_display == "hidden"? 0:1;
+				
+				if($column['column'] == explode(" ", $orderBy)[0]){
+					if(explode(" ", $orderBy)[1] == "asc"){
+						$ths .= "<th class='sort_by ". $is_display . "' data-sort='" . $column['column'] . "' data-sort_type='desc'>";
+						$ths .=  "	<div class='d-flex'>";
+						$ths .=  		$column['label']. ' '.$orderBy;
+						$ths .= "		<i class='pl-5 fa-solid fa-sort-down'></i> ";
+						$ths .=  "	</div>";
+						$ths .=	"</th>";
+					}else{
+						$ths .= "<th class='sort_by ". $is_display . "' data-sort='" . $column['column'] . "' data-sort_type='asc'>";
+						$ths .=  "	<div class='d-flex'>";
+						$ths .=  		$column['label'].' / '.$orderBy;
+						$ths .= "		<i class='pl-5 fa-solid fa-sort-up'></i> ";
+						$ths .=  "	</div>";
+						$ths .=	"</th>";
+					}
+				}else{
+					$ths .= "<th class='sort_by". $is_display . "' data-sort='" . $column['column'] . "' data-sort_type='desc'>";
+					$ths .=  "	<div class='d-flex'>";
+					$ths .=  		$column['label'];
+					$ths .=  "	</div>";
+					$ths .=	"</th>";
+				}
+				
 			}
 
 		}
@@ -146,8 +167,6 @@ class Propriete_Location extends Modal{
 		
 		$pp = isset( $params['pp'] ) ? $params['pp']: 50;
 		$current = isset( $params['current'] ) ? $params['current']: 0;
-
-		$orderBy = (isset($params['sort']))? $params['sort'] :"pl.created desc";
 
 		$where = '';
 		if(isset($params['dates'])){
@@ -221,7 +240,7 @@ class Propriete_Location extends Modal{
 		
 		foreach($data as $k=>$v){
 			
-			$background = isset($v["all_ligne"])? $v["all_ligne"]? $v["hex_string"]: "": "";
+			$background = isset($v["all_ligne"])? ($v["all_ligne"]? $v["hex_string"]: ""): "";
 			$trs .= '<tr class="" style="background-color:'.$background.'" data-page="'.$use.'">';
 			foreach($columns as $key=>$value){
 				

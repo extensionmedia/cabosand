@@ -573,7 +573,7 @@ $(document).ready(function(){
 		if( $('#page .page-body .table-container table thead tr th.active').length > 0 ){
 			data.params.sort = $('#page .page-body .table-container table thead tr th.active').attr('data-sort') + " " + $('#page .page-body .table-container table thead tr th.active').attr('data-sort_type');
 		}
-		
+		console.log(data)
 		$.ajax({
 			type		: 	"POST",
 			url			: 	"pages/default/ajax/ajax.php",
