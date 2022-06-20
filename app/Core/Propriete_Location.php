@@ -93,14 +93,14 @@ class Propriete_Location extends Modal{
 					if(explode(" ", $orderBy)[1] == "asc"){
 						$ths .= "<th class='sort_by ". $is_display . "' data-sort='" . $column['column'] . "' data-sort_type='desc'>";
 						$ths .=  "	<div class='d-flex'>";
-						$ths .=  		$column['label']. ' '.$orderBy;
+						$ths .=  		$column['label'];
 						$ths .= "		<i class='pl-5 fa-solid fa-sort-down'></i> ";
 						$ths .=  "	</div>";
 						$ths .=	"</th>";
 					}else{
 						$ths .= "<th class='sort_by ". $is_display . "' data-sort='" . $column['column'] . "' data-sort_type='asc'>";
 						$ths .=  "	<div class='d-flex'>";
-						$ths .=  		$column['label'].' / '.$orderBy;
+						$ths .=  		$column['label'];
 						$ths .= "		<i class='pl-5 fa-solid fa-sort-up'></i> ";
 						$ths .=  "	</div>";
 						$ths .=	"</th>";
@@ -123,37 +123,37 @@ class Propriete_Location extends Modal{
 		
 		$request = [];
 		$sql = '';
+		$code = 0;
 		if(isset($params['request'])){
 			if( $params['request'] !== "" ){
 				if( isset($params['tags']) ){
 					if( count( $params['tags'] ) > 0 ){
+						$code = '%' . strtolower( $params['request'] ) . '%';
+						/*
 						foreach( $params['tags'] as $k=>$v ){
 							$request[ 'LOWER(CONVERT(' . $v. ' USING latin1)) like '] = '%' . strtolower( $params['request'] ) . '%';
-							
-							$item = 'LOWER(CONVERT(' . $v. ' USING latin1)) like %' . strtolower( $params['request'] ) . '%';
-							$sql .= $sql===''? $item.'<br>': ' AND '.$item.'<br>';
-							
 						}
+						*/
 					}
 				}
 			}
 		}
-		
+
+		$id_complexe = 0;
+		$id_client = 0;
+
 		if( count($filters) > 0 ){
 			foreach($filters as $k=>$v){
 				if($v["value"] !== "-1"){
 
 					if( $v["id"] === "Complexe" ){
-						$request['id_complexe = '] = $v["value"];
-						$item = 'id_complexe = ' . $v["value"];						
+						$id_complexe = $v["value"];					
 					}
 					
 					if( $v["id"] === "Client" ){
-						$request['id_client = '] = $v["value"];
-						$item = 'id_client = ' . $v["value"];						
+						$id_client = $v["value"];				
 					}
-
-					$sql .= $sql===''? $item.'<br>': ' AND '.$item.'<br>';					
+					
 				}
 				
 			}
@@ -172,6 +172,16 @@ class Propriete_Location extends Modal{
 		if(isset($params['dates'])){
 			$where = " pl.date_debut>='".$params['dates'][0]."' AND pl.date_fin<='".$params['dates'][1]."'";
 		}
+
+		if($id_complexe)
+			$where .= $where==''? " app.id_complexe=".$id_complexe: " AND app.id_complexe=".$id_complexe;
+
+		if($id_client)
+			$where .= $where==''? " client.id=".$id_client: " AND client.id=".$id_client;
+
+		if($code)
+			$where .= $where==''? " LOWER(CONVERT(code USING latin1)) like '" . $code."'": " AND LOWER(CONVERT(code USING latin1)) like '".$code."'";
+
 		$where = $where==''? '': 'WHERE '.$where;
 		$request = "
 			SELECT 

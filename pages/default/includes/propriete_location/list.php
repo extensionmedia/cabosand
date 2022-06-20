@@ -27,15 +27,13 @@ $years = [
 
 $tags = [
 	[ 'hide'=>'', 'id'=>'code', 'label' => 'Code'],
-	[ 'hide'=>'hide', 'id'=>'client', 'label' => 'Client'],
-	[ 'hide'=>'hide', 'id'=>'complexe', 'label' => 'Complexe'],
 	[ 'hide'=>'hide', 'id'=>'proprietaire', 'label' => 'Proprietaire'],
 	[ 'hide'=>'hide', 'id'=>'phone', 'label' => 'Téléphone']
 ];
 
 $filters = [
 	'Complexe'				=>	$ob->find('', ['order'=>'name'], 'complexe'),
-	'Client'				=>	$ob->find('', ['order'=>'first_name' ], 'client'),
+	'Client'				=>	$ob->find('', ['conditions'=>['id_status='=>11],'order'=>'first_name' ], 'client'),
 ];
 	
 ?>
@@ -77,7 +75,7 @@ $filters = [
 							if($key === "Complexe")
 								$string .= '<option value="'.$v["id"].'">'. strtoupper( $v["name"] ) ."</option>";
 							if($key === "Client")
-								$string .= '<option value="'.$v["id"].'">'. strtoupper( $v["first_name"] ) ."</option>";
+								$string .= '<option value="'.$v["id"].'">'. strtoupper( $v["societe_name"] ) ."</option>";
 						}
 						$string .= '</select>';
 					}
@@ -94,10 +92,7 @@ $filters = [
 		<div class="result d-flex space-between">
 			
 			<div class="totals" style="padding-top: 0!important">
-				<button><i class="fas fa-chart-bar"></i></button>
-				<button><i class="far fa-file-pdf"></i></button>
-				<button><i class="fas fa-file-csv"></i></button>
-				<button><i class="fas fa-at"></i></button>
+				<button class="exportTo" data-target="proprieteLocationtable" data-type="csv"><i class="fas fa-file-csv"></i></button>
 			</div>
 			
 			<div class="d-flex nex_prev">
